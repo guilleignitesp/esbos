@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGNITE NEXUS — Portal del Alumno</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --warm: #FEF3C6;
+  --light-blue: #EAF4FF;
+  --blue-main: #7CB8F5;
+  --blue-dark: #3E6FA8;
+  --cta: #2596BE;
+  --text: #2F3A4A;
+  --white: #fff;
+  --card-shadow: 0 2px 12px rgba(62,111,168,0.07), 0 1px 3px rgba(62,111,168,0.05);
+  --radius: 20px;
+  --radius-sm: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--text); min-height: 100vh; }
+
+.outer { display: flex; justify-content: center; align-items: flex-start; gap: 28px; min-height: 100vh; }
+@media (max-width: 699px) { .desktop-side { display: none; } }
+@media (min-width: 700px) {
+  .outer { padding: 28px 20px; }
+  .desktop-side { display: flex; flex-direction: column; gap: 16px; width: 260px; flex-shrink: 0; padding-top: 4px; }
+}
+.app { flex: 1; max-width: 860px; background: var(--warm); min-height: 100vh; }
+@media (min-width: 700px) {
+  .app { min-height: auto; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 60px rgba(62,111,168,0.18); }
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px 12px; position: sticky; top: 0; z-index: 10; background: var(--warm);
+}
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.view-toggle {
+  display: flex; align-items: center; background: var(--white);
+  border-radius: 30px; border: 1.5px solid var(--blue-main); overflow: hidden;
+}
+.view-toggle button {
+  padding: 6px 15px; border: none; background: transparent; cursor: pointer;
+  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 12px;
+  color: var(--blue-dark); transition: background .2s, color .2s;
+}
+.view-toggle button.active { background: var(--blue-dark); color: #fff; border-radius: 28px; }
+.avatar-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--blue-dark); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: #fff; font-weight: 900;
+}
+
+/* =====================
+   HERO ZONE
+   ===================== */
+.hero-zone {
+  position: relative;
+  background: var(--warm);
+  padding-bottom: 28px;
+}
+
+/* decorative blob — purely behind mascot */
+.hero-blob-core {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 360px; height: 240px;
+  background: radial-gradient(ellipse 65% 60% at 50% 42%,
+    #f0c830 0%, #f8de80 30%, #fef0b0 58%, transparent 80%);
+  border-radius: 50% 50% 45% 45%; opacity: .75; pointer-events: none; z-index: 0;
+}
+.hero-blob-shine {
+  position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 160px;
+  background: radial-gradient(ellipse 55% 50% at 50% 38%, rgba(255,255,255,0.52) 0%, transparent 75%);
+  border-radius: 50%; pointer-events: none; z-index: 0;
+}
+
+/* mascot row — mascot + bubble glued together, centered as a unit */
+.mascot-row {
+  position: relative; z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-top: 12px;
+  /* inner wrapper keeps mascot+bubble together regardless of outer width */
+}
+.mascot-unit {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.mascot-svg {
+  width: 140px; height: 140px; display: block;
+  filter: drop-shadow(0 10px 20px rgba(62,111,168,0.18)) drop-shadow(0 2px 5px rgba(62,111,168,0.08));
+}
+/* bubble is positioned relative to the mascot-unit, always to its right */
+.mascot-bubble {
+  position: absolute;
+  right: -148px;   /* sits to the right of the mascot */
+  bottom: 60px;
+  background: var(--text); color: #fff; border-radius: 16px;
+  padding: 9px 18px; font-size: 14px; font-weight: 700;
+  white-space: nowrap; box-shadow: 0 4px 16px rgba(47,58,74,0.20);
+}
+.mascot-bubble::before {
+  content: ''; position: absolute; left: -9px; top: 50%; transform: translateY(-50%);
+  border: 6px solid transparent; border-right-color: var(--text);
+}
+
+/* ---- PROFILE — centered, stacked ---- */
+.profile-hero {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding: 16px 24px 0;
+  gap: 4px;
+}
+.profile-name {
+  font-size: 28px; font-weight: 900; color: var(--text);
+  line-height: 1.1; letter-spacing: -.3px;
+}
+.profile-school {
+  font-size: 14px; color: var(--blue-dark); font-weight: 600; margin-top: 2px;
+}
+.profile-groups {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 6px;
+}
+.group-chip {
+  background: rgba(62,111,168,0.10); border-radius: 20px; padding: 3px 12px;
+  font-size: 13px; font-weight: 700; color: var(--blue-dark);
+}
+/* Level block — no box, just corporate elements on warm bg */
+.level-block {
+  display: flex; flex-direction: column; align-items: center;
+  margin-top: 14px; gap: 6px;
+}
+.level-label {
+  font-size: 13px; font-weight: 700; color: #8aa4be;
+  text-transform: uppercase; letter-spacing: .7px;
+}
+.level-num-row {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.level-num {
+  font-size: 52px; font-weight: 900; color: var(--blue-dark); line-height: 1;
+}
+.level-name {
+  font-size: 17px; font-weight: 700; color: var(--cta);
+}
+/* Decorative corner-marks flanking the big number — inline, no box */
+.level-corner-l {
+  flex-shrink: 0; align-self: center;
+}
+.level-corner-r {
+  flex-shrink: 0; align-self: center; transform: scaleX(-1);
+}
+
+/* ---- CARD COLOUR ALTERNATION PER SECTION ----
+   Secciones warm  → tarjetas blancas con sombra
+   Mis ramas       → cada tarjeta en un tono amarillo/dorado distinto
+   Actitud         → sin tarjeta, sin borde, sin sombra (inscrito en el fondo)
+   ---- */
+.section-warm .project-card,
+.section-warm .completed-card {
+  background: #FFFFFF;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(124,184,245,0.18);
+}
+
+/* Actitud — invisible, sin caja */
+.section-alt .actitud-card {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding-left: 4px; padding-right: 4px;
+}
+.section-alt .actitud-icon.pos { background: rgba(26,171,109,0.13); }
+.section-alt .actitud-icon.neg { background: rgba(224,82,82,0.11); }
+
+/* Ramas — contenedor único tipo card */
+.ramas-wrapper {
+  background: #FFFFFF;
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(124,184,245,0.18);
+  padding: 16px;
+}
+
+/* Ramas — tres niveles de luminosidad claramente distintos, alternados
+   Claro: #FEF9C3 · Medio: #FBEAA0 · Oscuro (suavizado): #F8D96E
+   Patrón: claro–oscuro–medio–claro–oscuro–medio  → ningún vecino igual */
+.rama-card:nth-child(1) { background: #FEF9C3; } /* claro  */
+.rama-card:nth-child(2) { background: #F8D96E; } /* oscuro suave */
+.rama-card:nth-child(3) { background: #FBEAA0; } /* medio  */
+.rama-card:nth-child(4) { background: #FEF9C3; } /* claro  */
+.rama-card:nth-child(5) { background: #F8D96E; } /* oscuro suave */
+.rama-card:nth-child(6) { background: #FBEAA0; } /* medio  */
+
+.section-warm, .section-alt { background: transparent; }
+
+/* XP block */
+.xp-block {
+  position: relative; z-index: 3;
+  padding: 14px 24px 0;
+  max-width: 480px; width: 100%; margin: 0 auto;
+}
+.xp-nums-row {
+  display: flex; align-items: baseline; justify-content: center; gap: 5px; margin-bottom: 10px;
+}
+.xp-current {
+  font-size: 36px; font-weight: 900; color: var(--text); line-height: 1;
+}
+.xp-unit { font-size: 16px; font-weight: 800; color: var(--blue-dark); }
+.xp-sep { font-size: 16px; color: #bbd0e6; font-weight: 600; margin: 0 2px; }
+.xp-next { font-size: 16px; color: #aac0d6; font-weight: 600; }
+.xp-bar-track {
+  height: 13px; background: rgba(62,111,168,0.12);
+  border-radius: 99px; overflow: hidden;
+}
+.xp-bar-fill {
+  height: 100%; border-radius: 99px;
+  background: #FBB03B;
+  position: relative;
+}
+.xp-bar-fill::after {
+  content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 24px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32));
+  border-radius: 99px;
+}
+.xp-legend {
+  display: flex; justify-content: space-between; margin-top: 5px;
+  font-size: 12px; color: #aac0d6; font-weight: 600;
+}
+.xp-legend-left { color: var(--blue-dark); font-weight: 700; }
+
+/* CONTENT */
+.content { background: var(--warm); position: relative; z-index: 3; padding-top: 0; }
+
+/* SECTIONS */
+.section { padding: 0 20px 20px; }
+.section-title {
+  font-size: 14px; font-weight: 800; color: var(--blue-dark);
+  letter-spacing: .5px; text-transform: uppercase; margin-bottom: 14px;
+}
+
+/* GRIDS */
+.grid-auto   { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.grid-ramas  { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.grid-actitud{ display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+
+/* PROJECT CARD */
+.project-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
+  padding: 16px; display: flex; gap: 12px; align-items: flex-start;
+}
+.project-thumb {
+  width: 52px; height: 52px; border-radius: 14px; background: var(--light-blue);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+.project-info { flex: 1; min-width: 0; }
+.project-name { font-size: 17px; font-weight: 800; color: var(--text); }
+.project-cat {
+  display: inline-block; background: var(--light-blue); color: var(--blue-dark);
+  border-radius: 20px; padding: 3px 11px; font-size: 12px; font-weight: 700; margin: 5px 0 7px;
+}
+.project-desc { font-size: 13px; color: #6b8ba6; line-height: 1.55; margin-bottom: 8px; }
+.project-skills { display: flex; flex-wrap: wrap; gap: 5px; }
+.skill-chip {
+  background: var(--light-blue); border-radius: 20px; padding: 3px 10px;
+  font-size: 12px; font-weight: 700; color: var(--blue-dark);
+}
+
+/* RAMA CARD */
+.rama-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
+  padding: 18px 16px; cursor: pointer; transition: transform .15s, box-shadow .15s;
+}
+.rama-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(62,111,168,0.12); }
+.rama-icon { width: 40px; height: 40px; margin-bottom: 10px; display: flex; align-items: center; }
+.rama-icon svg { width: 40px; height: 40px; }
+.rama-name { font-size: 17px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+.rama-level { font-size: 13px; color: var(--blue-dark); font-weight: 600; margin-bottom: 10px; }
+.rama-bar-bg { background: rgba(62,111,168,0.15); border-radius: 10px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 6px; }
+.rama-bar-fill { height: 100%; border-radius: 10px; }
+.rama-pts { font-size: 14px; font-weight: 900; color: var(--cta); margin-bottom: 2px; }
+.rama-bar-legend {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.rama-bar-legend-left { font-size: 12px; font-weight: 700; color: var(--blue-dark); }
+.rama-bar-legend-right { font-size: 11px; font-weight: 700; color: var(--blue-dark); opacity: 0.7; }
+.rama-btn {
+  width: 100%; background: rgba(62,111,168,0.12); border: none; border-radius: 10px;
+  padding: 8px 0; font-size: 12px; font-weight: 700; color: var(--blue-dark);
+  cursor: pointer; font-family: 'Figtree', sans-serif; transition: background .2s;
+}
+.rama-btn:hover { background: var(--blue-dark); color: #fff; }
+
+/* COMPLETED CARD */
+.completed-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18); padding: 16px;
+}
+.completed-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.completed-name { font-size: 16px; font-weight: 800; color: var(--text); }
+.completed-dates { font-size: 12px; color: #8aa4be; margin-top: 3px; font-weight: 600; }
+.completed-xp {
+  background: var(--warm); border: 1.5px solid var(--blue-main);
+  border-radius: 14px; padding: 4px 12px; font-size: 14px; font-weight: 900;
+  color: var(--blue-dark); white-space: nowrap;
+}
+.expand-btn {
+  margin-top: 10px; background: none; border: 1.5px solid rgba(124,184,245,0.5);
+  border-radius: 10px; padding: 6px 13px; font-size: 13px; font-weight: 700;
+  color: var(--blue-dark); cursor: pointer; font-family: 'Figtree', sans-serif;
+  display: flex; align-items: center; gap: 5px; transition: background .2s;
+}
+.expand-btn:hover { background: var(--light-blue); }
+.expand-arrow { transition: transform .2s; display: inline-block; }
+.skills-expanded { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--light-blue); }
+.skills-expanded.open { display: block; }
+.skill-pill-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+.skill-pill-name { font-size: 13px; color: var(--text); font-weight: 600; }
+.skill-pill-xp { font-size: 13px; font-weight: 900; color: var(--cta); }
+
+/* ACTITUD CARD */
+.actitud-card {
+  background: var(--white); border-radius: var(--radius-sm);
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
+  padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+}
+.actitud-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.actitud-icon.pos { background: #e8f8f0; }
+.actitud-icon.neg { background: #ffeaea; }
+.actitud-info { flex: 1; }
+.actitud-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.actitud-date { font-size: 12px; color: #8aa4be; margin-top: 2px; font-weight: 500; }
+.actitud-xp { font-size: 16px; font-weight: 900; }
+.actitud-xp.pos { color: #1aab6d; }
+.actitud-xp.neg { color: #e05252; }
+
+/* BUTTONS */
+.more-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--blue-dark); color: #fff; border: none; border-radius: 14px;
+  padding: 13px 0; width: 100%; font-family: 'Figtree', sans-serif;
+  font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 4px; transition: background .2s;
+}
+.more-btn:hover { background: var(--cta); }
+.load-more-btn {
+  background: none; border: 1.5px solid rgba(124,184,245,0.6); border-radius: 12px;
+  padding: 10px 0; width: 100%; font-family: 'Figtree', sans-serif;
+  font-size: 12px; font-weight: 800; color: var(--blue-dark);
+  cursor: pointer; margin-top: 4px; transition: background .2s;
+}
+.load-more-btn:hover { background: var(--light-blue); }
+
+/* PAGES */
+.page { display: none; }
+.page.active { display: block; }
+
+/* PROJECTS PAGE */
+.projects-page-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 20px 14px; position: sticky; top: 0; background: var(--warm); z-index: 10;
+}
+.back-btn {
+  background: var(--white); border: 1.5px solid rgba(124,184,245,0.6);
+  border-radius: 12px; padding: 7px 14px; font-family: 'Figtree', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--blue-dark); cursor: pointer; transition: background .2s;
+}
+.back-btn:hover { background: var(--light-blue); }
+.projects-page-title { font-size: 18px; font-weight: 900; color: var(--text); }
+.pagination {
+  display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 16px; padding-bottom: 8px;
+}
+.page-btn {
+  background: var(--white); border: 1.5px solid rgba(124,184,245,0.6);
+  border-radius: 10px; padding: 8px 16px; font-family: 'Figtree', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--blue-dark); cursor: pointer; transition: background .2s;
+}
+.page-btn:disabled { opacity: .4; cursor: default; }
+.page-btn:not(:disabled):hover { background: var(--light-blue); }
+.page-indicator { font-size: 12px; color: #8aa4be; font-weight: 700; }
+
+/* FAMILY PLACEHOLDER */
+.family-empty {
+  padding: 80px 32px 40px; display: flex; flex-direction: column;
+  align-items: center; text-align: center; min-height: 60vh;
+}
+.family-empty-icon { font-size: 68px; margin-bottom: 22px; opacity: .3; }
+.family-empty-title { font-size: 21px; font-weight: 900; color: var(--blue-dark); margin-bottom: 10px; }
+.family-empty-sub { font-size: 14px; color: #8aa4be; font-weight: 500; max-width: 240px; line-height: 1.65; }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(47,58,74,0.5); z-index: 100; align-items: flex-end; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--white); border-radius: 28px 28px 0 0;
+  width: 100%; max-width: 520px; max-height: 80vh; overflow-y: auto;
+  padding: 26px 22px 36px; animation: slideUp .22s ease; position: relative;
+}
+@keyframes slideUp { from { transform: translateY(36px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-title { font-size: 19px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+.modal-subtitle { font-size: 12px; color: #8aa4be; margin-bottom: 18px; font-weight: 500; }
+.modal-close {
+  position: absolute; right: 20px; top: 20px; background: var(--light-blue); border: none;
+  border-radius: 50%; width: 34px; height: 34px; font-size: 16px; cursor: pointer;
+  color: var(--blue-dark); display: flex; align-items: center; justify-content: center; font-weight: 700;
+}
+.skill-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--light-blue); }
+.skill-row:last-child { border-bottom: none; }
+.skill-row-name { flex: 1; font-size: 13px; font-weight: 700; color: var(--text); }
+.skill-row-desc { font-size: 11px; color: #8aa4be; font-weight: 400; }
+.skill-row-xp { font-size: 14px; font-weight: 900; }
+.skill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* DESKTOP SIDE */
+.desktop-side .side-card {
+  background: var(--white); border-radius: 20px; padding: 18px;
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
+}
+.desktop-side .side-card h3 { font-size: 13px; font-weight: 800; color: var(--blue-dark); margin-bottom: 8px; }
+.desktop-side .side-card p { font-size: 12px; color: #5a7fa0; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="outer">
+
+  <div class="app">
+
+    <div class="topbar">
+      <a href="#" style="text-decoration:none;display:flex;align-items:center;">
+        <svg viewBox="0 0 230 45" height="32" xmlns="http://www.w3.org/2000/svg">
+          <style>
+            .t-ignite{font-family:'Figtree',sans-serif;font-weight:900;font-size:23px;letter-spacing:-0.8px;fill:#3E6FA8;}
+            .t-nexus{font-family:'Figtree',sans-serif;font-weight:550;font-size:23px;letter-spacing:-0.8px;fill:#2596BE;transform:skewX(-12deg);transform-origin:left;}
+          </style>
+          <g transform="translate(24,22)">
+            <path d="M -16 -16 L -10 -16 M -16 -16 L -16 -10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+            <path d="M 16 16 L 10 16 M 16 16 L 16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+            <path d="M -16 16 L -10 16 M -16 16 L -16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+            <path d="M 16 -16 L 10 -16 M 16 -16 L 16 -10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+            <g transform="scale(0.85)">
+              <path d="M -3.2 -15 L 3.2 -14 L 6.4 4.6 L 0.8 4.6 L -0.8 18.4 L -7.2 -2.3 L -1.6 -2.3 Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/>
+            </g>
+          </g>
+          <text x="56" y="30" class="t-ignite">IGNITE</text>
+          <text x="130" y="30" class="t-nexus">NEXUS</text>
+        </svg>
+      </a>
+      <div class="topbar-right">
+        <div class="view-toggle">
+          <button class="active" id="btn-student" onclick="setView('student')">Alumno</button>
+          <button id="btn-family" onclick="setView('family')">Familia</button>
+        </div>
+        <button class="avatar-btn">A</button>
+      </div>
+    </div>
+
+    <!-- PAGE HOME -->
+    <div id="page-home" class="page active">
+
+      <div class="hero-zone">
+        <!-- blob glow -->
+        <div class="hero-blob-core"></div>
+        <div class="hero-blob-shine"></div>
+
+        <!-- mascot + bubble glued together as one unit, centered -->
+        <div class="mascot-row">
+          <div class="mascot-unit">
+            <svg class="mascot-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="70" cy="92" rx="44" ry="38" fill="#c8dff7"/>
+              <ellipse cx="70" cy="90" rx="39" ry="33" fill="#bdd5f5"/>
+              <ellipse cx="70" cy="68" rx="40" ry="42" fill="#8ab2e8"/>
+              <ellipse cx="70" cy="71" rx="39" ry="41" fill="#7ba6e2"/>
+              <ellipse cx="70" cy="73" rx="25" ry="27" fill="#eef2ff"/>
+              <ellipse cx="36" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
+              <ellipse cx="104" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
+              <ellipse cx="36" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
+              <ellipse cx="104" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
+              <ellipse cx="60" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+              <ellipse cx="80" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+              <circle cx="61.5" cy="66" r="1.8" fill="white"/>
+              <circle cx="81.5" cy="66" r="1.8" fill="white"/>
+              <ellipse cx="70" cy="77" rx="4" ry="2.8" fill="#2F3A4A"/>
+              <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <ellipse cx="30" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(-22 30 94)"/>
+              <ellipse cx="110" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(22 110 94)"/>
+              <ellipse cx="54" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
+              <ellipse cx="86" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
+              <ellipse cx="54" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+              <ellipse cx="86" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+              <text x="108" y="43" font-size="14" fill="#FEF3C6" font-family="sans-serif">✦</text>
+              <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
+              <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
+            </svg>
+            <!-- bubble is child of mascot-unit so it moves with it -->
+            <div class="mascot-bubble">Let's Ignite!</div>
+          </div>
+        </div>
+
+        <!-- PROFILE — centered, stacked -->
+        <div class="profile-hero">
+          <div class="profile-name">Álvaro López</div>
+          <div class="profile-school"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M4 10 L12 5 L20 10 L20 20 L4 20 Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><rect x="9" y="14" width="6" height="6" stroke="#7CB8F5" stroke-width="1.5"/></svg>CEIP San Pablo · Madrid</div>
+          <div class="profile-groups">
+            <span class="group-chip">Makers 5A</span>
+            <span class="group-chip">Robótica Avanzada</span>
+          </div>
+          <div class="level-block">
+            <span class="level-label">Nivel</span>
+            <div class="level-num-row">
+              <!-- left corner mark -->
+              <svg class="level-corner-l" width="20" height="28" viewBox="0 0 20 28" fill="none">
+                <path d="M18 2 L2 2 L2 26" stroke="#2596BE" stroke-width="2" stroke-linecap="square" fill="none"/>
+              </svg>
+              <!-- amber bolt -->
+              <svg width="20" height="32" viewBox="0 0 32 48" fill="none">
+                <path d="M18.5 3 L24 4.5 L28 22 L20 22 L18 42 L5 17 L13 17 Z" fill="#FBB03B"/>
+              </svg>
+              <span class="level-num">7</span>
+              <!-- right corner mark (mirrored) -->
+              <svg class="level-corner-r" width="20" height="28" viewBox="0 0 20 28" fill="none">
+                <path d="M18 2 L2 2 L2 26" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square" fill="none"/>
+              </svg>
+            </div>
+            <span class="level-name">Héroe Digital</span>
+          </div>
+        </div>
+
+        <!-- XP block -->
+        <div class="xp-block">
+          <div class="xp-nums-row">
+            <span class="xp-current">2.840</span>
+            <span class="xp-unit">XP</span>
+            <span class="xp-sep">/</span>
+            <span class="xp-next">3.200 XP</span>
+          </div>
+          <div class="xp-bar-track">
+            <div class="xp-bar-fill" style="width:88.75%"></div>
+          </div>
+          <div class="xp-legend">
+            <span class="xp-legend-left">Nivel 7</span>
+            <span>360 XP para Nivel 8</span>
+          </div>
+        </div>
+
+      </div><!-- /hero-zone -->
+
+      <div class="content">
+
+        <!-- ALUMNO VIEW -->
+        <div id="students-view">
+
+          <div class="section section-warm" style="padding-top:20px">
+            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>Proyecto actual</div>
+            <div class="grid-auto">
+              <div class="project-card">
+                <div class="project-thumb"><svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="10" y="15" width="20" height="17" rx="2" stroke="#3E6FA8" stroke-width="1.5"/><rect x="14" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="21" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><path d="M20 11V15M14 32V36M26 32V36M6 22H10M30 22H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M15 27H25" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="9" r="2" stroke="#3E6FA8" stroke-width="1.5"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="project-info">
+                  <div class="project-name">Robot Explorador</div>
+                  <span class="project-cat">ROBÓTICA</span>
+                  <div class="project-desc">Construimos un robot autónomo capaz de esquivar obstáculos usando sensores ultrasónicos y Arduino.</div>
+                  <div class="project-skills">
+                    <span class="skill-chip">Programación</span>
+                    <span class="skill-chip">Electrónica</span>
+                    <span class="skill-chip">Diseño mecánico</span>
+                    <span class="skill-chip">Resolución</span>
+                  </div>
+                </div>
+              </div>
+              <div class="project-card">
+                <div class="project-thumb"><svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="5" y="20" width="9" height="15" rx="1" stroke="#3E6FA8" stroke-width="1.5"/><rect x="16" y="12" width="9" height="23" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="27" y="17" width="9" height="18" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><path d="M4 35H37" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M19.0 13.5 L21.0 13.8 L21.9 19.4 L20.2 19.4 L19.8 23.5 L17.8 17.3 L19.5 17.3 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="project-info">
+                  <div class="project-name">Ciudad del Futuro 3D</div>
+                  <span class="project-cat">DISEÑO 3D</span>
+                  <div class="project-desc">Modelamos una ciudad futurista sostenible con Tinkercad, incluyendo energías renovables y movilidad verde.</div>
+                  <div class="project-skills">
+                    <span class="skill-chip">Modelado 3D</span>
+                    <span class="skill-chip">Creatividad</span>
+                    <span class="skill-chip">Sostenibilidad</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section section-alt">
+            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M8 24 L8 14 L16 8 M8 18 L16 18" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="16" cy="8" r="2" fill="#2596BE"/><circle cx="16" cy="18" r="2" fill="#7CB8F5"/><circle cx="8" cy="24" r="2" fill="#3E6FA8"/></svg>Mis ramas</div>
+            <div class="ramas-wrapper">
+            <div class="grid-ramas">
+              <div class="rama-card" onclick="openModal('Science')">
+                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(-45 20 20)" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(45 20 20)" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="round"/><path d="M18.2 11.8 L21.8 12.3 L23.5 22.5 L20.4 22.5 L19.6 30.1 L16.0 18.7 L19.1 18.7 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="rama-name">Science</div><div class="rama-level">Nivel 4 · Explorer</div>
+                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:72%;background:#FBB03B"></div></div>
+                <div class="rama-bar-legend"><span class="rama-bar-legend-left">540 XP</span><span class="rama-bar-legend-right">+210 para Niv. 5</span></div>
+                <button class="rama-btn" onclick="event.stopPropagation();openModal('Science')">Ver detalles →</button>
+              </div>
+              <div class="rama-card" onclick="openModal('Technology')">
+                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="12" width="16" height="16" rx="3" stroke="#2596BE" stroke-width="1.5"/><path d="M20 6V12M20 28V34M6 20H12M28 20H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="20" r="2.5" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="rama-name">Technology</div><div class="rama-level">Nivel 6 · Builder</div>
+                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:89%;background:#FBB03B"></div></div>
+                <div class="rama-bar-legend"><span class="rama-bar-legend-left">820 XP</span><span class="rama-bar-legend-right">+100 para Niv. 7</span></div>
+                <button class="rama-btn" onclick="event.stopPropagation();openModal('Technology')">Ver detalles →</button>
+              </div>
+              <div class="rama-card" onclick="openModal('Engineering')">
+                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="22" r="9" stroke="#3E6FA8" stroke-width="1.5"/><circle cx="20" cy="22" r="4" stroke="#2596BE" stroke-width="1.5"/><path d="M20 10V13M20 31V34M8 22H11M29 22H32" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M19.0 17.2 L21.0 17.5 L22.0 23.5 L20.3 23.5 L19.7 27.9 L17.7 21.3 L19.5 21.3 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="rama-name">Engineering</div><div class="rama-level">Nivel 5 · Maker</div>
+                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:61%;background:#FBB03B"></div></div>
+                <div class="rama-bar-legend"><span class="rama-bar-legend-left">430 XP</span><span class="rama-bar-legend-right">+270 para Niv. 6</span></div>
+                <button class="rama-btn" onclick="event.stopPropagation();openModal('Engineering')">Ver detalles →</button>
+              </div>
+              <div class="rama-card" onclick="openModal('Art')">
+                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 30 L16 14 L24 22 L32 10" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><rect x="5" y="27" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="13" y="11" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><rect x="21" y="19" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="29" y="7" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="rama-name">Art</div><div class="rama-level">Nivel 4 · Creator</div>
+                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:55%;background:#FBB03B"></div></div>
+                <div class="rama-bar-legend"><span class="rama-bar-legend-left">380 XP</span><span class="rama-bar-legend-right">+320 para Niv. 5</span></div>
+                <button class="rama-btn" onclick="event.stopPropagation();openModal('Art')">Ver detalles →</button>
+              </div>
+              <div class="rama-card" onclick="openModal('Maths')">
+                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 34 L8 8 M8 34 L34 34" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><rect x="11" y="22" width="5" height="12" stroke="#3E6FA8" stroke-width="1.5"/><rect x="19" y="16" width="5" height="18" stroke="#2596BE" stroke-width="1.5"/><rect x="27" y="10" width="5" height="24" stroke="#3E6FA8" stroke-width="1.5"/><path d="M19.1 13.8 L20.9 14.1 L21.8 19.3 L20.2 19.3 L19.8 23.2 L18.0 17.4 L19.6 17.4 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="rama-name">Maths</div><div class="rama-level">Nivel 3 · Solver</div>
+                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:38%;background:#FBB03B"></div></div>
+                <div class="rama-bar-legend"><span class="rama-bar-legend-left">270 XP</span><span class="rama-bar-legend-right">+430 para Niv. 4</span></div>
+                <button class="rama-btn" onclick="event.stopPropagation();openModal('Maths')">Ver detalles →</button>
+              </div>
+              <div class="rama-card" onclick="openModal('Transversals')">
+                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 9 L31 27 L9 27 Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><circle cx="20" cy="9" r="3" fill="#2596BE"/><circle cx="31" cy="27" r="3" fill="#7CB8F5"/><circle cx="9" cy="27" r="3" fill="#7CB8F5"/><circle cx="20" cy="20" r="2" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
+                <div class="rama-name">Transversals</div><div class="rama-level">Nivel 5 · Leader</div>
+                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:78%;background:#FBB03B"></div></div>
+                <div class="rama-bar-legend"><span class="rama-bar-legend-left">400 XP</span><span class="rama-bar-legend-right">+110 para Niv. 6</span></div>
+                <button class="rama-btn" onclick="event.stopPropagation();openModal('Transversals')">Ver detalles →</button>
+              </div>
+            </div><!-- /grid-ramas -->
+            </div><!-- /ramas-wrapper -->
+          </div>
+
+          <div class="section section-warm">
+            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><rect x="5" y="5" width="9" height="9" rx="2" stroke="#3E6FA8" stroke-width="1.5"/><rect x="18" y="5" width="9" height="9" rx="2" stroke="#7CB8F5" stroke-width="1.5"/><rect x="5" y="18" width="9" height="9" rx="2" stroke="#7CB8F5" stroke-width="1.5"/><rect x="18" y="18" width="9" height="9" rx="2" stroke="#2596BE" stroke-width="1.5"/></svg>Últimos proyectos</div>
+            <div class="grid-auto">
+              <div class="completed-card">
+                <div class="completed-header">
+                  <div><div class="completed-name">Estación Meteorológica</div><div class="completed-dates">15 ene – 12 feb 2025 · <span style="color:var(--cta)">Electrónica</span></div></div>
+                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>320 XP</div>
+                </div>
+                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
+                <div class="skills-expanded">
+                  <div class="skill-pill-row"><span class="skill-pill-name">Sensores & Arduino</span><span class="skill-pill-xp">+120 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">Análisis de datos</span><span class="skill-pill-xp">+100 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">Trabajo en equipo</span><span class="skill-pill-xp">+100 XP</span></div>
+                </div>
+              </div>
+              <div class="completed-card">
+                <div class="completed-header">
+                  <div><div class="completed-name">Videojuego en Scratch</div><div class="completed-dates">3 nov – 28 nov 2024 · <span style="color:var(--cta)">Programación</span></div></div>
+                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>280 XP</div>
+                </div>
+                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
+                <div class="skills-expanded">
+                  <div class="skill-pill-row"><span class="skill-pill-name">Lógica de programación</span><span class="skill-pill-xp">+130 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">Diseño de personajes</span><span class="skill-pill-xp">+80 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">Creatividad narrativa</span><span class="skill-pill-xp">+70 XP</span></div>
+                </div>
+              </div>
+              <div class="completed-card">
+                <div class="completed-header">
+                  <div><div class="completed-name">Puente de Espaguetis</div><div class="completed-dates">5 oct – 25 oct 2024 · <span style="color:var(--cta)">Ingeniería</span></div></div>
+                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>200 XP</div>
+                </div>
+                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
+                <div class="skills-expanded">
+                  <div class="skill-pill-row"><span class="skill-pill-name">Resistencia de materiales</span><span class="skill-pill-xp">+90 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">Trabajo cooperativo</span><span class="skill-pill-xp">+70 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">Prototipado</span><span class="skill-pill-xp">+40 XP</span></div>
+                </div>
+              </div>
+            </div>
+            <button class="more-btn" onclick="showPage('projects')" style="margin-top:12px">Ver todos los proyectos →</button>
+          </div>
+
+          <div class="section section-alt">
+            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M16 4 L20 13 L29 16 L20 19 L16 28 L12 19 L3 16 L12 13 Z" stroke="#3E6FA8" stroke-width="1.5" fill="none" stroke-linejoin="miter"/><path d="M14.8 10.3 L17.2 10.7 L18.4 17.7 L16.3 17.7 L15.7 23.0 L13.3 15.1 L15.4 15.1 Z" fill="#FBB03B"/></svg>Actitud</div>
+            <div class="grid-actitud" id="actitud-list">
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M8 17 L13 22 L24 11" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">Ayudó a un compañero</div><div class="actitud-date">14 may 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 5 L22 16 L16 27 L10 16 Z" stroke="#1aab6d" stroke-width="1.5" stroke-linejoin="miter"/><path d="M14.9 10.8 L17.1 11.1 L18.2 17.6 L16.3 17.6 L15.7 22.4 L13.5 15.2 L15.4 15.2 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Participación excepcional</div><div class="actitud-date">12 may 2025</div></div><div class="actitud-xp pos">+30 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 6 L27 26 L5 26 Z" stroke="#e05252" stroke-width="1.5" stroke-linejoin="miter"/><path d="M16 14 L16 20 M16 23 L16 23.5" stroke="#e05252" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Llegó tarde a clase</div><div class="actitud-date">8 may 2025</div></div><div class="actitud-xp neg">-10 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="13" r="5" stroke="#1aab6d" stroke-width="1.5"/><path d="M16 18V24M12 24H20" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/><path d="M15.1 8.8 L16.9 9.1 L17.8 14.3 L16.2 14.3 L15.8 18.2 L14.0 12.4 L15.6 12.4 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Idea creativa destacada</div><div class="actitud-date">5 may 2025</div></div><div class="actitud-xp pos">+25 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="10" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><circle cx="22" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><path d="M10 17 L10 24 L22 24 L22 17" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">Liderazgo en grupo</div><div class="actitud-date">2 may 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
+            </div>
+            <div class="grid-actitud" id="actitud-extra" style="display:none;margin-top:10px">
+              <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="9" stroke="#e05252" stroke-width="1.5"/><path d="M16 10 L16 16 L22 16" stroke="#e05252" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">No entregó tarea a tiempo</div><div class="actitud-date">28 abr 2025</div></div><div class="actitud-xp neg">-15 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M10 6 L10 18 Q10 24 16 24 Q22 24 22 18 L22 6 Z" stroke="#1aab6d" stroke-width="1.5" stroke-linejoin="miter"/><path d="M12 27 L20 27 M16 24 L16 27" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/><path d="M15.1 9.8 L16.9 10.1 L17.8 15.3 L16.2 15.3 L15.8 19.2 L14.0 13.4 L15.6 13.4 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Mejor proyecto de la semana</div><div class="actitud-date">25 abr 2025</div></div><div class="actitud-xp pos">+50 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><rect x="8" y="5" width="16" height="22" rx="2" stroke="#1aab6d" stroke-width="1.5"/><path d="M11 11 L21 11 M11 16 L21 16 M11 21 L17 21" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Documentó su proyecto</div><div class="actitud-date">22 abr 2025</div></div><div class="actitud-xp pos">+15 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><rect x="11" y="4" width="10" height="24" rx="2" stroke="#e05252" stroke-width="1.5"/><path d="M8 8 L24 24" stroke="#e05252" stroke-width="1.8" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Uso de móvil en clase</div><div class="actitud-date">18 abr 2025</div></div><div class="actitud-xp neg">-10 XP</div></div>
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="7" stroke="#1aab6d" stroke-width="1.5"/><circle cx="16" cy="16" r="2.5" fill="#FBB03B"/><path d="M16 6 L16 9 M16 23 L16 26 M6 16 L9 16 M23 16 L26 16" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Resolvió un bug complejo</div><div class="actitud-date">15 abr 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
+            </div>
+            <button class="load-more-btn" id="actitud-btn" onclick="loadMoreActitud()" style="margin-top:12px">Cargar más acciones ↓</button>
+          </div>
+
+          <div style="height:24px"></div>
+
+        </div><!-- /students-view -->
+
+        <div id="family-view" style="display:none">
+          <div class="family-empty">
+            <div class="family-empty-icon"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><path d="M4 20 L4 4 L20 4" stroke="#2596BE" stroke-width="2" fill="none" stroke-linecap="square"/><path d="M76 20 L76 4 L60 4" stroke="#7CB8F5" stroke-width="2" fill="none" stroke-linecap="square"/><path d="M4 60 L4 76 L20 76" stroke="#7CB8F5" stroke-width="2" fill="none" stroke-linecap="square"/><path d="M76 60 L76 76 L60 76" stroke="#2596BE" stroke-width="2" fill="none" stroke-linecap="square"/><circle cx="28" cy="28" r="9" stroke="#3E6FA8" stroke-width="1.5"/><circle cx="52" cy="28" r="9" stroke="#7CB8F5" stroke-width="1.5"/><path d="M28 37 L28 52 L52 52 L52 37" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><path d="M38.2 31.8 L41.8 32.3 L43.5 42.5 L40.4 42.5 L39.6 50.1 L36.0 38.7 L39.1 38.7 Z" fill="#FBB03B"/></svg></div>
+            <div class="family-empty-title">Vista de Familia</div>
+            <div class="family-empty-sub">Próximamente disponible. Aquí podrás seguir el progreso de tu hijo de forma clara y detallada.</div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /page-home -->
+
+    <!-- PAGE PROYECTOS -->
+    <div id="page-projects" class="page">
+      <div class="projects-page-header">
+        <button class="back-btn" onclick="showPage('home')">← Volver a inicio</button>
+        <span class="projects-page-title">Todos los proyectos</span>
+      </div>
+      <div class="section">
+        <div class="grid-auto" id="projects-grid"></div>
+        <div class="pagination">
+          <button class="page-btn" id="prev-page" onclick="changePage(-1)" disabled>← Anterior</button>
+          <span class="page-indicator" id="page-indicator">Pág. 1 / 2</span>
+          <button class="page-btn" id="next-page" onclick="changePage(1)">Siguiente →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app -->
+
+  <div class="desktop-side">
+    <div class="side-card">
+      <h3>IGNITE NEXUS</h3>
+      <p>Portal del alumno. Alterna entre <strong>Alumno</strong> y <strong>Familia</strong> con el toggle superior.</p>
+    </div>
+    <div class="side-card">
+      <h3>Perfil hero</h3>
+      <p>Nombre, escuela, grupos, nivel y barra de XP apilados centrados sobre el fondo cálido. La burbuja "Let's Ignite" queda pegada al muñeco en cualquier ancho de pantalla.</p>
+    </div>
+    <div class="side-card">
+      <h3>Responsive</h3>
+      <p>Todas las secciones usan <code>auto-fill</code> grid. Las tarjetas se colocan en columnas cuando hay espacio y van hacia abajo cuando no hay.</p>
+    </div>
+  </div>
+
+</div><!-- /outer -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-subtitle" id="modal-subtitle"></div>
+    <div id="modal-skills"></div>
+  </div>
+</div>
+
+<script>
+const allProjects=[
+  {name:'Robot Explorador',dates:'En curso',cat:'Robótica',desc:'Construimos un robot autónomo capaz de esquivar obstáculos usando sensores ultrasónicos y Arduino.',skills:[{n:'Programación Arduino',x:0},{n:'Sensores',x:0},{n:'Diseño mecánico',x:0}],xp:'En curso'},
+  {name:'Estación Meteorológica',dates:'15 ene – 12 feb 2025',cat:'Electrónica',desc:'Diseñamos una estación meteorológica con sensores de temperatura, humedad y presión conectados a Arduino que envía datos en tiempo real.',skills:[{n:'Sensores & Arduino',x:120},{n:'Análisis de datos',x:100},{n:'Trabajo en equipo',x:100}],xp:320},
+  {name:'Videojuego en Scratch',dates:'3 nov – 28 nov 2024',cat:'Programación',desc:'Creamos un videojuego de plataformas con personaje propio, niveles, puntuación y efectos de sonido usando Scratch.',skills:[{n:'Lógica de programación',x:130},{n:'Diseño de personajes',x:80},{n:'Creatividad narrativa',x:70}],xp:280},
+  {name:'Puente de Espaguetis',dates:'5 oct – 25 oct 2024',cat:'Ingeniería',desc:'Construimos un puente con espaguetis y pegamento capaz de soportar el mayor peso posible, aplicando conceptos básicos de ingeniería estructural.',skills:[{n:'Resistencia de materiales',x:90},{n:'Trabajo cooperativo',x:70},{n:'Prototipado',x:40}],xp:200},
+  {name:'App de Reciclaje',dates:'10 sep – 2 oct 2024',cat:'Programación',desc:'Desarrollamos una app móvil con MIT App Inventor que guía al usuario sobre cómo reciclar cada tipo de residuo correctamente.',skills:[{n:'Diseño de apps',x:110},{n:'Sostenibilidad',x:80},{n:'UX Design',x:60}],xp:250},
+  {name:'Planetario Virtual',dates:'5 jun – 28 jun 2024',cat:'Ciencia',desc:'Creamos un planetario interactivo en Scratch con los planetas del sistema solar, sus características y órbitas animadas.',skills:[{n:'Astronomía',x:100},{n:'Presentación oral',x:80},{n:'Investigación',x:70}],xp:250},
+  {name:'Cañón de Aire',dates:'3 may – 24 may 2024',cat:'Física',desc:'Construimos un cañón de aire comprimido y medimos el alcance de proyectiles a distintos ángulos para estudiar trayectorias parabólicas.',skills:[{n:'Aerodinámica',x:90},{n:'Matemáticas aplicadas',x:80},{n:'Experimentación',x:60}],xp:230},
+  {name:'Llavero 3D',dates:'1 abr – 19 abr 2024',cat:'Diseño 3D',desc:'Diseñamos y modelamos llaveros personalizados con Tinkercad y los imprimimos en 3D con la impresora del laboratorio.',skills:[{n:'Modelado 3D',x:120},{n:'Impresión 3D',x:80},{n:'Creatividad',x:50}],xp:250},
+  {name:'Casa Domótica',dates:'5 mar – 28 mar 2024',cat:'IoT',desc:'Automatizamos una maqueta de casa con luces, puertas y sensores controlados por Arduino y comandos de voz básicos.',skills:[{n:'Electrónica',x:110},{n:'Automatización',x:90},{n:'Programación',x:80}],xp:280},
+  {name:'Generador Musical IA',dates:'2 feb – 22 feb 2024',cat:'IA',desc:'Entrenamos un modelo sencillo de machine learning para generar melodías originales a partir de patrones rítmicos de entrada.',skills:[{n:'Machine Learning',x:130},{n:'Música computacional',x:100},{n:'Python',x:90}],xp:320},
+  {name:'Monitor de Agua',dates:'10 ene – 30 ene 2024',cat:'Ciencia',desc:'Construimos un dispositivo con sensores de pH y turbidez para monitorizar la calidad del agua de distintas fuentes locales.',skills:[{n:'Química',x:80},{n:'Sensores',x:90},{n:'Datos',x:70}],xp:240},
+  {name:'Coche Autónomo Mini',dates:'5 dic – 20 dic 2023',cat:'Robótica',desc:'Programamos un coche a escala que sigue líneas y evita obstáculos usando cámaras y sensores IR con control PID.',skills:[{n:'Control PID',x:120},{n:'Visión artificial',x:100},{n:'Electrónica',x:80}],xp:300},
+  {name:'Brazo Robótico',dates:'1 nov – 25 nov 2023',cat:'Robótica',desc:'Diseñamos y ensamblamos un brazo robótico de 4 ejes controlado con servomotores y una interfaz de joystick.',skills:[{n:'Servomotores',x:110},{n:'Programación',x:100},{n:'Diseño',x:70}],xp:280},
+  {name:'Radio AM Casera',dates:'5 oct – 28 oct 2023',cat:'Electrónica',desc:'Construimos una emisora de radio AM funcional con componentes básicos y la sintonizamos en la banda de 530–1600 kHz.',skills:[{n:'Ondas electromagnéticas',x:90},{n:'Circuitos',x:100},{n:'Soldadura',x:60}],xp:250},
+];
+const PAGE_SIZE=12; let cp=0;
+const tp=Math.ceil(allProjects.length/PAGE_SIZE);
+function renderProjects(){
+  const g=document.getElementById('projects-grid');
+  const s=allProjects.slice(cp*PAGE_SIZE,(cp+1)*PAGE_SIZE);
+  g.innerHTML=s.map(p=>`<div class="completed-card"><div class="completed-header"><div><div class="completed-name">${p.name}</div><div class="completed-dates">${p.dates} · <span style="color:var(--cta)">${p.cat}</span></div></div><div class="completed-xp">${typeof p.xp==='number'?'<svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>'+p.xp+' XP':'En curso'}</div></div><button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver detalles</button><div class="skills-expanded"><p style="font-size:12px;color:#6b8ba6;line-height:1.55;margin-bottom:10px">${p.desc}</p><div style="font-size:11px;font-weight:800;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Habilidades</div>${p.skills.map(s=>`<div class="skill-pill-row"><span class="skill-pill-name">${s.n}</span><span class="skill-pill-xp">${s.x>0?'+'+s.x+' XP':'—'}</span></div>`).join('')}</div></div>`).join('');
+  document.getElementById('page-indicator').textContent='Pág. '+(cp+1)+' / '+tp;
+  document.getElementById('prev-page').disabled=cp===0;
+  document.getElementById('next-page').disabled=cp>=tp-1;
+}
+function changePage(d){cp=Math.max(0,Math.min(tp-1,cp+d));renderProjects();window.scrollTo(0,0);}
+renderProjects();
+function showPage(n){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');window.scrollTo(0,0);}
+function setView(m){const f=m==='family';document.getElementById('students-view').style.display=f?'none':'block';document.getElementById('family-view').style.display=f?'block':'none';document.getElementById('btn-student').classList.toggle('active',!f);document.getElementById('btn-family').classList.toggle('active',f);}
+function toggleSkills(b){const x=b.nextElementSibling;const a=b.querySelector('.expand-arrow');const o=x.classList.toggle('open');a.style.transform=o?'rotate(180deg)':'';}
+let aL=false;
+function loadMoreActitud(){if(!aL){document.getElementById('actitud-extra').style.display='grid';document.getElementById('actitud-btn').textContent='Mostrar menos ↑';aL=true;}else{document.getElementById('actitud-extra').style.display='none';document.getElementById('actitud-btn').textContent='Cargar más acciones ↓';aL=false;}}
+const rd={
+  Science:{desc:'Exploración del mundo natural, experimentación y método científico.',color:'#3E6FA8',xp:540,level:'Explorer · Nivel 4',skills:[{n:'Metodología científica',xp:130,lv:'Niv. 3',d:'Diseña experimentos con hipótesis y variables.'},{n:'Biología aplicada',xp:110,lv:'Niv. 3',d:'Comprende seres vivos y ecosistemas.'},{n:'Física básica',xp:150,lv:'Niv. 4',d:'Entiende fuerzas, movimiento y energía.'},{n:'Química experimental',xp:80,lv:'Niv. 2',d:'Realiza reacciones y observa cambios químicos.'},{n:'Astronomía',xp:70,lv:'Niv. 2',d:'Conoce el sistema solar y fenómenos astronómicos.'}]},
+  Technology:{desc:'Uso creativo y crítico de herramientas digitales y tecnológicas.',color:'#2596BE',xp:820,level:'Builder · Nivel 6',skills:[{n:'Programación en bloques',xp:180,lv:'Niv. 5',d:'Scratch, MakeCode y entornos visuales.'},{n:'Python básico',xp:200,lv:'Niv. 6',d:'Variables, bucles, funciones y listas.'},{n:'Arduino & Hardware',xp:220,lv:'Niv. 6',d:'Programación de microcontroladores y sensores.'},{n:'Inteligencia Artificial',xp:130,lv:'Niv. 4',d:'Modelos de ML y herramientas de IA.'},{n:'Seguridad digital',xp:90,lv:'Niv. 3',d:'Privacidad, contraseñas y ciberseguridad.'}]},
+  Engineering:{desc:'Diseño, construcción y resolución de problemas con ingenio.',color:'#e07a2b',xp:430,level:'Maker · Nivel 5',skills:[{n:'Diseño mecánico',xp:120,lv:'Niv. 4',d:'Engranajes, palancas y estructuras.'},{n:'Prototipado rápido',xp:100,lv:'Niv. 3',d:'Crea modelos de prueba rápidamente.'},{n:'Electrónica',xp:130,lv:'Niv. 4',d:'Circuitos, componentes y soldadura.'},{n:'Resolución de problemas',xp:80,lv:'Niv. 3',d:'Analiza y soluciona retos técnicos.'}]},
+  Art:{desc:'Expresión creativa, diseño visual y estética aplicada a proyectos.',color:'#9b5bcc',xp:380,level:'Creator · Nivel 4',skills:[{n:'Modelado 3D',xp:150,lv:'Niv. 5',d:'Tinkercad, Blender y herramientas 3D.'},{n:'Diseño gráfico',xp:100,lv:'Niv. 3',d:'Composición, color y tipografía.'},{n:'Narrativa visual',xp:80,lv:'Niv. 3',d:'Cuentos, storyboards y presentaciones.'},{n:'Creatividad',xp:50,lv:'Niv. 2',d:'Originalidad e innovación en proyectos.'}]},
+  Maths:{desc:'Pensamiento lógico, razonamiento numérico y resolución cuantitativa.',color:'#1aab6d',xp:270,level:'Solver · Nivel 3',skills:[{n:'Geometría',xp:90,lv:'Niv. 3',d:'Formas, medidas y relaciones espaciales.'},{n:'Álgebra básica',xp:80,lv:'Niv. 3',d:'Variables, ecuaciones y patrones.'},{n:'Estadística',xp:60,lv:'Niv. 2',d:'Análisis e interpretación de datos.'},{n:'Matemáticas aplicadas',xp:40,lv:'Niv. 2',d:'Usa las mates para resolver proyectos.'}]},
+  Transversals:{desc:'Habilidades de equipo, comunicación, liderazgo y actitud.',color:'#e05252',xp:400,level:'Leader · Nivel 5',skills:[{n:'Trabajo en equipo',xp:130,lv:'Niv. 5',d:'Colabora y coordina con sus compañeros.'},{n:'Comunicación oral',xp:100,lv:'Niv. 4',d:'Presenta y explica sus proyectos.'},{n:'Liderazgo',xp:80,lv:'Niv. 4',d:'Toma iniciativa y motiva al grupo.'},{n:'Pensamiento crítico',xp:50,lv:'Niv. 3',d:'Evalúa ideas con criterio propio.'},{n:'Gestión del tiempo',xp:40,lv:'Niv. 2',d:'Organiza sus tareas y cumple plazos.'}]},
+};
+function openModal(r){const d=rd[r];document.getElementById('modal-title').textContent=r+' — '+d.level;document.getElementById('modal-subtitle').textContent=d.desc+' · Total: '+d.xp+' XP';document.getElementById('modal-skills').innerHTML=d.skills.map(s=>`<div class="skill-row"><div class="skill-dot" style="background:${d.color}"></div><div style="flex:1"><div class="skill-row-name">${s.n} <span style="font-size:10px;color:#8aa4be;font-weight:600">${s.lv}</span></div><div class="skill-row-desc">${s.d}</div></div><div class="skill-row-xp" style="color:${d.color}">${s.xp} XP</div></div>`).join('');document.getElementById('modal').classList.add('open');}
+function closeModal(e){if(!e||e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('open');}
+</script>
+</body>
+</html>
