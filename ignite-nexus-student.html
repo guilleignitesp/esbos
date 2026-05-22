@@ -505,13 +505,98 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
   display: flex; align-items: center; justify-content: center;
 }
 
-/* DESKTOP SIDE */
-.desktop-side .side-card {
-  background: var(--white); border-radius: 20px; padding: 18px;
-  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
+/* TOPBAR COLLAPSE */
+.topbar {
+  display: flex; align-items: center; justify-content: flex-end;
+  padding: 18px 24px 12px;
+  position: sticky; top: 0; z-index: 10; background: var(--warm);
+  max-width: 100%; margin: 0 auto;
+  transition: padding .3s ease, background .3s ease;
 }
-.desktop-side .side-card h3 { font-size: 13px; font-weight: 800; color: var(--blue-dark); margin-bottom: 8px; }
-.desktop-side .side-card p { font-size: 12px; color: #5a7fa0; line-height: 1.6; }
+/* expanded: logo on left, lang on right */
+.topbar:not(.collapsed) { justify-content: space-between; }
+/* collapsed: fully transparent — only logo icon + lang pill float */
+.topbar.collapsed {
+  padding: 12px 18px;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none; /* clicks pass through empty space */
+}
+.topbar.collapsed .topbar-logo-icon,
+.topbar.collapsed .topbar-right { pointer-events: all; }
+
+/* Full logo — shown when expanded */
+.topbar-logo-full {
+  transition: opacity .25s ease;
+  opacity: 1; flex-shrink: 0;
+}
+.topbar.collapsed .topbar-logo-full {
+  opacity: 0; pointer-events: none;
+  position: absolute;
+}
+
+/* Icon-only logo — centred absolutely in collapsed state */
+.topbar-logo-icon {
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+  display: flex; align-items: center; justify-content: center;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+.topbar.collapsed .topbar-logo-icon {
+  opacity: 1; pointer-events: all;
+}
+
+/* Lang selector transitions */
+.lang-selector { transition: background .2s, border-color .2s, box-shadow .2s; }
+.lang-btn-option {
+  transition: opacity .2s ease, max-width .25s ease, padding .25s ease;
+  overflow: hidden;
+}
+
+/* Collapsed lang: hide inactive, pill gets frosted look, clickable to open modal */
+.topbar.collapsed .lang-btn-option:not(.active) {
+  opacity: 0; max-width: 0; padding-left: 0; padding-right: 0; border: none;
+}
+.topbar.collapsed .lang-selector {
+  background: rgba(255,255,255,0.60);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.85);
+  box-shadow: 0 2px 12px rgba(62,111,168,0.12);
+  cursor: pointer; border-radius: 20px;
+}
+.topbar.collapsed .lang-btn-option.active {
+  background: transparent; color: var(--blue-dark);
+}
+
+/* Lang mini-modal */
+.lang-modal {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  align-items: flex-start; justify-content: flex-end;
+}
+.lang-modal.open { display: flex; }
+.lang-modal-backdrop { position: absolute; inset: 0; }
+.lang-modal-box {
+  position: relative; z-index: 1;
+  margin-top: 56px; margin-right: 18px;
+  background: rgba(255,255,255,0.90);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-radius: 16px; border: 1px solid rgba(124,184,245,0.25);
+  box-shadow: 0 8px 28px rgba(62,111,168,0.14);
+  padding: 5px; display: flex; flex-direction: column; gap: 2px;
+  min-width: 86px;
+  animation: fadeDown .15s ease;
+}
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.lang-modal-btn {
+  padding: 9px 18px; border: none; background: transparent; cursor: pointer;
+  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 13px;
+  color: var(--blue-dark); border-radius: 10px; text-align: center;
+  transition: background .15s;
+}
+.lang-modal-btn:hover { background: var(--light-blue); }
+.lang-modal-btn.active { background: var(--blue-dark); color: #fff; }
+/* DESKTOP SIDE */
+.desktop-side { display: none; }
 
 /* Extra bottom padding so content isn't hidden under floating bar */
 .app { padding-bottom: 96px; width: 100%; }
@@ -522,8 +607,9 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
 
   <div class="app">
 
-    <div class="topbar">
-      <a href="#" style="text-decoration:none;display:flex;align-items:center;">
+    <div class="topbar" id="topbar">
+      <!-- Full logo (visible when expanded) -->
+      <a href="#" class="topbar-logo-full" style="text-decoration:none;display:flex;align-items:center;">
         <svg viewBox="0 0 230 45" height="32" xmlns="http://www.w3.org/2000/svg">
           <style>
             .t-ignite{font-family:'Figtree',sans-serif;font-weight:900;font-size:23px;letter-spacing:-0.8px;fill:#3E6FA8;}
@@ -542,13 +628,40 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
           <text x="130" y="30" class="t-nexus">NEXUS</text>
         </svg>
       </a>
+      <!-- Icon-only logo (visible when collapsed) -->
+      <a href="#" class="topbar-logo-icon" style="text-decoration:none;" onclick="event.preventDefault();window.scrollTo({top:0,behavior:'smooth'})">
+        <svg viewBox="0 0 48 48" height="32" xmlns="http://www.w3.org/2000/svg">
+          <!-- corners centred exactly at 24,24 -->
+          <g transform="translate(24,24)">
+            <path d="M -16 -16 L -10 -16 M -16 -16 L -16 -10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+            <path d="M 16 16 L 10 16 M 16 16 L 16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+            <path d="M -16 16 L -10 16 M -16 16 L -16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+            <path d="M 16 -16 L 10 -16 M 16 -16 L 16 -10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+          </g>
+          <!-- bolt: geometric centre is x=-0.4, y=+1.7 → compensate exactly -->
+          <g transform="translate(24.4,22.3) scale(0.85)">
+            <path d="M -3.2 -15 L 3.2 -14 L 6.4 4.6 L 0.8 4.6 L -0.8 18.4 L -7.2 -2.3 L -1.6 -2.3 Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </a>
+
       <div class="topbar-right">
-        <!-- Language selector -->
-        <div class="lang-selector">
-          <button class="lang-btn active" onclick="setLang('ESP',this)">ESP</button>
-          <button class="lang-btn" onclick="setLang('ENG',this)">ENG</button>
-          <button class="lang-btn" onclick="setLang('CAT',this)">CAT</button>
+        <!-- Language selector: 3 buttons when expanded, active-only when collapsed -->
+        <div class="lang-selector" id="lang-selector" onclick="handleLangSelectorClick()">
+          <button class="lang-btn lang-btn-option active" id="lang-ESP">ESP</button>
+          <button class="lang-btn lang-btn-option" id="lang-ENG">ENG</button>
+          <button class="lang-btn lang-btn-option" id="lang-CAT">CAT</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Lang mini-modal (for collapsed state) -->
+    <div class="lang-modal" id="lang-modal">
+      <div class="lang-modal-backdrop" onclick="closeLangModal()"></div>
+      <div class="lang-modal-box">
+        <button class="lang-modal-btn active" id="modal-lang-ESP" onclick="setLang('ESP',null);closeLangModal()">ESP</button>
+        <button class="lang-modal-btn" id="modal-lang-ENG" onclick="setLang('ENG',null);closeLangModal()">ENG</button>
+        <button class="lang-modal-btn" id="modal-lang-CAT" onclick="setLang('CAT',null);closeLangModal()">CAT</button>
       </div>
     </div>
 
@@ -641,14 +754,14 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
         </div>
 
       </div><!-- /hero-zone -->
+      <div id="scroll-sentinel" style="height:0;pointer-events:none"></div>
 
       <div class="content">
 
         <!-- ALUMNO VIEW -->
         <div id="students-view">
 
-          <div class="section section-warm" style="padding-top:20px">
-            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>Proyecto actual</div>
+          <div class="section section-warm" style="padding-top:20px">            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>Proyecto actual</div>
             <div class="grid-auto">
               <div class="project-card">
                 <div class="project-thumb"><svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="10" y="15" width="20" height="17" rx="2" stroke="#3E6FA8" stroke-width="1.5"/><rect x="14" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="21" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><path d="M20 11V15M14 32V36M26 32V36M6 22H10M30 22H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M15 27H25" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="9" r="2" stroke="#3E6FA8" stroke-width="1.5"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
@@ -917,10 +1030,41 @@ function renderProjects(){
 function changePage(d){cp=Math.max(0,Math.min(tp-1,cp+d));renderProjects();window.scrollTo(0,0);}
 renderProjects();
 function showPage(n){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');window.scrollTo(0,0);}
-function setLang(code,btn){
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+// ── TOPBAR COLLAPSE ON SCROLL ──────────────────────────────────────────────
+const topbar = document.getElementById('topbar');
+const sentinel = document.getElementById('scroll-sentinel');
+if (sentinel && topbar) {
+  const obs = new IntersectionObserver(
+    ([entry]) => {
+      topbar.classList.toggle('collapsed', !entry.isIntersecting);
+    },
+    { threshold: 0, rootMargin: '60px 0px 0px 0px' }
+  );
+  obs.observe(sentinel);
 }
+
+// ── LANG SELECTOR ──────────────────────────────────────────────────────────
+let currentLang = 'ESP';
+function setLang(code, btn) {
+  currentLang = code;
+  // sync topbar buttons
+  ['ESP','ENG','CAT'].forEach(l => {
+    const b = document.getElementById('lang-'+l);
+    if (b) b.classList.toggle('active', l === code);
+  });
+  // sync modal buttons
+  ['ESP','ENG','CAT'].forEach(l => {
+    const b = document.getElementById('modal-lang-'+l);
+    if (b) b.classList.toggle('active', l === code);
+  });
+}
+function handleLangSelectorClick() {
+  document.getElementById('lang-modal').classList.add('open');
+}
+function closeLangModal() {
+  document.getElementById('lang-modal').classList.remove('open');
+}
+// legacy stub (handled above)
 function setView(m){
   const f=m==='family';
   document.getElementById('students-view').style.display=f?'none':'block';
