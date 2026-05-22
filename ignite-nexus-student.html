@@ -25,7 +25,7 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
 @media (max-width: 699px) { .desktop-side { display: none; } }
 @media (min-width: 700px) {
   .outer { padding: 28px 20px; }
-  .desktop-side { display: flex; flex-direction: column; gap: 16px; width: 260px; flex-shrink: 0; padding-top: 4px; }
+  .desktop-side { display: none; }
 }
 .app { flex: 1; max-width: 860px; background: var(--warm); min-height: 100vh; }
 @media (min-width: 700px) {
@@ -250,7 +250,24 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
 
 /* GRIDS */
 .grid-auto   { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-.grid-ramas  { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+/* RAMAS GRID — columnas explícitas: 1, 2, 3 o 6. Nunca 4 ni 5 */
+.grid-ramas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+/* 2 columnas desde ~480px */
+@media (min-width: 480px) {
+  .grid-ramas { grid-template-columns: repeat(2, 1fr); }
+}
+/* 3 columnas desde ~700px */
+@media (min-width: 700px) {
+  .grid-ramas { grid-template-columns: repeat(3, 1fr); }
+}
+/* Salta directamente a 6 columnas — evita los feos 4 y 5 */
+@media (min-width: 1100px) {
+  .grid-ramas { grid-template-columns: repeat(6, 1fr); }
+}
 .grid-actitud{ display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
 
 /* PROJECT CARD */
@@ -425,6 +442,55 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
 .skill-row-xp { font-size: 14px; font-weight: 900; }
 .skill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
+/* LANGUAGE SELECTOR */
+.lang-selector {
+  display: flex; align-items: center;
+  background: var(--white); border-radius: 30px;
+  border: 1.5px solid var(--blue-main); overflow: hidden;
+}
+.lang-btn {
+  padding: 6px 12px; border: none; background: transparent; cursor: pointer;
+  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 11px;
+  color: var(--blue-dark); letter-spacing: .4px;
+  transition: background .2s, color .2s;
+}
+.lang-btn.active {
+  background: var(--blue-dark); color: #fff; border-radius: 28px;
+}
+.lang-btn:not(.active):hover { background: var(--light-blue); }
+
+/* FLOATING PROFILE SWITCHER */
+.profile-switcher {
+  position: fixed;
+  bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 50;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: 40px;
+  border: 1px solid rgba(255,255,255,0.70);
+  box-shadow: 0 4px 24px rgba(62,111,168,0.14), 0 1px 4px rgba(62,111,168,0.08);
+  padding: 5px;
+  display: inline-flex; align-items: center; gap: 3px;
+}
+.switcher-options { display: flex; gap: 3px; }
+.switcher-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 7px 16px; border-radius: 32px; border: none; cursor: pointer;
+  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 12px;
+  color: #8aa4be; background: transparent;
+  transition: background .2s, color .2s, box-shadow .2s;
+  white-space: nowrap;
+}
+.switcher-btn.active {
+  background: var(--blue-dark); color: #fff;
+  box-shadow: 0 2px 10px rgba(62,111,168,0.30);
+}
+.switcher-btn:not(.active):hover { background: rgba(62,111,168,0.08); color: var(--blue-dark); }
+.switcher-icon {
+  width: 18px; height: 18px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
 /* DESKTOP SIDE */
 .desktop-side .side-card {
   background: var(--white); border-radius: 20px; padding: 18px;
@@ -432,6 +498,9 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
 }
 .desktop-side .side-card h3 { font-size: 13px; font-weight: 800; color: var(--blue-dark); margin-bottom: 8px; }
 .desktop-side .side-card p { font-size: 12px; color: #5a7fa0; line-height: 1.6; }
+
+/* Extra bottom padding so content isn't hidden under floating bar */
+.app { padding-bottom: 96px; }
 </style>
 </head>
 <body>
@@ -460,11 +529,12 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
         </svg>
       </a>
       <div class="topbar-right">
-        <div class="view-toggle">
-          <button class="active" id="btn-student" onclick="setView('student')">Alumno</button>
-          <button id="btn-family" onclick="setView('family')">Familia</button>
+        <!-- Language selector -->
+        <div class="lang-selector">
+          <button class="lang-btn active" onclick="setLang('ESP',this)">ESP</button>
+          <button class="lang-btn" onclick="setLang('ENG',this)">ENG</button>
+          <button class="lang-btn" onclick="setLang('CAT',this)">CAT</button>
         </div>
-        <button class="avatar-btn">A</button>
       </div>
     </div>
 
@@ -685,6 +755,18 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
                   <div class="skill-pill-row"><span class="skill-pill-name">Prototipado</span><span class="skill-pill-xp">+40 XP</span></div>
                 </div>
               </div>
+              <div class="completed-card">
+                <div class="completed-header">
+                  <div><div class="completed-name">App de Reciclaje</div><div class="completed-dates">10 sep – 2 oct 2024 · <span style="color:var(--cta)">Programación</span></div></div>
+                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>250 XP</div>
+                </div>
+                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
+                <div class="skills-expanded">
+                  <div class="skill-pill-row"><span class="skill-pill-name">Diseño de apps</span><span class="skill-pill-xp">+110 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">Sostenibilidad</span><span class="skill-pill-xp">+80 XP</span></div>
+                  <div class="skill-pill-row"><span class="skill-pill-name">UX Design</span><span class="skill-pill-xp">+60 XP</span></div>
+                </div>
+              </div>
             </div>
             <button class="more-btn" onclick="showPage('projects')" style="margin-top:12px">Ver todos los proyectos →</button>
           </div>
@@ -696,14 +778,12 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
               <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 5 L22 16 L16 27 L10 16 Z" stroke="#1aab6d" stroke-width="1.5" stroke-linejoin="miter"/><path d="M14.9 10.8 L17.1 11.1 L18.2 17.6 L16.3 17.6 L15.7 22.4 L13.5 15.2 L15.4 15.2 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Participación excepcional</div><div class="actitud-date">12 may 2025</div></div><div class="actitud-xp pos">+30 XP</div></div>
               <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 6 L27 26 L5 26 Z" stroke="#e05252" stroke-width="1.5" stroke-linejoin="miter"/><path d="M16 14 L16 20 M16 23 L16 23.5" stroke="#e05252" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Llegó tarde a clase</div><div class="actitud-date">8 may 2025</div></div><div class="actitud-xp neg">-10 XP</div></div>
               <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="13" r="5" stroke="#1aab6d" stroke-width="1.5"/><path d="M16 18V24M12 24H20" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/><path d="M15.1 8.8 L16.9 9.1 L17.8 14.3 L16.2 14.3 L15.8 18.2 L14.0 12.4 L15.6 12.4 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Idea creativa destacada</div><div class="actitud-date">5 may 2025</div></div><div class="actitud-xp pos">+25 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="10" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><circle cx="22" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><path d="M10 17 L10 24 L22 24 L22 17" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">Liderazgo en grupo</div><div class="actitud-date">2 may 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
             </div>
             <div class="grid-actitud" id="actitud-extra" style="display:none;margin-top:10px">
+              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="10" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><circle cx="22" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><path d="M10 17 L10 24 L22 24 L22 17" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">Liderazgo en grupo</div><div class="actitud-date">2 may 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
               <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="9" stroke="#e05252" stroke-width="1.5"/><path d="M16 10 L16 16 L22 16" stroke="#e05252" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">No entregó tarea a tiempo</div><div class="actitud-date">28 abr 2025</div></div><div class="actitud-xp neg">-15 XP</div></div>
               <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M10 6 L10 18 Q10 24 16 24 Q22 24 22 18 L22 6 Z" stroke="#1aab6d" stroke-width="1.5" stroke-linejoin="miter"/><path d="M12 27 L20 27 M16 24 L16 27" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/><path d="M15.1 9.8 L16.9 10.1 L17.8 15.3 L16.2 15.3 L15.8 19.2 L14.0 13.4 L15.6 13.4 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Mejor proyecto de la semana</div><div class="actitud-date">25 abr 2025</div></div><div class="actitud-xp pos">+50 XP</div></div>
               <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><rect x="8" y="5" width="16" height="22" rx="2" stroke="#1aab6d" stroke-width="1.5"/><path d="M11 11 L21 11 M11 16 L21 16 M11 21 L17 21" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Documentó su proyecto</div><div class="actitud-date">22 abr 2025</div></div><div class="actitud-xp pos">+15 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><rect x="11" y="4" width="10" height="24" rx="2" stroke="#e05252" stroke-width="1.5"/><path d="M8 8 L24 24" stroke="#e05252" stroke-width="1.8" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Uso de móvil en clase</div><div class="actitud-date">18 abr 2025</div></div><div class="actitud-xp neg">-10 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="7" stroke="#1aab6d" stroke-width="1.5"/><circle cx="16" cy="16" r="2.5" fill="#FBB03B"/><path d="M16 6 L16 9 M16 23 L16 26 M6 16 L9 16 M23 16 L26 16" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Resolvió un bug complejo</div><div class="actitud-date">15 abr 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
             </div>
             <button class="load-more-btn" id="actitud-btn" onclick="loadMoreActitud()" style="margin-top:12px">Cargar más acciones ↓</button>
           </div>
@@ -740,6 +820,31 @@ body { font-family: 'Figtree', sans-serif; background: #d4e4f5; color: var(--tex
     </div>
 
   </div><!-- /app -->
+
+  <!-- FLOATING PROFILE SWITCHER — fixed bottom, overlays content -->
+  <div class="profile-switcher">
+    <div class="switcher-options">
+      <button class="switcher-btn active" id="sw-student" onclick="setView('student')">
+        <span class="switcher-icon">
+          <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Alumno
+      </button>
+      <button class="switcher-btn" id="sw-family" onclick="setView('family')">
+        <span class="switcher-icon">
+          <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
+            <circle cx="11" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="21" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M4 28c0-4 3-7 7-7h10c4 0 7 3 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Familia
+      </button>
+    </div>
+  </div>
 
   <div class="desktop-side">
     <div class="side-card">
@@ -798,7 +903,18 @@ function renderProjects(){
 function changePage(d){cp=Math.max(0,Math.min(tp-1,cp+d));renderProjects();window.scrollTo(0,0);}
 renderProjects();
 function showPage(n){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');window.scrollTo(0,0);}
-function setView(m){const f=m==='family';document.getElementById('students-view').style.display=f?'none':'block';document.getElementById('family-view').style.display=f?'block':'none';document.getElementById('btn-student').classList.toggle('active',!f);document.getElementById('btn-family').classList.toggle('active',f);}
+function setLang(code,btn){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setView(m){
+  const f=m==='family';
+  document.getElementById('students-view').style.display=f?'none':'block';
+  document.getElementById('family-view').style.display=f?'block':'none';
+  // sync floating switcher
+  document.getElementById('sw-student').classList.toggle('active',!f);
+  document.getElementById('sw-family').classList.toggle('active',f);
+}
 function toggleSkills(b){const x=b.nextElementSibling;const a=b.querySelector('.expand-arrow');const o=x.classList.toggle('open');a.style.transform=o?'rotate(180deg)':'';}
 let aL=false;
 function loadMoreActitud(){if(!aL){document.getElementById('actitud-extra').style.display='grid';document.getElementById('actitud-btn').textContent='Mostrar menos ↑';aL=true;}else{document.getElementById('actitud-extra').style.display='none';document.getElementById('actitud-btn').textContent='Cargar más acciones ↓';aL=false;}}
