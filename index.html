@@ -71,6 +71,7 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
   position: relative;
   background: var(--warm);
   padding-bottom: 28px;
+  overflow: hidden;
 }
 
 /* decorative blob — purely behind mascot */
@@ -107,18 +108,27 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
   width: 140px; height: 140px; display: block;
   filter: drop-shadow(0 10px 20px rgba(62,111,168,0.18)) drop-shadow(0 2px 5px rgba(62,111,168,0.08));
 }
-/* bubble is positioned relative to the mascot-unit, always to its right */
+/* bubble: close to mascot, clipped inside page */
 .mascot-bubble {
   position: absolute;
-  right: -148px;   /* sits to the right of the mascot */
-  bottom: 60px;
+  right: -116px;
+  bottom: 64px;
   background: var(--text); color: #fff; border-radius: 16px;
-  padding: 9px 18px; font-size: 14px; font-weight: 700;
+  padding: 8px 14px; font-size: 13px; font-weight: 700;
   white-space: nowrap; box-shadow: 0 4px 16px rgba(47,58,74,0.20);
 }
 .mascot-bubble::before {
   content: ''; position: absolute; left: -9px; top: 50%; transform: translateY(-50%);
   border: 6px solid transparent; border-right-color: var(--text);
+}
+/* narrow mobile: stack bubble below mascot */
+@media (max-width: 360px) {
+  .mascot-bubble {
+    position: relative; right: auto; bottom: auto;
+    display: block; margin: 4px auto 0;
+  }
+  .mascot-bubble::before { display: none; }
+  .mascot-unit { flex-direction: column; align-items: center; }
 }
 
 /* ---- PROFILE — centered, stacked ---- */
@@ -541,6 +551,7 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
   transition: opacity .25s ease;
   display: flex; align-items: center; justify-content: center;
   position: absolute; left: 50%; transform: translateX(-50%);
+  z-index: 100;
 }
 .topbar.collapsed .topbar-logo-icon {
   opacity: 1; pointer-events: all;
@@ -647,10 +658,10 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
 
       <div class="topbar-right">
         <!-- Language selector: 3 buttons when expanded, active-only when collapsed -->
-        <div class="lang-selector" id="lang-selector" onclick="handleLangSelectorClick()">
-          <button class="lang-btn lang-btn-option active" id="lang-ESP">ESP</button>
-          <button class="lang-btn lang-btn-option" id="lang-ENG">ENG</button>
-          <button class="lang-btn lang-btn-option" id="lang-CAT">CAT</button>
+        <div class="lang-selector" id="lang-selector" onclick="if(document.getElementById('topbar').classList.contains('collapsed')){document.getElementById('lang-modal').classList.add('open')}">
+          <button class="lang-btn lang-btn-option active" id="lang-ESP" onclick="handleLangBtn('ESP')">ESP</button>
+          <button class="lang-btn lang-btn-option" id="lang-ENG" onclick="handleLangBtn('ENG')">ENG</button>
+          <button class="lang-btn lang-btn-option" id="lang-CAT" onclick="handleLangBtn('CAT')">CAT</button>
         </div>
       </div>
     </div>
@@ -659,9 +670,9 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
     <div class="lang-modal" id="lang-modal">
       <div class="lang-modal-backdrop" onclick="closeLangModal()"></div>
       <div class="lang-modal-box">
-        <button class="lang-modal-btn active" id="modal-lang-ESP" onclick="setLang('ESP',null);closeLangModal()">ESP</button>
-        <button class="lang-modal-btn" id="modal-lang-ENG" onclick="setLang('ENG',null);closeLangModal()">ENG</button>
-        <button class="lang-modal-btn" id="modal-lang-CAT" onclick="setLang('CAT',null);closeLangModal()">CAT</button>
+        <button class="lang-modal-btn active" id="modal-lang-ESP" onclick="setLang('ESP');closeLangModal()">ESP</button>
+        <button class="lang-modal-btn" id="modal-lang-ENG" onclick="setLang('ENG');closeLangModal()">ENG</button>
+        <button class="lang-modal-btn" id="modal-lang-CAT" onclick="setLang('CAT');closeLangModal()">CAT</button>
       </div>
     </div>
 
@@ -709,7 +720,7 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
 
         <!-- PROFILE — centered, stacked -->
         <div class="profile-hero">
-          <div class="profile-name">Eric Pino</div>
+          <div class="profile-name">Álvaro López</div>
           <div class="profile-school"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M4 10 L12 5 L20 10 L20 20 L4 20 Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><rect x="9" y="14" width="6" height="6" stroke="#7CB8F5" stroke-width="1.5"/></svg>CEIP San Pablo · Madrid</div>
           <div class="profile-groups">
             <span class="group-chip">Makers 5A</span>
@@ -1045,7 +1056,7 @@ if (sentinel && topbar) {
 
 // ── LANG SELECTOR ──────────────────────────────────────────────────────────
 let currentLang = 'ESP';
-function setLang(code, btn) {
+function setLang(code) {
   currentLang = code;
   // sync topbar buttons
   ['ESP','ENG','CAT'].forEach(l => {
@@ -1058,8 +1069,17 @@ function setLang(code, btn) {
     if (b) b.classList.toggle('active', l === code);
   });
 }
+function handleLangBtn(code) {
+  if (document.getElementById('topbar').classList.contains('collapsed')) {
+    // collapsed: only the active button shows — open modal to pick
+    document.getElementById('lang-modal').classList.add('open');
+  } else {
+    // expanded: all 3 visible — switch directly
+    setLang(code);
+  }
+}
 function handleLangSelectorClick() {
-  document.getElementById('lang-modal').classList.add('open');
+  // only open modal when collapsed; in expanded state buttons work directly
 }
 function closeLangModal() {
   document.getElementById('lang-modal').classList.remove('open');
