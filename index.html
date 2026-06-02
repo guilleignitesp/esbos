@@ -191,7 +191,21 @@ body {
 /* ═══ HERO ZONE ════════════════════════════════════ */
 .hero-zone {
   position: relative; background: var(--warm);
-  padding-bottom: 0; overflow: visible;  /* allow mascot to escape */
+  overflow: visible;
+  transition: background .5s;
+}
+
+/* Sticky track: the tall container that keeps mascot sticky
+   while profile info is still on screen */
+.hero-sticky-track {
+  position: relative;
+  /* no overflow:hidden — let mascot escape upward */
+}
+
+/* Profile area scrolls normally below the sticky mascot */
+.hero-profile-area {
+  position: relative; z-index: 2;
+  background: var(--warm);
   transition: background .5s;
 }
 .hero-blob-core {
@@ -212,11 +226,11 @@ body {
 /* ═══ MASCOT — sticky so it floats over topbar on scroll ═══ */
 .mascot-row {
   position: sticky;
-  top: 44px;               /* clears the collapsed topbar height */
-  z-index: 150;            /* above topbar-wrapper z-index:100 */
+  top: 0;              /* rises immediately, overlaps topbar from first scroll */
+  z-index: 150;        /* above topbar-wrapper z-index:100 */
   display: flex; align-items: flex-end; justify-content: center;
   padding-top: 12px; padding-bottom: 4px;
-  pointer-events: none;    /* let clicks pass through the empty area */
+  pointer-events: none;
 }
 .mascot-unit {
   position: relative; display: inline-flex; align-items: flex-end; flex-shrink: 0;
@@ -661,91 +675,100 @@ body {
   <div class="hero-zone">
     <div class="hero-blob-core"></div>
     <div class="hero-blob-shine"></div>
-    <div class="mascot-row">
-      <div class="mascot-unit" id="mascot-unit">
-        <!-- Default mascot: Spark -->
-        <svg class="mascot-svg" id="mascot-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="openMascotModal()">
-          <ellipse cx="70" cy="92" rx="44" ry="38" fill="#c8dff7"/>
-          <ellipse cx="70" cy="90" rx="39" ry="33" fill="#bdd5f5"/>
-          <ellipse cx="70" cy="68" rx="40" ry="42" fill="#8ab2e8"/>
-          <ellipse cx="70" cy="71" rx="39" ry="41" fill="#7ba6e2"/>
-          <ellipse cx="70" cy="73" rx="25" ry="27" fill="#eef2ff"/>
-          <ellipse cx="36" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
-          <ellipse cx="104" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
-          <ellipse cx="36" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
-          <ellipse cx="104" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
-          <ellipse cx="60" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
-          <ellipse cx="80" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
-          <circle cx="61.5" cy="66" r="1.8" fill="white"/>
-          <circle cx="81.5" cy="66" r="1.8" fill="white"/>
-          <ellipse cx="70" cy="77" rx="4" ry="2.8" fill="#2F3A4A"/>
-          <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-          <ellipse cx="30" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(-22 30 94)"/>
-          <ellipse cx="110" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(22 110 94)"/>
-          <ellipse cx="54" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
-          <ellipse cx="86" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
-          <ellipse cx="54" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
-          <ellipse cx="86" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
-          <text x="108" y="43" font-size="14" fill="#FEF3C6" font-family="sans-serif">✦</text>
-          <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
-          <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
-        </svg>
-        <div class="mascot-bubble" id="mascot-bubble">Let's Ignite!</div>
-      </div>
-    </div>
 
-    <div class="profile-hero">
-      <div class="profile-name">Álvaro López</div>
-      <div class="profile-school">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M4 10 L12 5 L20 10 L20 20 L4 20Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><rect x="9" y="14" width="6" height="6" stroke="#7CB8F5" stroke-width="1.5"/></svg>
-        CEIP San Pablo · Madrid
-      </div>
-      <div class="profile-groups">
-        <span class="group-chip">Makers 5A</span>
-        <span class="group-chip">Robótica Avanzada</span>
-      </div>
-      <div class="level-block">
-        <span class="level-label">Nivel</span>
-        <div class="level-num-row">
-          <svg class="level-corner-l" width="20" height="28" viewBox="0 0 20 28" fill="none">
-            <path d="M18 2 L2 2 L2 26" stroke="#2596BE" stroke-width="2" stroke-linecap="square" fill="none"/>
+    <!-- hero-sticky-track: tall container that gives mascot room to be sticky -->
+    <div class="hero-sticky-track">
+
+      <!-- Mascot: sticky inside the track, rises immediately with scroll -->
+      <div class="mascot-row">
+        <div class="mascot-unit" id="mascot-unit">
+          <svg class="mascot-svg" id="mascot-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="openMascotModal()">
+            <ellipse cx="70" cy="92" rx="44" ry="38" fill="#c8dff7"/>
+            <ellipse cx="70" cy="90" rx="39" ry="33" fill="#bdd5f5"/>
+            <ellipse cx="70" cy="68" rx="40" ry="42" fill="#8ab2e8"/>
+            <ellipse cx="70" cy="71" rx="39" ry="41" fill="#7ba6e2"/>
+            <ellipse cx="70" cy="73" rx="25" ry="27" fill="#eef2ff"/>
+            <ellipse cx="36" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
+            <ellipse cx="104" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
+            <ellipse cx="36" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
+            <ellipse cx="104" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
+            <ellipse cx="60" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+            <ellipse cx="80" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+            <circle cx="61.5" cy="66" r="1.8" fill="white"/>
+            <circle cx="81.5" cy="66" r="1.8" fill="white"/>
+            <ellipse cx="70" cy="77" rx="4" ry="2.8" fill="#2F3A4A"/>
+            <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="30" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(-22 30 94)"/>
+            <ellipse cx="110" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(22 110 94)"/>
+            <ellipse cx="54" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
+            <ellipse cx="86" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
+            <ellipse cx="54" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+            <ellipse cx="86" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+            <text x="108" y="43" font-size="14" fill="#FEF3C6" font-family="sans-serif">✦</text>
+            <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
+            <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
           </svg>
-          <svg width="20" height="32" viewBox="0 0 32 48" fill="none">
-            <path d="M18.5 3 L24 4.5 L28 22 L20 22 L18 42 L5 17 L13 17Z" fill="#FBB03B"/>
-          </svg>
-          <span class="level-num" id="level-display">7</span>
-          <svg class="level-corner-r" width="20" height="28" viewBox="0 0 20 28" fill="none">
-            <path d="M18 2 L2 2 L2 26" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square" fill="none"/>
-          </svg>
+          <div class="mascot-bubble" id="mascot-bubble">Let's Ignite!</div>
         </div>
-        <span class="level-name">Héroe Digital</span>
       </div>
-    </div>
 
-    <div class="xp-block">
-      <div class="xp-nums-row">
-        <span class="xp-counter" id="xp-counter">0</span>
-        <span class="xp-unit">XP</span>
-        <span class="xp-sep">/</span>
-        <span class="xp-next-val">3.200 XP</span>
-      </div>
-      <div class="xp-bar-track">
-        <div class="xp-bar-fill" id="xp-bar" style="width:0%"></div>
-      </div>
-      <div class="xp-legend">
-        <span class="xp-legend-left">Nivel 7</span>
-        <span>360 XP para Nivel 8</span>
-      </div>
-      <!-- Palette picker — lives in the profile zone -->
-      <div style="display:flex;justify-content:center;margin-top:14px;">
-        <button class="palette-picker-row" onclick="document.getElementById('palette-modal').classList.toggle('open')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="10" r="2" fill="#FBB03B"/><circle cx="16" cy="10" r="2" fill="#2596BE"/><circle cx="12" cy="16" r="2" fill="#16a34a"/></svg>
-          Personalizar paleta
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
+      <!-- Profile info: scrolls away below the sticky mascot -->
+      <div class="hero-profile-area">
+        <div class="profile-hero">
+          <div class="profile-name">Álvaro López</div>
+          <div class="profile-school">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M4 10 L12 5 L20 10 L20 20 L4 20Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><rect x="9" y="14" width="6" height="6" stroke="#7CB8F5" stroke-width="1.5"/></svg>
+            CEIP San Pablo · Madrid
+          </div>
+          <div class="profile-groups">
+            <span class="group-chip">Makers 5A</span>
+            <span class="group-chip">Robótica Avanzada</span>
+          </div>
+          <div class="level-block">
+            <span class="level-label">Nivel</span>
+            <div class="level-num-row">
+              <svg class="level-corner-l" width="20" height="28" viewBox="0 0 20 28" fill="none">
+                <path d="M18 2 L2 2 L2 26" stroke="#2596BE" stroke-width="2" stroke-linecap="square" fill="none"/>
+              </svg>
+              <svg width="20" height="32" viewBox="0 0 32 48" fill="none">
+                <path d="M18.5 3 L24 4.5 L28 22 L20 22 L18 42 L5 17 L13 17Z" fill="#FBB03B"/>
+              </svg>
+              <span class="level-num" id="level-display">7</span>
+              <svg class="level-corner-r" width="20" height="28" viewBox="0 0 20 28" fill="none">
+                <path d="M18 2 L2 2 L2 26" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square" fill="none"/>
+              </svg>
+            </div>
+            <span class="level-name">Héroe Digital</span>
+          </div>
+        </div>
+
+        <div class="xp-block">
+          <div class="xp-nums-row">
+            <span class="xp-counter" id="xp-counter">0</span>
+            <span class="xp-unit">XP</span>
+            <span class="xp-sep">/</span>
+            <span class="xp-next-val">3.200 XP</span>
+          </div>
+          <div class="xp-bar-track">
+            <div class="xp-bar-fill" id="xp-bar" style="width:0%"></div>
+          </div>
+          <div class="xp-legend">
+            <span class="xp-legend-left">Nivel 7</span>
+            <span>360 XP para Nivel 8</span>
+          </div>
+          <!-- Palette picker -->
+          <div style="display:flex;justify-content:center;margin-top:14px;padding-bottom:28px;">
+            <button class="palette-picker-row" onclick="document.getElementById('palette-modal').classList.toggle('open')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="10" r="2" fill="#FBB03B"/><circle cx="16" cy="10" r="2" fill="#2596BE"/><circle cx="12" cy="16" r="2" fill="#16a34a"/></svg>
+              Personalizar paleta
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div><!-- /hero-profile-area -->
+
+    </div><!-- /hero-sticky-track -->
+  </div><!-- /hero-zone -->
 
   <div id="scroll-sentinel"></div>
   <div class="content">
@@ -1121,17 +1144,17 @@ const revealObs = new IntersectionObserver((entries) => {
 }, { threshold: 0.08 });
 document.querySelectorAll('.section-reveal').forEach(el => revealObs.observe(el));
 
-// ── PROFILE FADE — fades when first content section scrolls up ─
+// ── PROFILE FADE — fades as profile area scrolls out the top ──
 const profileHero = document.querySelector('.profile-hero');
 const xpBlock = document.querySelector('.xp-block');
-const firstSection = document.querySelector('.section-reveal');
-if (firstSection && profileHero) {
+const profileArea = document.querySelector('.hero-profile-area');
+if (profileArea && profileHero) {
   const fadeObs = new IntersectionObserver(([e]) => {
     const fading = !e.isIntersecting;
     profileHero.classList.toggle('fading', fading);
     xpBlock.classList.toggle('fading', fading);
-  }, { threshold: 0, rootMargin: '-30px 0px 0px 0px' });
-  fadeObs.observe(firstSection);
+  }, { threshold: 0, rootMargin: '-20px 0px 0px 0px' });
+  fadeObs.observe(profileArea);
 }
 
 // ── TOPBAR COLLAPSE ────────────────────────────────────────────
