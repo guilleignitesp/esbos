@@ -143,16 +143,11 @@ body {
 .lang-modal-btn:hover { background: var(--card-b); }
 .lang-modal-btn.active { background: var(--blue-dark); color: #fff; }
 
-/* Palette picker row — in profile zone */
-.palette-picker-row {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: rgba(62,111,168,0.08); border: 1.5px solid rgba(62,111,168,0.18);
-  border-radius: 20px; padding: 6px 14px;
-  font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 700;
-  color: var(--blue-dark); cursor: pointer;
-  transition: background .2s, transform .15s;
-}
-.palette-picker-row:hover { background: rgba(62,111,168,0.14); transform: scale(1.02); }
+.palette-picker-wrap { display:flex; justify-content:center; margin-top:16px; padding-bottom:30px; }
+.palette-picker-row { display:inline-flex; align-items:center; gap:7px; background:var(--card-a); border:1.5px solid var(--blue-main); border-radius:22px; padding:8px 16px; font-family:'Figtree',sans-serif; font-size:12px; font-weight:800; color:var(--blue-dark); cursor:pointer; transition:transform .15s,background .5s,border-color .5s,color .5s; }
+.palette-picker-row:hover { transform:scale(1.03); }
+.palette-dots { display:inline-flex; gap:4px; }
+.palette-dots span { width:11px; height:11px; border-radius:50%; border:1.5px solid rgba(255,255,255,.7); }
 
 /* Palette modal — centred on screen */
 .palette-modal {
@@ -160,67 +155,66 @@ body {
   align-items: center; justify-content: center;
 }
 .palette-modal.open { display: flex; }
-.palette-modal-backdrop { position: absolute; inset: 0; }
+.palette-modal-backdrop { position:absolute; inset:0; background:rgba(0,0,0,.35); }
 .palette-modal-box {
-  position: relative; z-index: 1;
-  background: rgba(255,255,255,.94); backdrop-filter: blur(18px);
-  border-radius: 20px; border: 1px solid rgba(124,184,245,.25);
-  box-shadow: 0 8px 28px rgba(62,111,168,.18);
-  padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 200px;
-  animation: fadeDown .15s ease;
+  position:relative; z-index:1; background:var(--card-a); border-radius:22px;
+  border:1px solid var(--blue-main); box-shadow:0 12px 40px rgba(0,0,0,.22);
+  padding:16px; width:100%; max-width:340px; display:flex; flex-direction:column; gap:8px;
+  animation:fadeUp .18s ease;
 }
-.palette-modal-title { font-size: 11px; font-weight: 800; color: #8aa4be; text-transform: uppercase; letter-spacing: .5px; padding: 2px 4px; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
+.palette-modal-title { font-size:12px; font-weight:900; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; padding:2px 4px 4px; }
 .palette-option {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 12px; cursor: pointer;
-  border: none; background: transparent; font-family: 'Figtree', sans-serif;
-  font-weight: 700; font-size: 13px; color: var(--text); transition: background .15s;
-  text-align: left;
+  display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px;
+  cursor:pointer; border:2px solid transparent; background:var(--card-b);
+  font-family:'Figtree',sans-serif; font-weight:800; font-size:14px; color:var(--text);
+  transition:border-color .15s,transform .15s; text-align:left;
 }
-.palette-option:hover { background: rgba(0,0,0,.05); }
-.palette-option.active { background: var(--blue-dark); color: #fff; }
-.palette-swatch {
-  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
-}
+.palette-option:hover { transform:translateX(3px); }
+.palette-option.active { border-color:var(--cta); }
+.palette-swatch { width:30px; height:30px; border-radius:9px; flex-shrink:0; overflow:hidden; display:flex; }
+.palette-swatch i { flex:1; display:block; }
+.palette-meta { display:flex; flex-direction:column; gap:1px; }
+.palette-meta small { font-size:11px; font-weight:600; color:var(--muted); }
 /* Lock overlay on locked palettes */
-.palette-option.locked { opacity: .5; cursor: not-allowed; }
-.palette-lock { font-size: 12px; margin-left: auto; }
+.palette-option.locked { opacity:.55; cursor:not-allowed; }
+.palette-lock { margin-left:auto; font-size:12px; font-weight:800; color:var(--muted); }
 
 @keyframes fadeDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 
 /* ═══ HERO ZONE ════════════════════════════════════ */
 .hero-zone {
   position: relative; background: var(--warm);
-  overflow: visible;
-  transition: background .5s;
+  overflow: visible; transition: background .55s ease;
 }
-
-/* Sticky track: the tall container that keeps mascot sticky
-   while profile info is still on screen */
-.hero-sticky-track {
-  position: relative;
-  /* no overflow:hidden — let mascot escape upward */
-}
-
-/* Profile area scrolls normally below the sticky mascot */
+.hero-sticky-track { position: relative; }
 .hero-profile-area {
-  position: relative; z-index: 2;
-  background: var(--warm);
-  transition: background .5s;
+  position: relative; z-index: 3;
+  background: var(--warm); transition: background .55s ease;
 }
-.hero-blob-core {
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 360px; height: 240px;
-  background: radial-gradient(ellipse 65% 60% at 50% 42%,
-    #f0c830 0%, #f8de80 30%, #fef0b0 58%, transparent 80%);
-  border-radius: 50% 50% 45% 45%; opacity: .75; pointer-events: none; z-index: 0;
-  transition: background .5s;
+.hero-profile-area::before {
+  content:''; position:absolute; left:0; right:0; top:-26px; height:26px;
+  background:linear-gradient(to top, var(--warm), transparent);
+  transition:background .55s ease; pointer-events:none;
 }
-.hero-blob-shine {
-  position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
-  width: 200px; height: 160px;
-  background: radial-gradient(ellipse 55% 50% at 50% 38%, rgba(255,255,255,.52) 0%, transparent 75%);
-  border-radius: 50%; pointer-events: none; z-index: 0;
+
+/* SCENE — decorative band behind mascot */
+.hero-scene {
+  position:absolute; top:0; left:0; right:0;
+  height:clamp(195px,34vh,285px);
+  z-index:0; pointer-events:none; overflow:hidden;
+  opacity:.85; will-change:transform;
+}
+.scene { position:absolute; inset:0; opacity:0; transition:opacity .6s ease; }
+.scene svg { width:100%; height:100%; display:block; }
+[data-theme="amarillo"] .scene-amarillo,
+[data-theme="bosque"]   .scene-bosque,
+[data-theme="oceano"]   .scene-oceano,
+[data-theme="cosmos"]   .scene-cosmos { opacity:1; }
+.hero-scene::after {
+  content:''; position:absolute; left:0; right:0; bottom:0; height:58%;
+  background:linear-gradient(to bottom, transparent 0%, var(--warm) 90%);
+  transition:background .55s ease;
 }
 
 /* ═══ MASCOT — sticky so it floats over topbar on scroll ═══ */
@@ -647,20 +641,24 @@ body {
 
 <!-- Palette modal -->
 <div class="palette-modal" id="palette-modal">
-  <div class="palette-modal-backdrop" onclick="document.getElementById('palette-modal').classList.remove('open')"></div>
+  <div class="palette-modal-backdrop" onclick="closePalette()"></div>
   <div class="palette-modal-box">
-    <div class="palette-modal-title">🎨 Tu paleta</div>
-    <button class="palette-option active" id="pal-amarillo" onclick="setPalette('amarillo')">
-      <span class="palette-swatch" style="background:#FEF3C6;border:1.5px solid #FBB03B"></span> Clásico
+    <div class="palette-modal-title">🎨 Elige tu mundo</div>
+    <button class="palette-option active" data-pal="amarillo" onclick="setPalette('amarillo')">
+      <span class="palette-swatch"><i style="background:#FEF3C6"></i><i style="background:#7CB8F5"></i><i style="background:#FBB03B"></i></span>
+      <span class="palette-meta">Clásico<small>Colinas al sol</small></span>
     </button>
-    <button class="palette-option" id="pal-bosque" onclick="setPalette('bosque')">
-      <span class="palette-swatch" style="background:#f0fdf4;border:1.5px solid #16a34a"></span> Bosque
+    <button class="palette-option" data-pal="bosque" onclick="setPalette('bosque')">
+      <span class="palette-swatch"><i style="background:#ECFDF3"></i><i style="background:#4ADE80"></i><i style="background:#166534"></i></span>
+      <span class="palette-meta">Bosque<small>Montañas y pinos</small></span>
     </button>
-    <button class="palette-option" id="pal-oceano" onclick="setPalette('oceano')">
-      <span class="palette-swatch" style="background:#f0f9ff;border:1.5px solid #0284c7"></span> Océano
+    <button class="palette-option" data-pal="oceano" onclick="setPalette('oceano')">
+      <span class="palette-swatch"><i style="background:#E8F6FF"></i><i style="background:#38BDF8"></i><i style="background:#0284C7"></i></span>
+      <span class="palette-meta">Océano<small>Costa y olas</small></span>
     </button>
-    <button class="palette-option locked" id="pal-cosmos" onclick="showPaletteLock()">
-      <span class="palette-swatch" style="background:#1a1a2e;border:1.5px solid #e94560"></span> Cosmos
+    <button class="palette-option locked" data-pal="cosmos" onclick="setPalette('cosmos')">
+      <span class="palette-swatch"><i style="background:#1a1a2e"></i><i style="background:#7c5cff"></i><i style="background:#e94560"></i></span>
+      <span class="palette-meta">Cosmos<small>Planetas y estrellas</small></span>
       <span class="palette-lock">🔒 Niv.10</span>
     </button>
   </div>
@@ -672,9 +670,19 @@ body {
 <div id="page-home" class="page active">
 
   <!-- HERO -->
-  <div class="hero-zone">
-    <div class="hero-blob-core"></div>
-    <div class="hero-blob-shine"></div>
+  <div class="hero-zone" id="hero-zone">
+
+    <!-- SCENE BACKGROUNDS -->
+    <div class="hero-scene" id="hero-scene">
+      <!-- AMARILLO: colinas al sol -->
+      <div class="scene scene-amarillo"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-am" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFCEF"/><stop offset="1" stop-color="#FBEABF"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-am)"/><circle cx="400" cy="80" r="70" fill="#FBB03B" opacity=".10"/><circle cx="400" cy="80" r="46" fill="#FBB03B" opacity=".15"/><circle cx="400" cy="78" r="26" fill="#FBB03B" opacity=".85"/><g fill="#FFFFFF" opacity=".8"><ellipse cx="150" cy="54" rx="32" ry="11"/><ellipse cx="170" cy="48" rx="19" ry="10"/><ellipse cx="640" cy="42" rx="28" ry="10"/></g><path d="M0,126 L120,100 L240,124 L360,98 L480,122 L600,100 L720,122 L800,110 L800,280 L0,280Z" fill="#C6DBF3"/><path d="M0,148 L160,124 L320,148 L480,124 L640,148 L800,134 L800,280 L0,280Z" fill="#7CB8F5"/><path d="M0,162 Q200,144 400,158 Q600,174 800,152 L800,280 L0,280Z" fill="#5685BC"/><g stroke="#2596BE" stroke-width="1.1" fill="none" opacity=".28" stroke-linecap="round"><path d="M120,206 L120,194 L148,194 L148,204"/><path d="M560,208 L560,196 L588,196"/></g><g fill="#FBB03B" opacity=".5"><path d="M150,28 L152,34 L158,36 L152,38 L150,44 L148,38 L142,36 L148,34Z"/><path d="M662,148 L664,154 L670,156 L664,158 L662,164 L660,158 L654,156 L660,154Z"/></g></svg></div>
+      <!-- BOSQUE: montañas y pinos -->
+      <div class="scene scene-bosque"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-bo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4FEF8"/><stop offset="1" stop-color="#DBF6E4"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-bo)"/><circle cx="400" cy="80" r="58" fill="#FDE68A" opacity=".25"/><circle cx="400" cy="80" r="34" fill="#FCD34D" opacity=".7"/><g fill="#FFFFFF" opacity=".8"><ellipse cx="160" cy="52" rx="32" ry="11"/><ellipse cx="640" cy="44" rx="28" ry="10"/></g><path d="M0,128 L130,98 L260,126 L390,96 L520,124 L650,98 L780,124 L800,114 L800,280 L0,280Z" fill="#B7ECCB"/><path d="M0,150 L160,124 L320,150 L480,124 L640,150 L800,134 L800,280 L0,280Z" fill="#5FE08C"/><path d="M0,164 Q200,146 400,160 Q600,176 800,154 L800,280 L0,280Z" fill="#2F8C57"/><g fill="#1E5E38"><path d="M120,158 L131,184 L109,184Z"/><path d="M120,146 L129,166 L111,166Z"/><path d="M250,162 L262,188 L238,188Z"/><path d="M250,150 L260,170 L240,170Z"/><path d="M560,156 L571,182 L549,182Z"/><path d="M560,144 L569,164 L551,164Z"/><path d="M680,160 L692,186 L668,186Z"/><path d="M680,148 L690,168 L670,168Z"/></g><g fill="#F59E0B" opacity=".75"><circle cx="210" cy="120" r="2.2"/><circle cx="560" cy="108" r="2.2"/><circle cx="340" cy="96" r="1.8"/></g></svg></div>
+      <!-- OCÉANO: costa y olas -->
+      <div class="scene scene-oceano"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-oc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDF8FF"/><stop offset="1" stop-color="#D6EEFF"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-oc)"/><circle cx="400" cy="76" r="60" fill="#FBB03B" opacity=".12"/><circle cx="400" cy="76" r="30" fill="#FCC562" opacity=".85"/><g fill="#FFFFFF" opacity=".8"><ellipse cx="170" cy="50" rx="30" ry="10"/><ellipse cx="630" cy="44" rx="26" ry="9"/></g><g stroke="#0369A1" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"><path d="M150,60 q11,-10 22,0"/><path d="M172,60 q11,-10 22,0"/><path d="M610,72 q9,-9 18,0"/><path d="M628,72 q9,-9 18,0"/></g><path d="M548,118 q26,-26 52,0 z" fill="#0E6FA8" opacity=".7"/><rect x="0" y="118" width="800" height="162" fill="#8FD9F8"/><path d="M0,146 Q120,132 240,146 T480,146 T720,146 T960,146 L800,280 L0,280Z" fill="#46C2F9"/><path d="M0,182 Q140,166 280,182 T560,182 T840,182 L800,280 L0,280Z" fill="#1E93D4"/><g stroke="#FFFFFF" stroke-width="1.8" fill="none" opacity=".5" stroke-linecap="round"><path d="M120,140 q12,-6 24,0"/><path d="M520,140 q12,-6 24,0"/></g><g fill="#FBB03B" opacity=".5"><path d="M270,140 L272,146 L278,148 L272,150 L270,156 L268,150 L262,148 L268,146Z"/></g></svg></div>
+      <!-- COSMOS: planetas y estrellas -->
+      <div class="scene scene-cosmos"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-co" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#222244"/><stop offset="1" stop-color="#15152e"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-co)"/><circle cx="400" cy="100" r="120" fill="#7c5cff" opacity=".09"/><circle cx="280" cy="80" r="90" fill="#e94560" opacity=".07"/><g fill="#FFFFFF"><circle cx="70" cy="50" r="1.5"/><circle cx="150" cy="96" r="1.1"/><circle cx="230" cy="44" r="1.8"/><circle cx="320" cy="120" r="1.2"/><circle cx="400" cy="58" r="1.4"/><circle cx="480" cy="110" r="1.6"/><circle cx="540" cy="48" r="1.1"/><circle cx="600" cy="120" r="1.4"/><circle cx="690" cy="56" r="1.8"/><circle cx="750" cy="104" r="1.2"/><circle cx="110" cy="150" r="1.3"/><circle cx="360" cy="158" r="1.2"/><circle cx="660" cy="150" r="1.4"/></g><g fill="#FBB03B" opacity=".85"><path d="M150,74 L153,82 L161,85 L153,88 L150,96 L147,88 L139,85 L147,82Z"/></g><g transform="translate(640,86)"><ellipse cx="0" cy="0" rx="58" ry="16" fill="none" stroke="#E94560" stroke-width="3.5" opacity=".5"/><circle cx="0" cy="0" r="28" fill="#E94560"/><circle cx="-9" cy="-7" r="7" fill="#ff7088" opacity=".7"/><ellipse cx="0" cy="0" rx="58" ry="16" fill="none" stroke="#ff8fa3" stroke-width="1.5" opacity=".35"/></g><circle cx="120" cy="200" r="16" fill="#A8B4F0"/><circle cx="113" cy="195" r="5" fill="#8b97d6" opacity=".6"/><g stroke="#FBB03B" stroke-width="1.8" fill="none" opacity=".75"><path d="M470,70 L512,96"/></g><circle cx="470" cy="70" r="2.6" fill="#FBB03B"/></svg></div>
+    </div>
 
     <!-- hero-sticky-track: tall container that gives mascot room to be sticky -->
     <div class="hero-sticky-track">
@@ -757,11 +765,11 @@ body {
             <span>360 XP para Nivel 8</span>
           </div>
           <!-- Palette picker -->
-          <div style="display:flex;justify-content:center;margin-top:14px;padding-bottom:28px;">
-            <button class="palette-picker-row" onclick="document.getElementById('palette-modal').classList.toggle('open')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="10" r="2" fill="#FBB03B"/><circle cx="16" cy="10" r="2" fill="#2596BE"/><circle cx="12" cy="16" r="2" fill="#16a34a"/></svg>
-              Personalizar paleta
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="palette-picker-wrap">
+            <button class="palette-picker-row" onclick="document.getElementById('palette-modal').classList.add('open')">
+              <span class="palette-dots"><span style="background:#FBB03B"></span><span style="background:#16a34a"></span><span style="background:#0284c7"></span></span>
+              Cambiar paleta
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
         </div>
