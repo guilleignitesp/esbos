@@ -53,6 +53,32 @@
   --text:      #0c4a6e;
 }
 
+/* 4 paletas adicionales */
+[data-theme="caramelo"] {
+  --warm:#FFF5E6; --card-a:#FFFFFF; --card-b:#FDE8CC; --accent:#F97316;
+  --blue-main:#FDBA74; --blue-dark:#C2410C; --cta:#EA580C; --text:#431407; --muted:#9a6347;
+  --radius:20px; --radius-sm:14px;
+  --card-shadow:0 2px 14px rgba(194,65,12,0.09),0 1px 3px rgba(194,65,12,0.05);
+}
+[data-theme="nieve"] {
+  --warm:#F0F4FF; --card-a:#FFFFFF; --card-b:#E8EEFF; --accent:#6366F1;
+  --blue-main:#A5B4FC; --blue-dark:#4338CA; --cta:#4F46E5; --text:#1E1B4B; --muted:#7c7fad;
+  --radius:20px; --radius-sm:14px;
+  --card-shadow:0 2px 14px rgba(67,56,202,0.09),0 1px 3px rgba(67,56,202,0.05);
+}
+[data-theme="crepusculo"] {
+  --warm:#2D1B33; --card-a:#3D2347; --card-b:#4A2A57; --accent:#F59E0B;
+  --blue-main:#C084FC; --blue-dark:#E879F9; --cta:#A855F7; --text:#FAF5FF; --muted:#c084fc88;
+  --radius:20px; --radius-sm:14px;
+  --card-shadow:0 2px 14px rgba(0,0,0,0.3),0 1px 3px rgba(0,0,0,0.2);
+}
+[data-theme="neon"] {
+  --warm:#0A0A0F; --card-a:#111118; --card-b:#1A1A28; --accent:#00FFC8;
+  --blue-main:#00FFC8; --blue-dark:#00FFC8; --cta:#FF3DFF; --text:#E8FFF8; --muted:#4dffd8aa;
+  --radius:20px; --radius-sm:14px;
+  --card-shadow:0 2px 14px rgba(0,255,200,0.12),0 1px 3px rgba(0,255,200,0.06);
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Figtree', sans-serif;
@@ -207,10 +233,14 @@ body {
 }
 .scene { position:absolute; inset:0; opacity:0; transition:opacity .6s ease; }
 .scene svg { width:100%; height:100%; display:block; }
-[data-theme="amarillo"] .scene-amarillo,
-[data-theme="bosque"]   .scene-bosque,
-[data-theme="oceano"]   .scene-oceano,
-[data-theme="cosmos"]   .scene-cosmos { opacity:1; }
+[data-theme="amarillo"]   .scene-amarillo,
+[data-theme="bosque"]     .scene-bosque,
+[data-theme="oceano"]     .scene-oceano,
+[data-theme="cosmos"]     .scene-cosmos,
+[data-theme="caramelo"]   .scene-caramelo,
+[data-theme="nieve"]      .scene-nieve,
+[data-theme="crepusculo"] .scene-crepusculo,
+[data-theme="neon"]       .scene-neon { opacity:1; }
 .hero-scene::after {
   content:''; position:absolute; left:0; right:0; bottom:0; height:58%;
   background:linear-gradient(to bottom, transparent 0%, var(--warm) 90%);
@@ -525,28 +555,28 @@ body {
 /* ═══ MASCOT SELECTOR MODAL ════════════════════════ */
 .mascot-modal { display: none; position: fixed; inset: 0; background: rgba(47,58,74,.55); z-index: 300; align-items: flex-end; justify-content: center; }
 .mascot-modal.open { display: flex; }
-.mascot-modal-box {
-  background: var(--card-a); border-radius: 28px 28px 0 0;
-  width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto;
-  padding: 26px 22px 36px; animation: slideUp .22s ease; position: relative;
-}
-.mascot-modal-title { font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
-.mascot-modal-sub { font-size: 13px; color: #8aa4be; margin-bottom: 20px; }
-.mascot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 14px; }
-.mascot-option {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  background: var(--card-b); border-radius: 18px; padding: 14px 8px;
-  cursor: pointer; border: 2.5px solid transparent; transition: border-color .2s, transform .15s;
-  position: relative;
-}
+.mascot-modal-box { background: var(--card-a); border-radius: 28px 28px 0 0; width: 100%; max-width: 600px; max-height: 88vh; overflow-y: auto; padding: 26px 22px 36px; animation: slideUp .22s ease; position: relative; }
+.mascot-modal-title { font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 12px; }
+.mascot-modal-sub { font-size: 13px; color: #8aa4be; margin-bottom: 16px; }
+.mascot-tabs { display: flex; gap: 6px; margin-bottom: 16px; background: var(--card-b); border-radius: 14px; padding: 4px; }
+.mascot-tab { display: flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Figtree', sans-serif; font-weight: 700; color: var(--muted); background: transparent; transition: background .2s, color .2s, font-size .2s; }
+.mascot-tab-main { flex: 2; padding: 10px 0; font-size: 15px; }
+.mascot-tab-secondary { flex: 1; padding: 8px 0; font-size: 12px; }
+.mascot-tab.active { background: var(--card-a); color: var(--blue-dark); box-shadow: 0 2px 8px rgba(62,111,168,.12); }
+.mascot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 14px; }
+.mascot-option { display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--card-b); border-radius: 18px; padding: 16px 8px; cursor: pointer; border: 2.5px solid transparent; transition: border-color .2s, transform .15s; position: relative; text-align: center; }
 .mascot-option:hover:not(.locked-option) { transform: scale(1.04); border-color: var(--accent); }
 .mascot-option.selected { border-color: var(--blue-dark); background: rgba(62,111,168,.08); }
 .mascot-option.locked-option { opacity: .5; cursor: not-allowed; }
-.mascot-name-label { font-size: 12px; font-weight: 800; color: var(--text); text-align: center; }
-.mascot-lock-badge {
-  position: absolute; top: 6px; right: 6px; background: var(--text); color: #fff;
-  border-radius: 8px; padding: 2px 6px; font-size: 10px; font-weight: 700;
-}
+.mascot-name-label { font-size: 13px; font-weight: 800; color: var(--text); }
+.mascot-lock-badge { position: absolute; top: 6px; right: 6px; background: var(--text); color: var(--card-a); border-radius: 8px; padding: 2px 7px; font-size: 10px; font-weight: 700; }
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px,1fr)); gap: 12px; }
+.color-option { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 12px 6px; border-radius: 16px; cursor: pointer; border: 2.5px solid transparent; background: var(--card-b); transition: border-color .2s, transform .15s; position: relative; }
+.color-option:hover:not(.locked-color) { transform: scale(1.06); border-color: var(--accent); }
+.color-option.selected-color { border-color: var(--blue-dark); }
+.color-option.locked-color { opacity: .45; cursor: not-allowed; }
+.color-swatch { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.color-name { font-size: 10px; font-weight: 700; color: var(--text); text-align: center; }
 
 /* ═══ FLOATING SWITCHER ════════════════════════════ */
 .profile-switcher {
@@ -644,9 +674,13 @@ body {
   <div class="palette-modal-backdrop" onclick="closePalette()"></div>
   <div class="palette-modal-box">
     <div class="palette-modal-title">🎨 Elige tu mundo</div>
-    <button class="palette-option active" data-pal="amarillo" onclick="setPalette('amarillo')">
+    <button class="palette-option" data-pal="amarillo" onclick="setPalette('amarillo')">
       <span class="palette-swatch"><i style="background:#FEF3C6"></i><i style="background:#7CB8F5"></i><i style="background:#FBB03B"></i></span>
       <span class="palette-meta">Clásico<small>Colinas al sol</small></span>
+    </button>
+    <button class="palette-option" data-pal="caramelo" onclick="setPalette('caramelo')">
+      <span class="palette-swatch"><i style="background:#FFF5E6"></i><i style="background:#FDBA74"></i><i style="background:#EA580C"></i></span>
+      <span class="palette-meta">Desierto<small>Dunas al atardecer</small></span>
     </button>
     <button class="palette-option" data-pal="bosque" onclick="setPalette('bosque')">
       <span class="palette-swatch"><i style="background:#ECFDF3"></i><i style="background:#4ADE80"></i><i style="background:#166534"></i></span>
@@ -655,6 +689,20 @@ body {
     <button class="palette-option" data-pal="oceano" onclick="setPalette('oceano')">
       <span class="palette-swatch"><i style="background:#E8F6FF"></i><i style="background:#38BDF8"></i><i style="background:#0284C7"></i></span>
       <span class="palette-meta">Océano<small>Costa y olas</small></span>
+    </button>
+    <button class="palette-option" data-pal="nieve" onclick="setPalette('nieve')">
+      <span class="palette-swatch"><i style="background:#F0F4FF"></i><i style="background:#A5B4FC"></i><i style="background:#4338CA"></i></span>
+      <span class="palette-meta">Nieve<small>Montañas heladas</small></span>
+    </button>
+    <button class="palette-option locked" data-pal="crepusculo" onclick="setPalette('crepusculo')">
+      <span class="palette-swatch"><i style="background:#2D1B33"></i><i style="background:#C084FC"></i><i style="background:#F59E0B"></i></span>
+      <span class="palette-meta">Crepúsculo<small>Atardecer mágico</small></span>
+      <span class="palette-lock">🔒 Niv.8</span>
+    </button>
+    <button class="palette-option locked" data-pal="neon" onclick="setPalette('neon')">
+      <span class="palette-swatch"><i style="background:#0A0A0F"></i><i style="background:#00FFC8"></i><i style="background:#FF3DFF"></i></span>
+      <span class="palette-meta">Neón<small>Ciudad futurista</small></span>
+      <span class="palette-lock">🔒 Niv.9</span>
     </button>
     <button class="palette-option locked" data-pal="cosmos" onclick="setPalette('cosmos')">
       <span class="palette-swatch"><i style="background:#1a1a2e"></i><i style="background:#7c5cff"></i><i style="background:#e94560"></i></span>
@@ -680,7 +728,15 @@ body {
       <div class="scene scene-bosque"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-bo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4FEF8"/><stop offset="1" stop-color="#DBF6E4"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-bo)"/><circle cx="400" cy="80" r="58" fill="#FDE68A" opacity=".25"/><circle cx="400" cy="80" r="34" fill="#FCD34D" opacity=".7"/><g fill="#FFFFFF" opacity=".8"><ellipse cx="160" cy="52" rx="32" ry="11"/><ellipse cx="640" cy="44" rx="28" ry="10"/></g><path d="M0,128 L130,98 L260,126 L390,96 L520,124 L650,98 L780,124 L800,114 L800,280 L0,280Z" fill="#B7ECCB"/><path d="M0,150 L160,124 L320,150 L480,124 L640,150 L800,134 L800,280 L0,280Z" fill="#5FE08C"/><path d="M0,164 Q200,146 400,160 Q600,176 800,154 L800,280 L0,280Z" fill="#2F8C57"/><g fill="#1E5E38"><path d="M120,158 L131,184 L109,184Z"/><path d="M120,146 L129,166 L111,166Z"/><path d="M250,162 L262,188 L238,188Z"/><path d="M250,150 L260,170 L240,170Z"/><path d="M560,156 L571,182 L549,182Z"/><path d="M560,144 L569,164 L551,164Z"/><path d="M680,160 L692,186 L668,186Z"/><path d="M680,148 L690,168 L670,168Z"/></g><g fill="#F59E0B" opacity=".75"><circle cx="210" cy="120" r="2.2"/><circle cx="560" cy="108" r="2.2"/><circle cx="340" cy="96" r="1.8"/></g></svg></div>
       <!-- OCÉANO: costa y olas -->
       <div class="scene scene-oceano"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-oc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDF8FF"/><stop offset="1" stop-color="#D6EEFF"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-oc)"/><circle cx="400" cy="76" r="60" fill="#FBB03B" opacity=".12"/><circle cx="400" cy="76" r="30" fill="#FCC562" opacity=".85"/><g fill="#FFFFFF" opacity=".8"><ellipse cx="170" cy="50" rx="30" ry="10"/><ellipse cx="630" cy="44" rx="26" ry="9"/></g><g stroke="#0369A1" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"><path d="M150,60 q11,-10 22,0"/><path d="M172,60 q11,-10 22,0"/><path d="M610,72 q9,-9 18,0"/><path d="M628,72 q9,-9 18,0"/></g><path d="M548,118 q26,-26 52,0 z" fill="#0E6FA8" opacity=".7"/><rect x="0" y="118" width="800" height="162" fill="#8FD9F8"/><path d="M0,146 Q120,132 240,146 T480,146 T720,146 T960,146 L800,280 L0,280Z" fill="#46C2F9"/><path d="M0,182 Q140,166 280,182 T560,182 T840,182 L800,280 L0,280Z" fill="#1E93D4"/><g stroke="#FFFFFF" stroke-width="1.8" fill="none" opacity=".5" stroke-linecap="round"><path d="M120,140 q12,-6 24,0"/><path d="M520,140 q12,-6 24,0"/></g><g fill="#FBB03B" opacity=".5"><path d="M270,140 L272,146 L278,148 L272,150 L270,156 L268,150 L262,148 L268,146Z"/></g></svg></div>
-      <!-- COSMOS: planetas y estrellas -->
+      <!-- CARAMELO: desierto cálido -->
+      <div class="scene scene-caramelo"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-ca" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF5E6"/><stop offset="1" stop-color="#FDDBB4"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-ca)"/><circle cx="400" cy="72" r="64" fill="#F97316" opacity=".12"/><circle cx="400" cy="72" r="36" fill="#F97316" opacity=".82"/><g fill="#FFFFFF" opacity=".7"><ellipse cx="160" cy="56" rx="28" ry="9"/><ellipse cx="640" cy="46" rx="24" ry="8"/></g><path d="M0,160 Q100,130 200,158 Q300,185 400,155 Q500,125 600,158 Q700,185 800,155 L800,280 L0,280Z" fill="#FDBA74"/><path d="M0,180 Q120,158 240,178 Q360,198 480,172 Q600,148 720,172 L800,165 L800,280 L0,280Z" fill="#FB923C"/><path d="M0,200 Q200,182 400,198 Q600,214 800,192 L800,280 L0,280Z" fill="#EA580C"/><g fill="#C2410C" opacity=".7"><path d="M160,180 Q160,158 172,158 Q184,158 184,180Z"/><path d="M550,170 Q550,148 565,148 Q580,148 580,170Z"/><path d="M700,185 Q700,165 712,165 Q724,165 724,185Z"/></g><g fill="#FBB03B" opacity=".6"><path d="M60,46 L62,52 L68,54 L62,56 L60,62 L58,56 L52,54 L58,52Z"/><path d="M700,38 L702,44 L708,46 L702,48 L700,54 L698,48 L692,46 L698,44Z"/></g></svg></div>
+      <!-- NIEVE: montañas nevadas -->
+      <div class="scene scene-nieve"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-nv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EEF2FF"/><stop offset="1" stop-color="#E0E7FF"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-nv)"/><circle cx="400" cy="68" r="50" fill="#FFFFFF" opacity=".6"/><circle cx="400" cy="68" r="26" fill="#C7D2FE" opacity=".9"/><g fill="#FFFFFF" opacity=".85"><ellipse cx="140" cy="50" rx="30" ry="11"/><ellipse cx="162" cy="44" rx="18" ry="9"/><ellipse cx="630" cy="40" rx="26" ry="9"/></g><path d="M0,150 L100,90 L180,130 L260,70 L360,120 L450,60 L540,100 L640,50 L720,100 L800,70 L800,280 L0,280Z" fill="#C7D2FE"/><path d="M0,168 L80,108 L160,148 L260,88 L360,138 L460,78 L560,118 L660,68 L740,108 L800,88 L800,280 L0,280Z" fill="#A5B4FC"/><path d="M0,185 L100,130 L200,165 L300,110 L400,155 L500,100 L600,140 L700,90 L800,130 L800,280 L0,280Z" fill="#6366F1"/><g fill="#FFFFFF" opacity=".95"><path d="M100,90 L104,82 L108,90Z"/><path d="M260,70 L265,60 L270,70Z"/><path d="M450,60 L456,48 L462,60Z"/><path d="M640,50 L646,38 L652,50Z"/></g><g fill="#FFFFFF" opacity=".5"><circle cx="60" cy="140" r="2"/><circle cx="200" cy="100" r="1.5"/><circle cx="380" cy="60" r="2"/><circle cx="560" cy="80" r="1.5"/><circle cx="740" cy="50" r="2"/></g></svg></div>
+      <!-- CREPUSCULO: atardecer mágico -->
+      <div class="scene scene-crepusculo"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-cr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D1B33"/><stop offset="1" stop-color="#4A1560"/></linearGradient><linearGradient id="sun-cr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F59E0B"/><stop offset="1" stop-color="#EF4444"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-cr)"/><circle cx="400" cy="130" r="100" fill="url(#sun-cr)" opacity=".35"/><circle cx="400" cy="130" r="48" fill="#F59E0B" opacity=".9"/><g fill="#FFFFFF" opacity=".7"><circle cx="100" cy="40" r="1.5"/><circle cx="180" cy="70" r="1.2"/><circle cx="280" cy="30" r="1.8"/><circle cx="520" cy="50" r="1.4"/><circle cx="650" cy="25" r="2"/><circle cx="730" cy="65" r="1.3"/></g><path d="M400 130 L403 118 L407 130Z" fill="#F59E0B" opacity=".7"/><!-- meteor --><path d="M580 40 L630 90" stroke="#E879F9" stroke-width="2" stroke-linecap="round" opacity=".8"/><circle cx="580" cy="40" r="3" fill="#E879F9"/><path d="M0,190 L120,150 L240,185 L360,148 L480,182 L600,150 L720,180 L800,155 L800,280 L0,280Z" fill="#4A2A57"/><path d="M0,215 Q200,195 400,212 Q600,230 800,205 L800,280 L0,280Z" fill="#3D2347"/><g fill="#C084FC" opacity=".5"><path d="M80,190 L84,178 L88,190Z"/><path d="M560,180 L565,166 L570,180Z"/></g><path d="M200,150 l1.8 4.2 4.2 1.8 -4.2 1.8 -1.8 4.2 -1.8 -4.2 -4.2 -1.8 4.2 -1.8z" fill="#F59E0B" opacity=".9"/></svg></div>
+      <!-- NEON: ciudad futurista -->
+      <div class="scene scene-neon"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-ne" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050510"/><stop offset="1" stop-color="#0A0A1F"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-ne)"/><circle cx="400" cy="90" r="80" fill="#00FFC8" opacity=".04"/><circle cx="400" cy="90" r="40" fill="#00FFC8" opacity=".07"/><g fill="#FFFFFF" opacity=".6"><circle cx="80" cy="40" r="1.5"/><circle cx="200" cy="20" r="1"/><circle cx="350" cy="55" r="1.8"/><circle cx="490" cy="15" r="1.2"/><circle cx="620" cy="45" r="1.6"/><circle cx="750" cy="30" r="1.3"/></g><g fill="none" stroke="#00FFC8" stroke-width="1.5" opacity=".85"><rect x="60" y="120" width="40" height="80"/><rect x="110" y="100" width="30" height="100"/><rect x="150" y="80" width="50" height="120"/><rect x="560" y="90" width="50" height="110"/><rect x="620" y="110" width="35" height="90"/><rect x="665" y="70" width="45" height="130"/><rect x="720" y="100" width="30" height="100"/></g><g fill="#FF3DFF" opacity=".7"><rect x="75" y="115" width="4" height="4"/><rect x="170" y="75" width="4" height="4"/><rect x="575" y="85" width="4" height="4"/><rect x="680" y="65" width="4" height="4"/></g><path d="M0,200 Q100,188 200,200 Q300,212 400,198 Q500,184 600,200 Q700,215 800,198 L800,280 L0,280Z" fill="#00FFC833"/><path d="M0,220 Q200,210 400,220 Q600,230 800,215 L800,280 L0,280Z" fill="#00FFC822"/><g stroke="#00FFC8" stroke-width="1" opacity=".4" fill="none"><path d="M0,240 L800,240"/><path d="M0,260 L800,260"/></g></svg></div>
+            <!-- COSMOS: planetas y estrellas -->
       <div class="scene scene-cosmos"><svg viewBox="0 0 800 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sky-co" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#222244"/><stop offset="1" stop-color="#15152e"/></linearGradient></defs><rect width="800" height="280" fill="url(#sky-co)"/><circle cx="400" cy="100" r="120" fill="#7c5cff" opacity=".09"/><circle cx="280" cy="80" r="90" fill="#e94560" opacity=".07"/><g fill="#FFFFFF"><circle cx="70" cy="50" r="1.5"/><circle cx="150" cy="96" r="1.1"/><circle cx="230" cy="44" r="1.8"/><circle cx="320" cy="120" r="1.2"/><circle cx="400" cy="58" r="1.4"/><circle cx="480" cy="110" r="1.6"/><circle cx="540" cy="48" r="1.1"/><circle cx="600" cy="120" r="1.4"/><circle cx="690" cy="56" r="1.8"/><circle cx="750" cy="104" r="1.2"/><circle cx="110" cy="150" r="1.3"/><circle cx="360" cy="158" r="1.2"/><circle cx="660" cy="150" r="1.4"/></g><g fill="#FBB03B" opacity=".85"><path d="M150,74 L153,82 L161,85 L153,88 L150,96 L147,88 L139,85 L147,82Z"/></g><g transform="translate(640,86)"><ellipse cx="0" cy="0" rx="58" ry="16" fill="none" stroke="#E94560" stroke-width="3.5" opacity=".5"/><circle cx="0" cy="0" r="28" fill="#E94560"/><circle cx="-9" cy="-7" r="7" fill="#ff7088" opacity=".7"/><ellipse cx="0" cy="0" rx="58" ry="16" fill="none" stroke="#ff8fa3" stroke-width="1.5" opacity=".35"/></g><circle cx="120" cy="200" r="16" fill="#A8B4F0"/><circle cx="113" cy="195" r="5" fill="#8b97d6" opacity=".6"/><g stroke="#FBB03B" stroke-width="1.8" fill="none" opacity=".75"><path d="M470,70 L512,96"/></g><circle cx="470" cy="70" r="2.6" fill="#FBB03B"/></svg></div>
     </div>
 
@@ -766,7 +822,7 @@ body {
           </div>
           <!-- Palette picker -->
           <div class="palette-picker-wrap">
-            <button class="palette-picker-row" onclick="document.getElementById('palette-modal').classList.add('open')">
+            <button class="palette-picker-row" onclick="openPalette()">
               <span class="palette-dots"><span style="background:#FBB03B"></span><span style="background:#16a34a"></span><span style="background:#0284c7"></span></span>
               Cambiar paleta
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1094,9 +1150,28 @@ body {
 <div class="mascot-modal" id="mascot-modal">
   <div class="mascot-modal-box">
     <button class="modal-close" onclick="document.getElementById('mascot-modal').classList.remove('open')">✕</button>
-    <div class="mascot-modal-title">Elige tu compañero</div>
-    <div class="mascot-modal-sub">Toca un personaje para seleccionarlo. Desbloqueas más al subir de nivel.</div>
-    <div class="mascot-grid" id="mascot-grid"></div>
+    <div class="mascot-modal-title">Personaliza tu personaje</div>
+    <!-- Tabs: Personaje (big) / Tipo (small) -->
+    <div class="mascot-tabs">
+      <button class="mascot-tab mascot-tab-main active" id="tab-shape" onclick="switchMascotTab('shape')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="5" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Personaje
+      </button>
+      <button class="mascot-tab mascot-tab-secondary" id="tab-color" onclick="switchMascotTab('color')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 4 7 4 11c0 3 2 5.5 5 6.5V20h6v-2.5c3-1 5-3.5 5-6.5 0-4-4-8-8-8Z" stroke="currentColor" stroke-width="2"/></svg>
+        Tipo
+      </button>
+    </div>
+    <!-- Personaje panel -->
+    <div id="panel-shape">
+      <div class="mascot-modal-sub">Elige tu personaje. Cada uno tiene su propio tipo de base.</div>
+      <div class="mascot-grid" id="mascot-grid"></div>
+    </div>
+    <!-- Tipo panel -->
+    <div id="panel-color" style="display:none">
+      <div class="mascot-modal-sub" style="font-size:12px">Cambia el tipo de tu personaje. Se desbloquean más al subir de nivel.</div>
+      <div class="color-grid" id="color-grid"></div>
+    </div>
   </div>
 </div>
 
@@ -1196,17 +1271,24 @@ function closeLangModal() { document.getElementById('lang-modal').classList.remo
 
 // ── PALETTE ───────────────────────────────────────────────────
 const PALETTES = ['amarillo','bosque','oceano','cosmos'];
-const PALETTE_LOCKED = { cosmos: 10 };
+const PALETTE_LOCKED = { crepusculo: 8, neon: 9, cosmos: 10 };
 let currentLevel = 7;
+let currentPalette = 'amarillo';
 function setPalette(name) {
-  if (PALETTE_LOCKED[name] && currentLevel < PALETTE_LOCKED[name]) { showPaletteLock(name); return; }
+  if (PALETTE_LOCKED[name] && currentLevel < PALETTE_LOCKED[name]) {
+    alert('🔒 Desbloqueas «' + name + '» en el Nivel ' + PALETTE_LOCKED[name] + '. ¡Sigue sumando XP!'); return;
+  }
+  currentPalette = name;
   document.body.setAttribute('data-theme', name);
-  PALETTES.forEach(p => document.getElementById('pal-'+p)?.classList.toggle('active', p===name));
-  document.getElementById('palette-modal').classList.remove('open');
+  document.querySelectorAll('.palette-option').forEach(o => o.classList.toggle('active', o.dataset.pal===name));
+  closePalette();
 }
-function showPaletteLock(name) {
-  alert('🔒 Desbloqueas esta paleta en Nivel ' + (PALETTE_LOCKED[name]||10) + '. ¡Sigue acumulando XP!');
+function openPalette() {
+  // Sync active state every time the modal opens
+  document.querySelectorAll('.palette-option').forEach(o => o.classList.toggle('active', o.dataset.pal===currentPalette));
+  document.getElementById('palette-modal').classList.add('open');
 }
+function closePalette() { document.getElementById('palette-modal').classList.remove('open'); }
 
 // ── VIEW SWITCHER ─────────────────────────────────────────────
 function setView(m) {
@@ -1294,87 +1376,181 @@ function changePage(d){cp=Math.max(0,Math.min(tp-1,cp+d));renderProjects();windo
 renderProjects();
 
 // ── MASCOT SELECTOR ───────────────────────────────────────────
+// ── MASCOT SELECTOR ───────────────────────────────────────────
 const mascots = [
-  { id:'spark', name:'Spark', minLevel:1, svgColor:'#7ba6e2', desc:'Tu compañero original' },
-  { id:'ember', name:'Ember', minLevel:1, svgColor:'#f97316', desc:'Espíritu de fuego' },
-  { id:'pixel', name:'Pixel', minLevel:3, svgColor:'#8b5cf6', desc:'El hacker amigable' },
-  { id:'bolt',  name:'Bolt',  minLevel:5, svgColor:'#FBB03B', desc:'Velocidad pura' },
-  { id:'nova',  name:'Nova',  minLevel:7, svgColor:'#e94560', desc:'Energía cósmica' },
-  { id:'sage',  name:'Sage',  minLevel:10,svgColor:'#16a34a', desc:'Sabiduría del bosque' },
+  { id:'spark', name:'Spark', minLevel:1,  desc:'Bolita amistosa · el inicial', defaultColor:'#7ba6e2', tipo:'Tipo Normal' },
+  { id:'ember', name:'Ember', minLevel:1,  desc:'Llama · espíritu de fuego',    defaultColor:'#f97316', tipo:'Tipo Fuego'  },
+  { id:'pixel', name:'Pixel', minLevel:3,  desc:'Robot · el hacker amigable',   defaultColor:'#8b5cf6', tipo:'Tipo Técnico'},
+  { id:'bolt',  name:'Bolt',  minLevel:5,  desc:'Rayo · velocidad pura',        defaultColor:'#FBB03B', tipo:'Tipo Rayo'  },
+  { id:'nova',  name:'Nova',  minLevel:7,  desc:'Planeta · energía cósmica',    defaultColor:'#e94560', tipo:'Tipo Cosmos'},
+  { id:'sage',  name:'Sage',  minLevel:10, desc:'Brote · sabiduría del bosque', defaultColor:'#16a34a', tipo:'Tipo Tierra'},
 ];
+
+// Colors unlocked per level
+const mascotColors = [
+  { id:'normal',  name:'Normal',   hex:'#7ba6e2', minLevel:1  },
+  { id:'fuego',   name:'Fuego',    hex:'#f97316', minLevel:1  },
+  { id:'tecnico', name:'Técnico',  hex:'#8b5cf6', minLevel:3  },
+  { id:'rayo',    name:'Rayo',     hex:'#FBB03B', minLevel:5  },
+  { id:'cosmos',  name:'Cosmos',   hex:'#e94560', minLevel:7  },
+  { id:'tierra',  name:'Tierra',   hex:'#16a34a', minLevel:10 },
+  { id:'agua',    name:'Agua',     hex:'#0d9488', minLevel:8  },
+  { id:'hada',    name:'Hada',     hex:'#ec4899', minLevel:6  },
+];
+
 let selectedMascot = 'spark';
+let selectedColor  = '#7ba6e2';
+
+function mascotSVG(id) {
+  switch (id) {
+    case 'spark': return `
+      <ellipse cx="70" cy="96" rx="42" ry="34" fill="${selectedColor}55"/>
+      <ellipse cx="54" cy="126" rx="11" ry="8" fill="${selectedColor}"/><ellipse cx="86" cy="126" rx="11" ry="8" fill="${selectedColor}"/>
+      <ellipse cx="36" cy="58" rx="10" ry="13" fill="${selectedColor}"/><ellipse cx="104" cy="58" rx="10" ry="13" fill="${selectedColor}"/>
+      <ellipse cx="70" cy="74" rx="40" ry="42" fill="${selectedColor}"/><ellipse cx="70" cy="76" rx="25" ry="27" fill="#eef2ff"/>
+      <line x1="70" y1="34" x2="70" y2="18" stroke="${selectedColor}" stroke-width="3"/><circle cx="70" cy="13" r="5" fill="#FBB03B"/>
+      <ellipse cx="60" cy="70" rx="5.5" ry="6.5" fill="#2F3A4A"/><ellipse cx="80" cy="70" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+      <circle cx="61.5" cy="68" r="1.8" fill="#fff"/><circle cx="81.5" cy="68" r="1.8" fill="#fff"/>
+      <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    case 'ember': return `
+      <path d="M70 14 C80 40 100 50 100 86 C100 110 87 128 70 128 C53 128 40 110 40 86 C40 62 56 56 58 42 C63 58 62 44 70 14 Z" fill="${selectedColor}"/>
+      <path d="M70 52 C77 66 88 72 88 92 C88 108 80 120 70 120 C60 120 52 108 52 92 C52 78 63 74 70 52 Z" fill="${selectedColor}cc"/>
+      <ellipse cx="70" cy="84" rx="20" ry="22" fill="#fff5e6"/>
+      <ellipse cx="61" cy="80" rx="5" ry="6" fill="#2F3A4A"/><ellipse cx="79" cy="80" rx="5" ry="6" fill="#2F3A4A"/>
+      <circle cx="62.3" cy="78.3" r="1.6" fill="#fff"/><circle cx="80.3" cy="78.3" r="1.6" fill="#fff"/>
+      <path d="M63 91 Q70 96 77 91" stroke="#2F3A4A" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    case 'pixel': return `
+      <line x1="70" y1="46" x2="70" y2="30" stroke="${selectedColor}" stroke-width="3"/><circle cx="70" cy="26" r="6" fill="#FBB03B"/>
+      <rect x="22" y="66" width="11" height="26" rx="4" fill="${selectedColor}"/><rect x="107" y="66" width="11" height="26" rx="4" fill="${selectedColor}"/>
+      <rect x="30" y="48" width="80" height="70" rx="16" fill="${selectedColor}"/><rect x="44" y="62" width="52" height="42" rx="11" fill="#eef2ff"/>
+      <rect x="48" y="120" width="16" height="12" rx="3" fill="${selectedColor}"/><rect x="76" y="120" width="16" height="12" rx="3" fill="${selectedColor}"/>
+      <rect x="56" y="75" width="9" height="12" rx="3" fill="#2F3A4A"/><rect x="75" y="75" width="9" height="12" rx="3" fill="#2F3A4A"/>
+      <path d="M63 93 Q70 98 77 93" stroke="#2F3A4A" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    case 'bolt': return `
+      <g stroke="${selectedColor}" stroke-width="3.5" stroke-linecap="round" opacity=".5"><line x1="6" y1="64" x2="22" y2="64"/><line x1="4" y1="80" x2="18" y2="80"/><line x1="8" y1="96" x2="24" y2="96"/></g>
+      <ellipse cx="72" cy="96" rx="40" ry="32" fill="${selectedColor}55"/>
+      <ellipse cx="56" cy="126" rx="11" ry="8" fill="${selectedColor}"/><ellipse cx="88" cy="126" rx="11" ry="8" fill="${selectedColor}"/>
+      <ellipse cx="72" cy="74" rx="38" ry="40" fill="${selectedColor}"/><ellipse cx="72" cy="76" rx="24" ry="26" fill="#fff8e6"/>
+      <path d="M74 12 L60 36 L72 36 L66 54 L88 28 L75 28 L82 12 Z" fill="${selectedColor}cc"/>
+      <ellipse cx="62" cy="70" rx="5.5" ry="6.5" fill="#2F3A4A"/><ellipse cx="82" cy="70" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+      <circle cx="63.5" cy="68" r="1.8" fill="#fff"/><circle cx="83.5" cy="68" r="1.8" fill="#fff"/>
+      <path d="M65 82 Q72 87 79 82" stroke="#2F3A4A" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    case 'nova': return `
+      <g transform="rotate(-20 70 78)"><ellipse cx="70" cy="78" rx="52" ry="16" fill="none" stroke="${selectedColor}" stroke-width="5" opacity=".4"/></g>
+      <ellipse cx="70" cy="76" rx="38" ry="40" fill="${selectedColor}"/><ellipse cx="70" cy="78" rx="24" ry="26" fill="#ffe4ea"/>
+      <g transform="rotate(-20 70 78)"><path d="M22 84 A52 16 0 0 0 118 72" fill="none" stroke="${selectedColor}" stroke-width="5" opacity=".85"/></g>
+      <path d="M104 30 l2.2 5.2 5.2 2.2 -5.2 2.2 -2.2 5.2 -2.2 -5.2 -5.2 -2.2 5.2 -2.2 z" fill="#FBB03B"/>
+      <path d="M30 100 l1.6 3.8 3.8 1.6 -3.8 1.6 -1.6 3.8 -1.6 -3.8 -3.8 -1.6 3.8 -1.6 z" fill="#FBB03B"/>
+      <ellipse cx="60" cy="72" rx="5.5" ry="6.5" fill="#2F3A4A"/><ellipse cx="80" cy="72" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+      <circle cx="61.5" cy="70" r="1.8" fill="#fff"/><circle cx="81.5" cy="70" r="1.8" fill="#fff"/>
+      <path d="M63 84 Q70 89 77 84" stroke="#2F3A4A" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    case 'sage': return `
+      <ellipse cx="70" cy="96" rx="40" ry="32" fill="${selectedColor}55"/>
+      <ellipse cx="54" cy="126" rx="11" ry="8" fill="${selectedColor}"/><ellipse cx="86" cy="126" rx="11" ry="8" fill="${selectedColor}"/>
+      <path d="M40 56 Q24 50 26 66 Q42 66 46 58 Z" fill="${selectedColor}"/><path d="M100 56 Q116 50 114 66 Q98 66 94 58 Z" fill="${selectedColor}"/>
+      <ellipse cx="70" cy="74" rx="38" ry="40" fill="${selectedColor}"/><ellipse cx="70" cy="76" rx="24" ry="26" fill="#f0fdf4"/>
+      <path d="M70 36 Q70 24 70 18" stroke="${selectedColor}cc" stroke-width="3" fill="none"/>
+      <path d="M70 24 Q56 16 54 28 Q66 30 70 24 Z" fill="${selectedColor}aa"/><path d="M70 26 Q84 18 86 30 Q72 32 70 26 Z" fill="${selectedColor}aa"/>
+      <ellipse cx="60" cy="70" rx="5.5" ry="6.5" fill="#2F3A4A"/><ellipse cx="80" cy="70" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+      <circle cx="61.5" cy="68" r="1.8" fill="#fff"/><circle cx="81.5" cy="68" r="1.8" fill="#fff"/>
+      <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+    default: return mascotSVG('spark');
+  }
+}
+
+function renderMascotMain() {
+  const el = document.getElementById('mascot-svg');
+  if (el) { el.innerHTML = mascotSVG(selectedMascot); }
+}
+
+function switchMascotTab(tab) {
+  document.getElementById('tab-shape').classList.toggle('active', tab==='shape');
+  document.getElementById('tab-color').classList.toggle('active', tab==='color');
+  document.getElementById('panel-shape').style.display = tab==='shape' ? '' : 'none';
+  document.getElementById('panel-color').style.display = tab==='color' ? '' : 'none';
+}
+
 function openMascotModal() {
+  // Render shape grid
   const grid = document.getElementById('mascot-grid');
   grid.innerHTML = mascots.map(m => {
     const locked = currentLevel < m.minLevel;
-    return `<div class="mascot-option ${locked?'locked-option':''} ${m.id===selectedMascot?'selected':''}" onclick="${locked?'':'selectMascot(\''+m.id+'\')'}">
+    // render preview with each mascot's own default color
+    const savedColor = selectedColor;
+    selectedColor = m.defaultColor;
+    const prevSvg = mascotSVG(m.id);
+    selectedColor = savedColor;
+    return `<div class="mascot-option ${locked?'locked-option':''} ${m.id===selectedMascot?'selected':''}"
+      onclick="${locked?'':'selectMascot(\''+m.id+'\')'}">
       ${locked?`<span class="mascot-lock-badge">Niv.${m.minLevel}</span>`:''}
-      <svg width="64" height="64" viewBox="0 0 140 140" fill="none">
-        <ellipse cx="70" cy="92" rx="44" ry="38" fill="${m.svgColor}55"/>
-        <ellipse cx="70" cy="70" rx="38" ry="40" fill="${m.svgColor}"/>
-        <ellipse cx="70" cy="73" rx="24" ry="26" fill="#eef2ff"/>
-        <ellipse cx="60" cy="68" rx="5" ry="6" fill="#2F3A4A"/><ellipse cx="80" cy="68" rx="5" ry="6" fill="#2F3A4A"/>
-        <circle cx="61.5" cy="66" r="1.6" fill="white"/><circle cx="81.5" cy="66" r="1.6" fill="white"/>
-        <path d="M63 80 Q70 85 77 80" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-      </svg>
+      <svg width="80" height="80" viewBox="0 0 140 140" fill="none">${prevSvg}</svg>
       <div class="mascot-name-label">${m.name}</div>
-      <div style="font-size:10px;color:#8aa4be;font-weight:500">${m.desc}</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px">
+        <span style="width:9px;height:9px;border-radius:50%;background:${m.defaultColor};display:inline-block"></span>
+        <span style="font-size:10px;color:${m.defaultColor};font-weight:800">${m.tipo}</span>
+      </div>
+      ${locked?`<div style="font-size:10px;color:var(--muted);font-weight:700;margin-top:3px">🔒 Niv.${m.minLevel}</div>`:''}
     </div>`;
   }).join('');
+
+  // Render color grid
+  const cgrid = document.getElementById('color-grid');
+  cgrid.innerHTML = mascotColors.map(c => {
+    const locked = currentLevel < c.minLevel;
+    const isSel = c.hex === selectedColor;
+    return `<div class="color-option ${locked?'locked-color':''} ${isSel?'selected-color':''}"
+      onclick="${locked?'':'selectColor(\''+c.hex+'\')'}">
+      ${locked?`<span class="mascot-lock-badge" style="font-size:9px">Niv.${c.minLevel}</span>`:''}
+      <span class="color-swatch" style="background:${c.hex}"></span>
+      <span class="color-name">${c.name}</span>
+      ${locked?`<span style="font-size:9px;color:var(--muted);font-weight:700">🔒 Niv.${c.minLevel}</span>`:''}
+    </div>`;
+  }).join('');
+
+  switchMascotTab('shape');
   document.getElementById('mascot-modal').classList.add('open');
 }
+
 function selectMascot(id) {
   selectedMascot = id;
-  const m = mascots.find(x => x.id === id);
-
-  // Update selected state in modal
+  const m = mascots.find(x=>x.id===id);
+  // Apply this character's default color automatically
+  if (m?.defaultColor) selectedColor = m.defaultColor;
   document.querySelectorAll('.mascot-option').forEach(el => {
-    const label = el.querySelector('.mascot-name-label')?.textContent;
-    el.classList.toggle('selected', label === m.name);
+    el.classList.toggle('selected', el.querySelector('.mascot-name-label')?.textContent === m.name);
   });
-
-  // Replace main mascot SVG with the chosen mascot's colour
-  const c = m.svgColor;
-  const cLight = c + '55'; // translucent version for body shadow
-  const mainSvg = document.getElementById('mascot-svg');
-  mainSvg.innerHTML = `
-    <ellipse cx="70" cy="92" rx="44" ry="38" fill="${cLight}"/>
-    <ellipse cx="70" cy="90" rx="39" ry="33" fill="${c}88"/>
-    <ellipse cx="70" cy="68" rx="40" ry="42" fill="${c}"/>
-    <ellipse cx="70" cy="71" rx="39" ry="41" fill="${c}"/>
-    <ellipse cx="70" cy="73" rx="25" ry="27" fill="#eef2ff"/>
-    <ellipse cx="36" cy="55" rx="11" ry="13" fill="${c}"/>
-    <ellipse cx="104" cy="55" rx="11" ry="13" fill="${c}"/>
-    <ellipse cx="36" cy="55" rx="6.5" ry="8.5" fill="${c}cc"/>
-    <ellipse cx="104" cy="55" rx="6.5" ry="8.5" fill="${c}cc"/>
-    <ellipse cx="60" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
-    <ellipse cx="80" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
-    <circle cx="61.5" cy="66" r="1.8" fill="white"/>
-    <circle cx="81.5" cy="66" r="1.8" fill="white"/>
-    <ellipse cx="70" cy="77" rx="4" ry="2.8" fill="#2F3A4A"/>
-    <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-    <ellipse cx="30" cy="94" rx="9" ry="15" fill="${c}" transform="rotate(-22 30 94)"/>
-    <ellipse cx="110" cy="94" rx="9" ry="15" fill="${c}" transform="rotate(22 110 94)"/>
-    <ellipse cx="54" cy="123" rx="12" ry="10" fill="${c}"/>
-    <ellipse cx="86" cy="123" rx="12" ry="10" fill="${c}"/>
-    <ellipse cx="54" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
-    <ellipse cx="86" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
-    <text x="108" y="43" font-size="14" fill="#FEF3C6" font-family="sans-serif">✦</text>
-    <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
-    <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
-  `;
-
-  // Animate it
-  mainSvg.style.transform = 'scale(0.85) rotate(-5deg)';
-  mainSvg.style.transition = 'transform .25s ease';
-  setTimeout(() => { mainSvg.style.transform = 'scale(1) rotate(0deg)'; }, 50);
-
-  // Random bubble
-  const bubbles = ['¡Let\'s Ignite!','¡A por ello!','¡Tú puedes!','¡Sube de nivel!','¡Reto aceptado!'];
-  document.getElementById('mascot-bubble').textContent = bubbles[Math.floor(Math.random() * bubbles.length)];
-
+  renderMascotMain();
+  animateMascot();
+  randomBubble();
   setTimeout(() => document.getElementById('mascot-modal').classList.remove('open'), 350);
 }
+
+function selectColor(hex) {
+  selectedColor = hex;
+  document.querySelectorAll('.color-option').forEach(el => {
+    const sw = el.querySelector('.color-swatch');
+    el.classList.toggle('selected-color', sw?.style.background === hex || sw?.style.backgroundColor === hex);
+  });
+  // Only update the main mascot on screen — NOT the previews in the grid
+  renderMascotMain();
+  animateMascot();
+  randomBubble();
+}
+
+function animateMascot() {
+  const el = document.getElementById('mascot-svg');
+  el.style.transition = 'transform .25s ease';
+  el.style.transform = 'scale(0.85) rotate(-5deg)';
+  setTimeout(() => { el.style.transform = 'scale(1) rotate(0deg)'; }, 50);
+}
+
+function randomBubble() {
+  const b = ['¡Let\'s Ignite!','¡A por ello!','¡Tú puedes!','¡Sube de nivel!','¡Reto aceptado!'];
+  document.getElementById('mascot-bubble').textContent = b[Math.floor(Math.random()*b.length)];
+}
+
+// Init
+renderMascotMain();
 
 // ── RAMA MODAL ────────────────────────────────────────────────
 const ramaData={
