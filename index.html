@@ -6,349 +6,428 @@
 <title>IGNITE NEXUS — Portal del Alumno</title>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --warm: #FEF3C6;
-  --light-blue: #EAF4FF;
-  --blue-main: #7CB8F5;
-  --blue-dark: #3E6FA8;
-  --cta: #2596BE;
-  --text: #2F3A4A;
-  --white: #fff;
-  --card-shadow: 0 2px 12px rgba(62,111,168,0.07), 0 1px 3px rgba(62,111,168,0.05);
-  --radius: 20px;
-  --radius-sm: 14px;
+/* ═══════════════════════════════════════════════════
+   PALETA TEMÁTICA — switchable via data-theme
+   ═══════════════════════════════════════════════════ */
+:root, [data-theme="amarillo"] {
+  --warm:        #FEF3C6;
+  --card-a:      #FFFFFF;
+  --card-b:      #EBF4FB;
+  --accent:      #FBB03B;
+  --blue-main:   #7CB8F5;
+  --blue-dark:   #3E6FA8;
+  --cta:         #2596BE;
+  --text:        #2F3A4A;
+  --radius:      20px;
+  --radius-sm:   14px;
+  --card-shadow: 0 2px 14px rgba(62,111,168,0.09), 0 1px 3px rgba(62,111,168,0.05);
 }
+[data-theme="cosmos"] {
+  --warm:      #1a1a2e;
+  --card-a:    #16213e;
+  --card-b:    #0f3460;
+  --accent:    #e94560;
+  --blue-main: #a8d8ea;
+  --blue-dark: #a8d8ea;
+  --cta:       #e94560;
+  --text:      #eaeaea;
+}
+[data-theme="bosque"] {
+  --warm:      #f0fdf4;
+  --card-a:    #ffffff;
+  --card-b:    #dcfce7;
+  --accent:    #16a34a;
+  --blue-main: #4ade80;
+  --blue-dark: #166534;
+  --cta:       #16a34a;
+  --text:      #14532d;
+}
+[data-theme="oceano"] {
+  --warm:      #f0f9ff;
+  --card-a:    #ffffff;
+  --card-b:    #e0f2fe;
+  --accent:    #0284c7;
+  --blue-main: #38bdf8;
+  --blue-dark: #0369a1;
+  --cta:       #0284c7;
+  --text:      #0c4a6e;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(--text); min-height: 100vh; }
+body {
+  font-family: 'Figtree', sans-serif;
+  background: var(--warm); color: var(--text); min-height: 100vh;
+  transition: background .5s, color .5s;
+  overflow-x: hidden;
+}
 
-.outer { display: block; min-height: 100vh; }
-.desktop-side { display: none; }
-.app { width: 100%; background: var(--warm); min-height: 100vh; }
+/* ═══ TOPBAR ═══════════════════════════════════════ */
+.topbar-wrapper {
+  position: sticky; top: 0; z-index: 100;
+  width: 100%;
+  background: var(--warm);
+  transition: background .3s ease;
+}
+.topbar-wrapper.collapsed {
+  background: transparent;
+  pointer-events: none;
+}
+.topbar-wrapper.collapsed .topbar-logo-icon,
+.topbar-wrapper.collapsed .topbar-right { pointer-events: all; }
 
-/* TOPBAR */
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 24px 12px;
-  position: sticky; top: 0; z-index: 10; background: var(--warm);
+  padding: 16px 24px 10px;
   max-width: 1400px; margin: 0 auto;
+  transition: padding .3s ease;
+  position: relative; /* for absolute-positioned icon */
 }
+.topbar-wrapper.collapsed .topbar { padding: 10px 18px; }
 
-/* Constrain content width on very wide screens but fill background */
-.hero-zone,
-.content { max-width: 1400px; margin: 0 auto; }
+.topbar-logo-full { transition: opacity .25s ease; opacity: 1; flex-shrink: 0; }
+.topbar-wrapper.collapsed .topbar-logo-full { opacity: 0; pointer-events: none; position: absolute; }
 
-/* Sections get more padding and breathing room on desktop */
-@media (min-width: 900px) {
-  .section { padding: 0 40px 28px; }
-  .hero-zone { padding-bottom: 36px; }
-  .profile-hero { padding: 20px 40px 0; }
-  .xp-block { padding: 16px 40px 0; max-width: 600px; }
-}
-
-/* topbar handled above */
-.topbar-right { display: flex; align-items: center; gap: 10px; }
-.view-toggle {
-  display: flex; align-items: center; background: var(--white);
-  border-radius: 30px; border: 1.5px solid var(--blue-main); overflow: hidden;
-}
-.view-toggle button {
-  padding: 6px 15px; border: none; background: transparent; cursor: pointer;
-  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 12px;
-  color: var(--blue-dark); transition: background .2s, color .2s;
-}
-.view-toggle button.active { background: var(--blue-dark); color: #fff; border-radius: 28px; }
-.avatar-btn {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: var(--blue-dark); border: none; cursor: pointer;
+.topbar-logo-icon {
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; color: #fff; font-weight: 900;
+  position: absolute; left: 50%; transform: translateX(-50%); z-index: 200;
 }
+.topbar-wrapper.collapsed .topbar-logo-icon { opacity: 1; pointer-events: all; }
+.topbar-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topbar-wrapper:not(.collapsed) .topbar-right { margin-left: 0; }
 
-/* =====================
-   HERO ZONE
-   ===================== */
-.hero-zone {
-  position: relative;
-  background: var(--warm);
-  padding-bottom: 28px;
+/* Lang */
+.lang-selector {
+  display: flex; align-items: center; background: var(--card-a);
+  border-radius: 30px; border: 1.5px solid var(--blue-main); overflow: hidden;
+  transition: background .2s, box-shadow .2s;
+}
+.lang-btn {
+  padding: 6px 12px; border: none; background: transparent; cursor: pointer;
+  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 11px;
+  color: var(--blue-dark); letter-spacing: .4px;
+  transition: opacity .2s ease, max-width .25s ease, padding .25s ease, background .2s, color .2s;
   overflow: hidden;
 }
+.lang-btn.active { background: var(--blue-dark); color: #fff; border-radius: 28px; }
+.topbar-wrapper.collapsed .lang-btn:not(.active) {
+  opacity: 0; max-width: 0; padding-left: 0; padding-right: 0;
+}
+.topbar-wrapper.collapsed .lang-selector {
+  background: rgba(255,255,255,.55); backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.8); box-shadow: 0 2px 12px rgba(62,111,168,.12);
+  cursor: pointer;
+}
+.topbar-wrapper.collapsed .lang-btn.active { background: transparent; color: var(--blue-dark); }
 
-/* decorative blob — purely behind mascot */
+.lang-modal {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  align-items: flex-start; justify-content: flex-end;
+}
+.lang-modal.open { display: flex; }
+.lang-modal-backdrop { position: absolute; inset: 0; }
+.lang-modal-box {
+  position: relative; z-index: 1; margin-top: 54px; margin-right: 18px;
+  background: rgba(255,255,255,.92); backdrop-filter: blur(18px);
+  border-radius: 16px; border: 1px solid rgba(124,184,245,.25);
+  box-shadow: 0 8px 28px rgba(62,111,168,.14);
+  padding: 5px; display: flex; flex-direction: column; gap: 2px; min-width: 86px;
+  animation: fadeDown .15s ease;
+}
+.lang-modal-btn {
+  padding: 9px 18px; border: none; background: transparent; cursor: pointer;
+  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 13px;
+  color: var(--blue-dark); border-radius: 10px; text-align: center; transition: background .15s;
+}
+.lang-modal-btn:hover { background: var(--card-b); }
+.lang-modal-btn.active { background: var(--blue-dark); color: #fff; }
+
+/* Palette picker row — in profile zone */
+.palette-picker-row {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(62,111,168,0.08); border: 1.5px solid rgba(62,111,168,0.18);
+  border-radius: 20px; padding: 6px 14px;
+  font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 700;
+  color: var(--blue-dark); cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.palette-picker-row:hover { background: rgba(62,111,168,0.14); transform: scale(1.02); }
+
+/* Palette modal — centred on screen */
+.palette-modal {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  align-items: center; justify-content: center;
+}
+.palette-modal.open { display: flex; }
+.palette-modal-backdrop { position: absolute; inset: 0; }
+.palette-modal-box {
+  position: relative; z-index: 1;
+  background: rgba(255,255,255,.94); backdrop-filter: blur(18px);
+  border-radius: 20px; border: 1px solid rgba(124,184,245,.25);
+  box-shadow: 0 8px 28px rgba(62,111,168,.18);
+  padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 200px;
+  animation: fadeDown .15s ease;
+}
+.palette-modal-title { font-size: 11px; font-weight: 800; color: #8aa4be; text-transform: uppercase; letter-spacing: .5px; padding: 2px 4px; }
+.palette-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 12px; cursor: pointer;
+  border: none; background: transparent; font-family: 'Figtree', sans-serif;
+  font-weight: 700; font-size: 13px; color: var(--text); transition: background .15s;
+  text-align: left;
+}
+.palette-option:hover { background: rgba(0,0,0,.05); }
+.palette-option.active { background: var(--blue-dark); color: #fff; }
+.palette-swatch {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+}
+/* Lock overlay on locked palettes */
+.palette-option.locked { opacity: .5; cursor: not-allowed; }
+.palette-lock { font-size: 12px; margin-left: auto; }
+
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ═══ HERO ZONE ════════════════════════════════════ */
+.hero-zone {
+  position: relative; background: var(--warm);
+  padding-bottom: 0; overflow: visible;  /* allow mascot to escape */
+  transition: background .5s;
+}
 .hero-blob-core {
   position: absolute; top: 0; left: 50%; transform: translateX(-50%);
   width: 360px; height: 240px;
   background: radial-gradient(ellipse 65% 60% at 50% 42%,
     #f0c830 0%, #f8de80 30%, #fef0b0 58%, transparent 80%);
   border-radius: 50% 50% 45% 45%; opacity: .75; pointer-events: none; z-index: 0;
+  transition: background .5s;
 }
 .hero-blob-shine {
   position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
   width: 200px; height: 160px;
-  background: radial-gradient(ellipse 55% 50% at 50% 38%, rgba(255,255,255,0.52) 0%, transparent 75%);
+  background: radial-gradient(ellipse 55% 50% at 50% 38%, rgba(255,255,255,.52) 0%, transparent 75%);
   border-radius: 50%; pointer-events: none; z-index: 0;
 }
 
-/* mascot row — mascot + bubble glued together, centered as a unit */
+/* ═══ MASCOT — sticky so it floats over topbar on scroll ═══ */
 .mascot-row {
-  position: relative; z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-top: 12px;
-  /* inner wrapper keeps mascot+bubble together regardless of outer width */
+  position: sticky;
+  top: 44px;               /* clears the collapsed topbar height */
+  z-index: 150;            /* above topbar-wrapper z-index:100 */
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-top: 12px; padding-bottom: 4px;
+  pointer-events: none;    /* let clicks pass through the empty area */
 }
 .mascot-unit {
-  position: relative;
-  display: inline-flex;
-  align-items: flex-end;
-  flex-shrink: 0;
+  position: relative; display: inline-flex; align-items: flex-end; flex-shrink: 0;
+  pointer-events: all;     /* but clicks on the mascot itself still work */
 }
-.mascot-svg {
-  width: 140px; height: 140px; display: block;
-  filter: drop-shadow(0 10px 20px rgba(62,111,168,0.18)) drop-shadow(0 2px 5px rgba(62,111,168,0.08));
+.mascot-svg { width: 140px; height: 140px; display: block; cursor: pointer;
+  filter: drop-shadow(0 12px 28px rgba(62,111,168,.25)) drop-shadow(0 2px 6px rgba(62,111,168,.12));
+  transition: transform .2s;
 }
-/* bubble: close to mascot, clipped inside page */
+.mascot-svg:hover { transform: scale(1.04) rotate(-2deg); }
 .mascot-bubble {
-  position: absolute;
-  right: -116px;
-  bottom: 64px;
+  position: absolute; right: -114px; bottom: 64px;
   background: var(--text); color: #fff; border-radius: 16px;
   padding: 8px 14px; font-size: 13px; font-weight: 700;
-  white-space: nowrap; box-shadow: 0 4px 16px rgba(47,58,74,0.20);
+  white-space: nowrap; box-shadow: 0 4px 16px rgba(47,58,74,.20);
+  animation: bubblePop .4s .3s both;
+  pointer-events: all;
 }
 .mascot-bubble::before {
   content: ''; position: absolute; left: -9px; top: 50%; transform: translateY(-50%);
   border: 6px solid transparent; border-right-color: var(--text);
 }
-/* narrow mobile: stack bubble below mascot */
+@keyframes bubblePop { from { opacity: 0; transform: scale(.7) translateY(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 360px) {
-  .mascot-bubble {
-    position: relative; right: auto; bottom: auto;
-    display: block; margin: 4px auto 0;
-  }
+  .mascot-bubble { position: relative; right: auto; bottom: auto; display: block; margin: 4px auto 0; }
   .mascot-bubble::before { display: none; }
   .mascot-unit { flex-direction: column; align-items: center; }
 }
 
-/* ---- PROFILE — centered, stacked ---- */
+/* ═══ PROFILE HERO — fades as first content section arrives ═══ */
 .profile-hero {
   position: relative; z-index: 3;
   display: flex; flex-direction: column; align-items: center;
-  text-align: center;
-  padding: 16px 24px 0;
-  gap: 4px;
+  text-align: center; padding: 16px 24px 0; gap: 4px;
+  transition: opacity .45s ease, transform .45s ease;
 }
-.profile-name {
-  font-size: 28px; font-weight: 900; color: var(--text);
-  line-height: 1.1; letter-spacing: -.3px;
+.profile-hero.fading {
+  opacity: 0;
+  transform: translateY(-18px) scale(.96);
+  pointer-events: none;
 }
-.profile-school {
-  font-size: 14px; color: var(--blue-dark); font-weight: 600; margin-top: 2px;
-}
-.profile-groups {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 6px;
-}
+.profile-name { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1.1; letter-spacing: -.3px; }
+.profile-school { font-size: 14px; color: var(--blue-dark); font-weight: 600; margin-top: 2px; }
+.profile-groups { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 6px; }
 .group-chip {
-  background: rgba(62,111,168,0.10); border-radius: 20px; padding: 3px 12px;
+  background: rgba(62,111,168,.10); border-radius: 20px; padding: 3px 12px;
   font-size: 13px; font-weight: 700; color: var(--blue-dark);
 }
-/* Level block — no box, just corporate elements on warm bg */
-.level-block {
-  display: flex; flex-direction: column; align-items: center;
-  margin-top: 14px; gap: 6px;
-}
-.level-label {
-  font-size: 13px; font-weight: 700; color: #8aa4be;
-  text-transform: uppercase; letter-spacing: .7px;
-}
-.level-num-row {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.level-num {
-  font-size: 52px; font-weight: 900; color: var(--blue-dark); line-height: 1;
-}
-.level-name {
-  font-size: 17px; font-weight: 700; color: var(--cta);
-}
-/* Decorative corner-marks flanking the big number — inline, no box */
-.level-corner-l {
-  flex-shrink: 0; align-self: center;
-}
-.level-corner-r {
-  flex-shrink: 0; align-self: center; transform: scaleX(-1);
-}
+.level-block { display: flex; flex-direction: column; align-items: center; margin-top: 14px; gap: 2px; }
+.level-label { font-size: 13px; font-weight: 700; color: #8aa4be; text-transform: uppercase; letter-spacing: .7px; }
+.level-num-row { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.level-corner-l { flex-shrink: 0; align-self: center; }
+.level-corner-r { flex-shrink: 0; align-self: center; transform: scaleX(-1); }
+.level-num { font-size: 52px; font-weight: 900; color: var(--blue-dark); line-height: 1; }
+.level-name { font-size: 17px; font-weight: 700; color: var(--cta); }
 
-/* ---- CARD COLOUR ALTERNATION PER SECTION ----
-   Secciones warm  → tarjetas blancas con sombra
-   Mis ramas       → cada tarjeta en un tono amarillo/dorado distinto
-   Actitud         → sin tarjeta, sin borde, sin sombra (inscrito en el fondo)
-   ---- */
-.section-warm .project-card,
-.section-warm .completed-card {
-  background: #FFFFFF;
-  box-shadow: var(--card-shadow);
-  border: 1px solid rgba(124,184,245,0.18);
-}
-
-/* Actitud — invisible, sin caja */
-.section-alt .actitud-card {
-  background: transparent;
-  box-shadow: none;
-  border: none;
-  padding-left: 4px; padding-right: 4px;
-}
-.section-alt .actitud-icon.pos { background: rgba(26,171,109,0.13); }
-.section-alt .actitud-icon.neg { background: rgba(224,82,82,0.11); }
-
-/* Ramas — contenedor único tipo card */
-.ramas-wrapper {
-  background: #FFFFFF;
-  border-radius: var(--radius);
-  box-shadow: var(--card-shadow);
-  border: 1px solid rgba(124,184,245,0.18);
-  padding: 16px;
-}
-
-/* Ramas — tres niveles de luminosidad claramente distintos, alternados
-   Claro: #FEF9C3 · Medio: #FBEAA0 · Oscuro (suavizado): #F8D96E
-   Patrón: claro–oscuro–medio–claro–oscuro–medio  → ningún vecino igual */
-.rama-card:nth-child(1) { background: #FEF9C3; } /* claro  */
-.rama-card:nth-child(2) { background: #F8D96E; } /* oscuro suave */
-.rama-card:nth-child(3) { background: #FBEAA0; } /* medio  */
-.rama-card:nth-child(4) { background: #FEF9C3; } /* claro  */
-.rama-card:nth-child(5) { background: #F8D96E; } /* oscuro suave */
-.rama-card:nth-child(6) { background: #FBEAA0; } /* medio  */
-
-.section-warm, .section-alt { background: transparent; }
-
-/* XP block */
+/* XP BLOCK */
 .xp-block {
-  position: relative; z-index: 3;
-  padding: 14px 24px 0;
+  position: relative; z-index: 3; padding: 14px 24px 0;
   max-width: 480px; width: 100%; margin: 0 auto;
+  transition: opacity .45s ease .05s, transform .45s ease .05s;
 }
-.xp-nums-row {
-  display: flex; align-items: baseline; justify-content: center; gap: 5px; margin-bottom: 10px;
+.xp-block.fading {
+  opacity: 0;
+  transform: translateY(-14px) scale(.97);
+  pointer-events: none;
 }
-.xp-current {
-  font-size: 36px; font-weight: 900; color: var(--text); line-height: 1;
-}
+.xp-nums-row { display: flex; align-items: baseline; justify-content: center; gap: 5px; margin-bottom: 10px; }
+.xp-counter { font-size: 36px; font-weight: 900; color: var(--text); line-height: 1; font-variant-numeric: tabular-nums; }
 .xp-unit { font-size: 16px; font-weight: 800; color: var(--blue-dark); }
 .xp-sep { font-size: 16px; color: #bbd0e6; font-weight: 600; margin: 0 2px; }
-.xp-next { font-size: 16px; color: #aac0d6; font-weight: 600; }
-.xp-bar-track {
-  height: 13px; background: rgba(62,111,168,0.12);
-  border-radius: 99px; overflow: hidden;
-}
+.xp-next-val { font-size: 16px; color: #aac0d6; font-weight: 600; }
+.xp-bar-track { height: 14px; background: rgba(62,111,168,.12); border-radius: 99px; overflow: visible; position: relative; }
 .xp-bar-fill {
   height: 100%; border-radius: 99px;
-  background: #FBB03B;
+  background: var(--accent);
+  width: 0%; transition: width 1.4s cubic-bezier(.22,.68,0,1.2);
   position: relative;
 }
 .xp-bar-fill::after {
-  content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 24px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32));
-  border-radius: 99px;
+  content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(251,176,59,.25);
+  animation: pulse 1.5s infinite;
 }
-.xp-legend {
-  display: flex; justify-content: space-between; margin-top: 5px;
-  font-size: 12px; color: #aac0d6; font-weight: 600;
-}
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(251,176,59,.25); } 50% { box-shadow: 0 0 0 7px rgba(251,176,59,.08); } }
+.xp-legend { display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; color: #aac0d6; font-weight: 600; }
 .xp-legend-left { color: var(--blue-dark); font-weight: 700; }
 
-/* CONTENT */
-.content { background: var(--warm); position: relative; z-index: 3; padding-top: 0; }
+/* ═══ SCROLL SENTINEL ══════════════════════════════ */
+#scroll-sentinel { height: 0; pointer-events: none; }
 
-/* SECTIONS */
-.section { padding: 0 20px 20px; }
+/* ═══ CONTENT ══════════════════════════════════════ */
+.content { background: transparent; position: relative; z-index: 3; max-width: 1400px; margin: 0 auto; }
+.section { padding: 0 20px 24px; }
 .section-title {
   font-size: 14px; font-weight: 800; color: var(--blue-dark);
   letter-spacing: .5px; text-transform: uppercase; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
 }
-
-/* GRIDS */
-.grid-auto   { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-/* RAMAS GRID — columnas explícitas: 1, 2, 3 o 6. Nunca 4 ni 5 */
-.grid-ramas {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-/* 2 columnas desde ~480px */
-@media (min-width: 480px) {
-  .grid-ramas { grid-template-columns: repeat(2, 1fr); }
-}
-/* 3 columnas desde ~700px */
-@media (min-width: 700px) {
-  .grid-ramas { grid-template-columns: repeat(3, 1fr); }
-}
-/* Salta directamente a 6 columnas — evita los feos 4 y 5 */
-@media (min-width: 1600px) {
-  .grid-ramas { grid-template-columns: repeat(6, 1fr); }
-}
-.grid-actitud{ display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
-
 @media (min-width: 900px) {
-  .grid-auto    { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
-  .grid-actitud { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .section { padding: 0 40px 28px; }
 }
 
-/* PROJECT CARD */
-.project-card {
-  background: var(--white); border-radius: var(--radius);
-  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
-  padding: 16px; display: flex; gap: 12px; align-items: flex-start;
+/* ═══ GRIDS ════════════════════════════════════════ */
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; }
+.grid-actitud { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 12px; }
+@media (min-width: 900px) {
+  .grid-auto { grid-template-columns: repeat(auto-fill, minmax(360px,1fr)); gap: 18px; }
+  .grid-actitud { grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 14px; }
 }
+/* Ramas grid */
+.ramas-wrapper { background: var(--card-a); border-radius: var(--radius); box-shadow: var(--card-shadow); padding: 16px; border: 1px solid rgba(124,184,245,.18); }
+.grid-ramas { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 480px) { .grid-ramas { grid-template-columns: repeat(2,1fr); } }
+@media (min-width: 700px) { .grid-ramas { grid-template-columns: repeat(3,1fr); } }
+@media (min-width: 1600px) { .grid-ramas { grid-template-columns: repeat(6,1fr); } }
+
+/* ═══ SECTION TRANSITION ═══════════════════════════ */
+.section-reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.section-reveal.visible { opacity: 1; transform: none; }
+
+/* ═══ PROJECT CARD ════════════════════════════════ */
+.project-card {
+  background: var(--card-a); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,.18);
+  padding: 18px; display: flex; gap: 14px; align-items: flex-start;
+  transition: transform .2s, box-shadow .2s;
+}
+.project-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(62,111,168,.15); }
 .project-thumb {
-  width: 52px; height: 52px; border-radius: 14px; background: var(--light-blue);
-  flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 24px;
+  width: 56px; height: 56px; border-radius: 16px; background: var(--card-b);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
 }
 .project-info { flex: 1; min-width: 0; }
 .project-name { font-size: 17px; font-weight: 800; color: var(--text); }
 .project-cat {
-  display: inline-block; background: var(--light-blue); color: var(--blue-dark);
+  display: inline-block; background: var(--card-b); color: var(--blue-dark);
   border-radius: 20px; padding: 3px 11px; font-size: 12px; font-weight: 700; margin: 5px 0 7px;
 }
-.project-desc { font-size: 13px; color: #6b8ba6; line-height: 1.55; margin-bottom: 8px; }
-.project-skills { display: flex; flex-wrap: wrap; gap: 5px; }
 .skill-chip {
-  background: var(--light-blue); border-radius: 20px; padding: 3px 10px;
-  font-size: 12px; font-weight: 700; color: var(--blue-dark);
+  display: inline-block; background: var(--card-b); border-radius: 20px;
+  padding: 3px 10px; font-size: 12px; font-weight: 700; color: var(--blue-dark); margin: 2px;
 }
+.project-skills { flex-wrap: wrap; }
 
-/* RAMA CARD */
+/* ═══ MISSION STATUS BADGE ═════════════════════════ */
+.mission-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--accent); color: #fff; border-radius: 20px;
+  padding: 4px 12px; font-size: 11px; font-weight: 800; letter-spacing: .3px;
+  animation: badgePulse 2s infinite;
+}
+@keyframes badgePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(251,176,59,.4); } 60% { box-shadow: 0 0 0 6px rgba(251,176,59,0); } }
+
+/* ═══ RAMA CARD ════════════════════════════════════ */
 .rama-card {
-  background: var(--white); border-radius: var(--radius);
-  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
-  padding: 18px 16px; cursor: pointer; transition: transform .15s, box-shadow .15s;
+  background: var(--card-a); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,.18);
+  padding: 18px 16px; cursor: pointer;
+  transition: transform .2s, box-shadow .2s, filter .2s;
 }
-.rama-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(62,111,168,0.12); }
-.rama-icon { width: 40px; height: 40px; margin-bottom: 10px; display: flex; align-items: center; }
-.rama-icon svg { width: 40px; height: 40px; }
-.rama-name { font-size: 17px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+.rama-card:hover {
+  transform: translateY(-3px) rotate(.5deg);
+  box-shadow: 0 8px 28px rgba(62,111,168,.18);
+  filter: brightness(1.03);
+}
+/* Glow pulse on hover */
+.rama-card:hover::after {
+  content: '';
+  position: absolute; inset: -2px; border-radius: calc(var(--radius) + 2px);
+  background: transparent;
+  box-shadow: 0 0 18px 4px rgba(251,176,59,.25);
+  pointer-events: none; animation: ramaGlow .6s ease;
+}
+.rama-card { position: relative; overflow: visible; }
+@keyframes ramaGlow { from { box-shadow: 0 0 0 0 rgba(251,176,59,.4); } to { box-shadow: 0 0 18px 4px rgba(251,176,59,.15); } }
+
+.rama-icon { width: 48px; height: 48px; margin-bottom: 10px; display: flex; align-items: center; }
+.rama-icon svg { width: 48px; height: 48px; }
+.rama-name { font-size: 17px; font-weight: 900; color: var(--text); margin-bottom: 3px; }
 .rama-level { font-size: 13px; color: var(--blue-dark); font-weight: 600; margin-bottom: 10px; }
-.rama-bar-bg { background: rgba(62,111,168,0.15); border-radius: 10px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 6px; }
-.rama-bar-fill { height: 100%; border-radius: 10px; }
-.rama-pts { font-size: 14px; font-weight: 900; color: var(--cta); margin-bottom: 2px; }
-.rama-bar-legend {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px;
-}
+.rama-bar-bg { background: rgba(62,111,168,.12); border-radius: 10px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 6px; }
+.rama-bar-fill { height: 100%; border-radius: 10px; background: var(--accent); transition: width .8s cubic-bezier(.22,.68,0,1.2); }
+.rama-bar-legend { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .rama-bar-legend-left { font-size: 12px; font-weight: 700; color: var(--blue-dark); }
-.rama-bar-legend-right { font-size: 11px; font-weight: 700; color: var(--blue-dark); opacity: 0.7; }
+.rama-bar-legend-right { font-size: 11px; font-weight: 700; color: var(--blue-dark); opacity: .7; }
 .rama-btn {
-  width: 100%; background: rgba(62,111,168,0.12); border: none; border-radius: 10px;
+  width: 100%; background: rgba(62,111,168,.10); border: none; border-radius: 10px;
   padding: 8px 0; font-size: 12px; font-weight: 700; color: var(--blue-dark);
   cursor: pointer; font-family: 'Figtree', sans-serif; transition: background .2s;
 }
 .rama-btn:hover { background: var(--blue-dark); color: #fff; }
+/* Yellow tones */
+.rama-card:nth-child(1) { background: #FEF9C3; }
+.rama-card:nth-child(2) { background: #F8D96E; }
+.rama-card:nth-child(3) { background: #FBEAA0; }
+.rama-card:nth-child(4) { background: #FEF9C3; }
+.rama-card:nth-child(5) { background: #F8D96E; }
+.rama-card:nth-child(6) { background: #FBEAA0; }
 
-/* COMPLETED CARD */
+/* ═══ COMPLETED CARD ═══════════════════════════════ */
 .completed-card {
-  background: var(--white); border-radius: var(--radius);
-  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18); padding: 16px;
+  background: var(--card-a); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,.18); padding: 18px;
+  transition: transform .15s;
 }
+.completed-card:hover { transform: translateY(-2px); }
 .completed-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .completed-name { font-size: 16px; font-weight: 800; color: var(--text); }
 .completed-dates { font-size: 12px; color: #8aa4be; margin-top: 3px; font-weight: 600; }
@@ -356,652 +435,621 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
   background: var(--warm); border: 1.5px solid var(--blue-main);
   border-radius: 14px; padding: 4px 12px; font-size: 14px; font-weight: 900;
   color: var(--blue-dark); white-space: nowrap;
+  display: flex; align-items: center; gap: 4px;
 }
 .expand-btn {
-  margin-top: 10px; background: none; border: 1.5px solid rgba(124,184,245,0.5);
+  margin-top: 10px; background: none; border: 1.5px solid rgba(124,184,245,.5);
   border-radius: 10px; padding: 6px 13px; font-size: 13px; font-weight: 700;
   color: var(--blue-dark); cursor: pointer; font-family: 'Figtree', sans-serif;
   display: flex; align-items: center; gap: 5px; transition: background .2s;
 }
-.expand-btn:hover { background: var(--light-blue); }
-.expand-arrow { transition: transform .2s; display: inline-block; }
-.skills-expanded { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--light-blue); }
+.expand-btn:hover { background: var(--card-b); }
+.expand-arrow { transition: transform .2s; }
+.skills-expanded { display: none; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--card-b); position: relative; overflow: hidden; }
 .skills-expanded.open { display: block; }
-.skill-pill-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+.skill-pill-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(124,184,245,.10); }
+.skill-pill-row:last-child { border-bottom: none; }
 .skill-pill-name { font-size: 13px; color: var(--text); font-weight: 600; }
 .skill-pill-xp { font-size: 13px; font-weight: 900; color: var(--cta); }
 
-/* ACTITUD CARD */
-.actitud-card {
-  background: var(--white); border-radius: var(--radius-sm);
-  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,0.18);
-  padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+/* XP Particles */
+.xp-particle {
+  position: absolute; pointer-events: none; z-index: 10;
+  font-size: 13px; font-weight: 900; color: var(--accent);
+  animation: floatUp .8s ease-out forwards;
 }
-.actitud-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.actitud-icon.pos { background: #e8f8f0; }
-.actitud-icon.neg { background: #ffeaea; }
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(.6); }
+}
+
+/* ═══ ACTITUD CARD ═════════════════════════════════ */
+.actitud-card {
+  background: transparent; border: none; box-shadow: none;
+  padding: 10px 4px; display: flex; align-items: center; gap: 14px;
+  transition: transform .15s;
+}
+.actitud-card:hover { transform: translateX(4px); }
+.actitud-icon {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.actitud-icon svg { width: 44px; height: 44px; }
 .actitud-info { flex: 1; }
 .actitud-name { font-size: 14px; font-weight: 700; color: var(--text); }
-.actitud-date { font-size: 12px; color: #8aa4be; margin-top: 2px; font-weight: 500; }
+.actitud-date { font-size: 12px; color: #8aa4be; margin-top: 2px; }
 .actitud-xp { font-size: 16px; font-weight: 900; }
-.actitud-xp.pos { color: #1aab6d; }
-.actitud-xp.neg { color: #e05252; }
+.actitud-xp.pos { color: #16a34a; }
+.actitud-xp.neg { color: #dc2626; }
 
-/* BUTTONS */
+/* ═══ BUTTONS ══════════════════════════════════════ */
 .more-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  background: var(--blue-dark); color: #fff; border: none; border-radius: 14px;
-  padding: 13px 0; width: 100%; font-family: 'Figtree', sans-serif;
-  font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 4px; transition: background .2s;
+  background: var(--blue-dark); color: #fff; border: none; border-radius: 16px;
+  padding: 14px 0; width: 100%; font-family: 'Figtree', sans-serif;
+  font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 6px;
+  transition: background .2s, transform .15s;
 }
-.more-btn:hover { background: var(--cta); }
+.more-btn:hover { background: var(--cta); transform: scale(1.01); }
 .load-more-btn {
-  background: none; border: 1.5px solid rgba(124,184,245,0.6); border-radius: 12px;
-  padding: 10px 0; width: 100%; font-family: 'Figtree', sans-serif;
-  font-size: 12px; font-weight: 800; color: var(--blue-dark);
-  cursor: pointer; margin-top: 4px; transition: background .2s;
+  background: none; border: 1.5px solid rgba(124,184,245,.6); border-radius: 14px;
+  padding: 11px 0; width: 100%; font-family: 'Figtree', sans-serif;
+  font-size: 13px; font-weight: 800; color: var(--blue-dark); cursor: pointer;
+  margin-top: 4px; transition: background .2s;
 }
-.load-more-btn:hover { background: var(--light-blue); }
+.load-more-btn:hover { background: var(--card-b); }
 
-/* PAGES */
-.page { display: none; }
-.page.active { display: block; }
-
-/* PROJECTS PAGE */
-.projects-page-header {
-  display: flex; align-items: center; gap: 12px;
-  padding: 18px 20px 14px; position: sticky; top: 0; background: var(--warm); z-index: 10;
-}
-.back-btn {
-  background: var(--white); border: 1.5px solid rgba(124,184,245,0.6);
-  border-radius: 12px; padding: 7px 14px; font-family: 'Figtree', sans-serif;
-  font-size: 13px; font-weight: 700; color: var(--blue-dark); cursor: pointer; transition: background .2s;
-}
-.back-btn:hover { background: var(--light-blue); }
-.projects-page-title { font-size: 18px; font-weight: 900; color: var(--text); }
-.pagination {
-  display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 16px; padding-bottom: 8px;
-}
-.page-btn {
-  background: var(--white); border: 1.5px solid rgba(124,184,245,0.6);
-  border-radius: 10px; padding: 8px 16px; font-family: 'Figtree', sans-serif;
-  font-size: 13px; font-weight: 700; color: var(--blue-dark); cursor: pointer; transition: background .2s;
-}
-.page-btn:disabled { opacity: .4; cursor: default; }
-.page-btn:not(:disabled):hover { background: var(--light-blue); }
-.page-indicator { font-size: 12px; color: #8aa4be; font-weight: 700; }
-
-/* FAMILY PLACEHOLDER */
-.family-empty {
-  padding: 80px 32px 40px; display: flex; flex-direction: column;
-  align-items: center; text-align: center; min-height: 60vh;
-}
-.family-empty-icon { font-size: 68px; margin-bottom: 22px; opacity: .3; }
-.family-empty-title { font-size: 21px; font-weight: 900; color: var(--blue-dark); margin-bottom: 10px; }
-.family-empty-sub { font-size: 14px; color: #8aa4be; font-weight: 500; max-width: 240px; line-height: 1.65; }
-
-/* MODAL */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(47,58,74,0.5); z-index: 100; align-items: flex-end; justify-content: center;
-}
+/* ═══ MODAL (ramas) ════════════════════════════════ */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(47,58,74,.5); z-index: 200; align-items: flex-end; justify-content: center; }
 .modal-overlay.open { display: flex; }
-.modal-box {
-  background: var(--white); border-radius: 28px 28px 0 0;
-  width: 100%; max-width: 520px; max-height: 80vh; overflow-y: auto;
+.modal-box { background: var(--card-a); border-radius: 28px 28px 0 0; width: 100%; max-width: 520px; max-height: 80vh; overflow-y: auto; padding: 26px 22px 36px; animation: slideUp .22s ease; position: relative; }
+@keyframes slideUp { from { transform: translateY(36px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-title { font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+.modal-subtitle { font-size: 13px; color: #8aa4be; margin-bottom: 18px; }
+.modal-close { position: absolute; right: 20px; top: 20px; background: var(--card-b); border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 16px; cursor: pointer; color: var(--blue-dark); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.skill-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--card-b); }
+.skill-row:last-child { border-bottom: none; }
+.skill-row-name { flex: 1; font-size: 14px; font-weight: 700; color: var(--text); }
+.skill-row-desc { font-size: 12px; color: #8aa4be; }
+.skill-row-xp { font-size: 15px; font-weight: 900; }
+.skill-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* ═══ MASCOT SELECTOR MODAL ════════════════════════ */
+.mascot-modal { display: none; position: fixed; inset: 0; background: rgba(47,58,74,.55); z-index: 300; align-items: flex-end; justify-content: center; }
+.mascot-modal.open { display: flex; }
+.mascot-modal-box {
+  background: var(--card-a); border-radius: 28px 28px 0 0;
+  width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto;
   padding: 26px 22px 36px; animation: slideUp .22s ease; position: relative;
 }
-@keyframes slideUp { from { transform: translateY(36px); opacity: 0; } to { transform: none; opacity: 1; } }
-.modal-title { font-size: 19px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
-.modal-subtitle { font-size: 12px; color: #8aa4be; margin-bottom: 18px; font-weight: 500; }
-.modal-close {
-  position: absolute; right: 20px; top: 20px; background: var(--light-blue); border: none;
-  border-radius: 50%; width: 34px; height: 34px; font-size: 16px; cursor: pointer;
-  color: var(--blue-dark); display: flex; align-items: center; justify-content: center; font-weight: 700;
+.mascot-modal-title { font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+.mascot-modal-sub { font-size: 13px; color: #8aa4be; margin-bottom: 20px; }
+.mascot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 14px; }
+.mascot-option {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: var(--card-b); border-radius: 18px; padding: 14px 8px;
+  cursor: pointer; border: 2.5px solid transparent; transition: border-color .2s, transform .15s;
+  position: relative;
 }
-.skill-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--light-blue); }
-.skill-row:last-child { border-bottom: none; }
-.skill-row-name { flex: 1; font-size: 13px; font-weight: 700; color: var(--text); }
-.skill-row-desc { font-size: 11px; color: #8aa4be; font-weight: 400; }
-.skill-row-xp { font-size: 14px; font-weight: 900; }
-.skill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.mascot-option:hover:not(.locked-option) { transform: scale(1.04); border-color: var(--accent); }
+.mascot-option.selected { border-color: var(--blue-dark); background: rgba(62,111,168,.08); }
+.mascot-option.locked-option { opacity: .5; cursor: not-allowed; }
+.mascot-name-label { font-size: 12px; font-weight: 800; color: var(--text); text-align: center; }
+.mascot-lock-badge {
+  position: absolute; top: 6px; right: 6px; background: var(--text); color: #fff;
+  border-radius: 8px; padding: 2px 6px; font-size: 10px; font-weight: 700;
+}
 
-/* LANGUAGE SELECTOR */
-.lang-selector {
-  display: flex; align-items: center;
-  background: var(--white); border-radius: 30px;
-  border: 1.5px solid var(--blue-main); overflow: hidden;
-}
-.lang-btn {
-  padding: 6px 12px; border: none; background: transparent; cursor: pointer;
-  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 11px;
-  color: var(--blue-dark); letter-spacing: .4px;
-  transition: background .2s, color .2s;
-}
-.lang-btn.active {
-  background: var(--blue-dark); color: #fff; border-radius: 28px;
-}
-.lang-btn:not(.active):hover { background: var(--light-blue); }
-
-/* FLOATING PROFILE SWITCHER */
+/* ═══ FLOATING SWITCHER ════════════════════════════ */
 .profile-switcher {
-  position: fixed;
-  bottom: 20px; left: 50%; transform: translateX(-50%);
-  z-index: 50;
-  background: rgba(255,255,255,0.55);
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 50; background: rgba(255,255,255,.55);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-radius: 40px;
-  border: 1px solid rgba(255,255,255,0.70);
-  box-shadow: 0 4px 24px rgba(62,111,168,0.14), 0 1px 4px rgba(62,111,168,0.08);
-  padding: 5px;
-  display: inline-flex; align-items: center; gap: 3px;
+  border-radius: 40px; border: 1px solid rgba(255,255,255,.70);
+  box-shadow: 0 4px 24px rgba(62,111,168,.14);
+  padding: 5px; display: inline-flex; align-items: center; gap: 3px;
 }
 .switcher-options { display: flex; gap: 3px; }
 .switcher-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   padding: 7px 16px; border-radius: 32px; border: none; cursor: pointer;
   font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 12px;
-  color: #8aa4be; background: transparent;
-  transition: background .2s, color .2s, box-shadow .2s;
-  white-space: nowrap;
+  color: #8aa4be; background: transparent; transition: background .2s, color .2s, box-shadow .2s;
 }
-.switcher-btn.active {
-  background: var(--blue-dark); color: #fff;
-  box-shadow: 0 2px 10px rgba(62,111,168,0.30);
-}
-.switcher-btn:not(.active):hover { background: rgba(62,111,168,0.08); color: var(--blue-dark); }
-.switcher-icon {
-  width: 18px; height: 18px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
+.switcher-btn.active { background: var(--blue-dark); color: #fff; box-shadow: 0 2px 10px rgba(62,111,168,.3); }
+.switcher-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.app { padding-bottom: 96px; }
 
-/* TOPBAR COLLAPSE */
-.topbar {
-  display: flex; align-items: center; justify-content: flex-end;
-  padding: 18px 24px 12px;
-  position: sticky; top: 0; z-index: 10; background: var(--warm);
-  max-width: 100%; margin: 0 auto;
-  transition: padding .3s ease, background .3s ease;
-}
-/* expanded: logo on left, lang on right */
-.topbar:not(.collapsed) { justify-content: space-between; }
-/* collapsed: fully transparent — only logo icon + lang pill float */
-.topbar.collapsed {
-  padding: 12px 18px;
-  background: transparent;
-  box-shadow: none;
-  pointer-events: none; /* clicks pass through empty space */
-}
-.topbar.collapsed .topbar-logo-icon,
-.topbar.collapsed .topbar-right { pointer-events: all; }
+/* ═══ PROJECTS PAGE ════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
+.projects-page-header { display: flex; align-items: center; gap: 12px; padding: 18px 20px 14px; position: sticky; top: 0; background: var(--warm); z-index: 10; max-width: 1400px; margin: 0 auto; }
+.back-btn { background: var(--card-a); border: 1.5px solid rgba(124,184,245,.6); border-radius: 12px; padding: 7px 14px; font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 700; color: var(--blue-dark); cursor: pointer; transition: background .2s; }
+.back-btn:hover { background: var(--card-b); }
+.projects-page-title { font-size: 18px; font-weight: 900; color: var(--text); }
+.pagination { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 16px; padding-bottom: 8px; }
+.page-btn { background: var(--card-a); border: 1.5px solid rgba(124,184,245,.6); border-radius: 10px; padding: 8px 16px; font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 700; color: var(--blue-dark); cursor: pointer; transition: background .2s; }
+.page-btn:disabled { opacity: .4; cursor: default; }
+.page-btn:not(:disabled):hover { background: var(--card-b); }
+.page-indicator { font-size: 12px; color: #8aa4be; font-weight: 700; }
 
-/* Full logo — shown when expanded */
-.topbar-logo-full {
-  transition: opacity .25s ease;
-  opacity: 1; flex-shrink: 0;
-}
-.topbar.collapsed .topbar-logo-full {
-  opacity: 0; pointer-events: none;
-  position: absolute;
-}
-
-/* Icon-only logo — centred absolutely in collapsed state */
-.topbar-logo-icon {
-  opacity: 0; pointer-events: none;
-  transition: opacity .25s ease;
-  display: flex; align-items: center; justify-content: center;
-  position: absolute; left: 50%; transform: translateX(-50%);
-  z-index: 100;
-}
-.topbar.collapsed .topbar-logo-icon {
-  opacity: 1; pointer-events: all;
-}
-
-/* Lang selector transitions */
-.lang-selector { transition: background .2s, border-color .2s, box-shadow .2s; }
-.lang-btn-option {
-  transition: opacity .2s ease, max-width .25s ease, padding .25s ease;
-  overflow: hidden;
-}
-
-/* Collapsed lang: hide inactive, pill gets frosted look, clickable to open modal */
-.topbar.collapsed .lang-btn-option:not(.active) {
-  opacity: 0; max-width: 0; padding-left: 0; padding-right: 0; border: none;
-}
-.topbar.collapsed .lang-selector {
-  background: rgba(255,255,255,0.60);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.85);
-  box-shadow: 0 2px 12px rgba(62,111,168,0.12);
-  cursor: pointer; border-radius: 20px;
-}
-.topbar.collapsed .lang-btn-option.active {
-  background: transparent; color: var(--blue-dark);
-}
-
-/* Lang mini-modal */
-.lang-modal {
-  display: none; position: fixed; inset: 0; z-index: 200;
-  align-items: flex-start; justify-content: flex-end;
-}
-.lang-modal.open { display: flex; }
-.lang-modal-backdrop { position: absolute; inset: 0; }
-.lang-modal-box {
-  position: relative; z-index: 1;
-  margin-top: 56px; margin-right: 18px;
-  background: rgba(255,255,255,0.90);
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  border-radius: 16px; border: 1px solid rgba(124,184,245,0.25);
-  box-shadow: 0 8px 28px rgba(62,111,168,0.14);
-  padding: 5px; display: flex; flex-direction: column; gap: 2px;
-  min-width: 86px;
-  animation: fadeDown .15s ease;
-}
-@keyframes fadeDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-.lang-modal-btn {
-  padding: 9px 18px; border: none; background: transparent; cursor: pointer;
-  font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 13px;
-  color: var(--blue-dark); border-radius: 10px; text-align: center;
-  transition: background .15s;
-}
-.lang-modal-btn:hover { background: var(--light-blue); }
-.lang-modal-btn.active { background: var(--blue-dark); color: #fff; }
-/* DESKTOP SIDE */
-.desktop-side { display: none; }
-
-/* Extra bottom padding so content isn't hidden under floating bar */
-.app { padding-bottom: 96px; width: 100%; }
+/* Family placeholder */
+.family-empty { padding: 80px 32px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 60vh; }
+.family-empty-title { font-size: 21px; font-weight: 900; color: var(--blue-dark); margin-bottom: 10px; margin-top: 20px; }
+.family-empty-sub { font-size: 14px; color: #8aa4be; font-weight: 500; max-width: 240px; line-height: 1.65; }
 </style>
 </head>
-<body>
-<div class="outer">
+<body data-theme="amarillo">
 
-  <div class="app">
+<!-- ══ TOPBAR ══════════════════════════════════════ -->
+<div class="topbar-wrapper" id="topbar-wrapper">
+<div class="topbar" id="topbar">
+  <a href="#" class="topbar-logo-full" style="text-decoration:none;display:flex;align-items:center;">
+    <svg viewBox="0 0 230 45" height="32" xmlns="http://www.w3.org/2000/svg">
+      <style>.t-i{font-family:'Figtree',sans-serif;font-weight:900;font-size:23px;letter-spacing:-.8px;fill:#3E6FA8}.t-n{font-family:'Figtree',sans-serif;font-weight:550;font-size:23px;letter-spacing:-.8px;fill:#2596BE;transform:skewX(-12deg);transform-origin:left}</style>
+      <g transform="translate(24,22)">
+        <path d="M-16-16 L-10-16 M-16-16 L-16-10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+        <path d="M16 16 L10 16 M16 16 L16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+        <path d="M-16 16 L-10 16 M-16 16 L-16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+        <path d="M16-16 L10-16 M16-16 L16-10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+        <g transform="scale(.85)"><path d="M-3.2-15 L3.2-14 L6.4 4.6 L.8 4.6 L-.8 18.4 L-7.2-2.3 L-1.6-2.3Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/></g>
+      </g>
+      <text x="56" y="30" class="t-i">IGNITE</text>
+      <text x="130" y="30" class="t-n">NEXUS</text>
+    </svg>
+  </a>
+  <a href="#" class="topbar-logo-icon" onclick="event.preventDefault();window.scrollTo({top:0,behavior:'smooth'})">
+    <svg viewBox="0 0 48 48" height="32" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(24,24)">
+        <path d="M-16-16 L-10-16 M-16-16 L-16-10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+        <path d="M16 16 L10 16 M16 16 L16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
+        <path d="M-16 16 L-10 16 M-16 16 L-16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+        <path d="M16-16 L10-16 M16-16 L16-10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
+      </g>
+      <g transform="translate(24.4,22.3) scale(.85)">
+        <path d="M-3.2-15 L3.2-14 L6.4 4.6 L.8 4.6 L-.8 18.4 L-7.2-2.3 L-1.6-2.3Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/>
+      </g>
+    </svg>
+  </a>
+  <div class="topbar-right">
+    <div class="lang-selector" id="lang-selector">
+      <button class="lang-btn active" id="lang-ESP" onclick="handleLangBtn('ESP')">ESP</button>
+      <button class="lang-btn" id="lang-ENG" onclick="handleLangBtn('ENG')">ENG</button>
+      <button class="lang-btn" id="lang-CAT" onclick="handleLangBtn('CAT')">CAT</button>
+    </div>
+  </div>
+</div>
+</div>
 
-    <div class="topbar" id="topbar">
-      <!-- Full logo (visible when expanded) -->
-      <a href="#" class="topbar-logo-full" style="text-decoration:none;display:flex;align-items:center;">
-        <svg viewBox="0 0 230 45" height="32" xmlns="http://www.w3.org/2000/svg">
-          <style>
-            .t-ignite{font-family:'Figtree',sans-serif;font-weight:900;font-size:23px;letter-spacing:-0.8px;fill:#3E6FA8;}
-            .t-nexus{font-family:'Figtree',sans-serif;font-weight:550;font-size:23px;letter-spacing:-0.8px;fill:#2596BE;transform:skewX(-12deg);transform-origin:left;}
-          </style>
-          <g transform="translate(24,22)">
-            <path d="M -16 -16 L -10 -16 M -16 -16 L -16 -10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
-            <path d="M 16 16 L 10 16 M 16 16 L 16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
-            <path d="M -16 16 L -10 16 M -16 16 L -16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
-            <path d="M 16 -16 L 10 -16 M 16 -16 L 16 -10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
-            <g transform="scale(0.85)">
-              <path d="M -3.2 -15 L 3.2 -14 L 6.4 4.6 L 0.8 4.6 L -0.8 18.4 L -7.2 -2.3 L -1.6 -2.3 Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/>
-            </g>
-          </g>
-          <text x="56" y="30" class="t-ignite">IGNITE</text>
-          <text x="130" y="30" class="t-nexus">NEXUS</text>
+<!-- Lang modal -->
+<div class="lang-modal" id="lang-modal">
+  <div class="lang-modal-backdrop" onclick="closeLangModal()"></div>
+  <div class="lang-modal-box">
+    <button class="lang-modal-btn active" id="modal-lang-ESP" onclick="setLang('ESP');closeLangModal()">ESP</button>
+    <button class="lang-modal-btn" id="modal-lang-ENG" onclick="setLang('ENG');closeLangModal()">ENG</button>
+    <button class="lang-modal-btn" id="modal-lang-CAT" onclick="setLang('CAT');closeLangModal()">CAT</button>
+  </div>
+</div>
+
+<!-- Palette modal -->
+<div class="palette-modal" id="palette-modal">
+  <div class="palette-modal-backdrop" onclick="document.getElementById('palette-modal').classList.remove('open')"></div>
+  <div class="palette-modal-box">
+    <div class="palette-modal-title">🎨 Tu paleta</div>
+    <button class="palette-option active" id="pal-amarillo" onclick="setPalette('amarillo')">
+      <span class="palette-swatch" style="background:#FEF3C6;border:1.5px solid #FBB03B"></span> Clásico
+    </button>
+    <button class="palette-option" id="pal-bosque" onclick="setPalette('bosque')">
+      <span class="palette-swatch" style="background:#f0fdf4;border:1.5px solid #16a34a"></span> Bosque
+    </button>
+    <button class="palette-option" id="pal-oceano" onclick="setPalette('oceano')">
+      <span class="palette-swatch" style="background:#f0f9ff;border:1.5px solid #0284c7"></span> Océano
+    </button>
+    <button class="palette-option locked" id="pal-cosmos" onclick="showPaletteLock()">
+      <span class="palette-swatch" style="background:#1a1a2e;border:1.5px solid #e94560"></span> Cosmos
+      <span class="palette-lock">🔒 Niv.10</span>
+    </button>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- ══ PAGE HOME ═══════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <div class="hero-zone">
+    <div class="hero-blob-core"></div>
+    <div class="hero-blob-shine"></div>
+    <div class="mascot-row">
+      <div class="mascot-unit" id="mascot-unit">
+        <!-- Default mascot: Spark -->
+        <svg class="mascot-svg" id="mascot-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="openMascotModal()">
+          <ellipse cx="70" cy="92" rx="44" ry="38" fill="#c8dff7"/>
+          <ellipse cx="70" cy="90" rx="39" ry="33" fill="#bdd5f5"/>
+          <ellipse cx="70" cy="68" rx="40" ry="42" fill="#8ab2e8"/>
+          <ellipse cx="70" cy="71" rx="39" ry="41" fill="#7ba6e2"/>
+          <ellipse cx="70" cy="73" rx="25" ry="27" fill="#eef2ff"/>
+          <ellipse cx="36" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
+          <ellipse cx="104" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
+          <ellipse cx="36" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
+          <ellipse cx="104" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
+          <ellipse cx="60" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+          <ellipse cx="80" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+          <circle cx="61.5" cy="66" r="1.8" fill="white"/>
+          <circle cx="81.5" cy="66" r="1.8" fill="white"/>
+          <ellipse cx="70" cy="77" rx="4" ry="2.8" fill="#2F3A4A"/>
+          <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <ellipse cx="30" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(-22 30 94)"/>
+          <ellipse cx="110" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(22 110 94)"/>
+          <ellipse cx="54" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
+          <ellipse cx="86" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
+          <ellipse cx="54" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+          <ellipse cx="86" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+          <text x="108" y="43" font-size="14" fill="#FEF3C6" font-family="sans-serif">✦</text>
+          <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
+          <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
         </svg>
-      </a>
-      <!-- Icon-only logo (visible when collapsed) -->
-      <a href="#" class="topbar-logo-icon" style="text-decoration:none;" onclick="event.preventDefault();window.scrollTo({top:0,behavior:'smooth'})">
-        <svg viewBox="0 0 48 48" height="32" xmlns="http://www.w3.org/2000/svg">
-          <!-- corners centred exactly at 24,24 -->
-          <g transform="translate(24,24)">
-            <path d="M -16 -16 L -10 -16 M -16 -16 L -16 -10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
-            <path d="M 16 16 L 10 16 M 16 16 L 16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/>
-            <path d="M -16 16 L -10 16 M -16 16 L -16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
-            <path d="M 16 -16 L 10 -16 M 16 -16 L 16 -10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/>
-          </g>
-          <!-- bolt: geometric centre is x=-0.4, y=+1.7 → compensate exactly -->
-          <g transform="translate(24.4,22.3) scale(0.85)">
-            <path d="M -3.2 -15 L 3.2 -14 L 6.4 4.6 L 0.8 4.6 L -0.8 18.4 L -7.2 -2.3 L -1.6 -2.3 Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/>
-          </g>
-        </svg>
-      </a>
+        <div class="mascot-bubble" id="mascot-bubble">Let's Ignite!</div>
+      </div>
+    </div>
 
-      <div class="topbar-right">
-        <!-- Language selector: 3 buttons when expanded, active-only when collapsed -->
-        <div class="lang-selector" id="lang-selector" onclick="if(document.getElementById('topbar').classList.contains('collapsed')){document.getElementById('lang-modal').classList.add('open')}">
-          <button class="lang-btn lang-btn-option active" id="lang-ESP" onclick="handleLangBtn('ESP')">ESP</button>
-          <button class="lang-btn lang-btn-option" id="lang-ENG" onclick="handleLangBtn('ENG')">ENG</button>
-          <button class="lang-btn lang-btn-option" id="lang-CAT" onclick="handleLangBtn('CAT')">CAT</button>
+    <div class="profile-hero">
+      <div class="profile-name">Álvaro López</div>
+      <div class="profile-school">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M4 10 L12 5 L20 10 L20 20 L4 20Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><rect x="9" y="14" width="6" height="6" stroke="#7CB8F5" stroke-width="1.5"/></svg>
+        CEIP San Pablo · Madrid
+      </div>
+      <div class="profile-groups">
+        <span class="group-chip">Makers 5A</span>
+        <span class="group-chip">Robótica Avanzada</span>
+      </div>
+      <div class="level-block">
+        <span class="level-label">Nivel</span>
+        <div class="level-num-row">
+          <svg class="level-corner-l" width="20" height="28" viewBox="0 0 20 28" fill="none">
+            <path d="M18 2 L2 2 L2 26" stroke="#2596BE" stroke-width="2" stroke-linecap="square" fill="none"/>
+          </svg>
+          <svg width="20" height="32" viewBox="0 0 32 48" fill="none">
+            <path d="M18.5 3 L24 4.5 L28 22 L20 22 L18 42 L5 17 L13 17Z" fill="#FBB03B"/>
+          </svg>
+          <span class="level-num" id="level-display">7</span>
+          <svg class="level-corner-r" width="20" height="28" viewBox="0 0 20 28" fill="none">
+            <path d="M18 2 L2 2 L2 26" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square" fill="none"/>
+          </svg>
+        </div>
+        <span class="level-name">Héroe Digital</span>
+      </div>
+    </div>
+
+    <div class="xp-block">
+      <div class="xp-nums-row">
+        <span class="xp-counter" id="xp-counter">0</span>
+        <span class="xp-unit">XP</span>
+        <span class="xp-sep">/</span>
+        <span class="xp-next-val">3.200 XP</span>
+      </div>
+      <div class="xp-bar-track">
+        <div class="xp-bar-fill" id="xp-bar" style="width:0%"></div>
+      </div>
+      <div class="xp-legend">
+        <span class="xp-legend-left">Nivel 7</span>
+        <span>360 XP para Nivel 8</span>
+      </div>
+      <!-- Palette picker — lives in the profile zone -->
+      <div style="display:flex;justify-content:center;margin-top:14px;">
+        <button class="palette-picker-row" onclick="document.getElementById('palette-modal').classList.toggle('open')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="10" r="2" fill="#FBB03B"/><circle cx="16" cy="10" r="2" fill="#2596BE"/><circle cx="12" cy="16" r="2" fill="#16a34a"/></svg>
+          Personalizar paleta
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="scroll-sentinel"></div>
+  <div class="content">
+  <div id="students-view">
+
+    <!-- MISIONES ACTIVAS -->
+    <div class="section section-reveal">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><path d="M16 2 L20.8 18 L12.8 18 L11.2 33.6 L3.2 12.8 L11.2 12.8Z" fill="#FBB03B"/></svg>
+        Misión activa
+      </div>
+      <div class="grid-auto">
+        <div class="project-card">
+          <div class="project-thumb">
+            <svg width="34" height="34" viewBox="0 0 40 40" fill="none"><rect x="10" y="15" width="20" height="17" rx="2" stroke="#3E6FA8" stroke-width="1.5"/><rect x="14" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="21" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><path d="M20 11V15M14 32V36M26 32V36M6 22H10M30 22H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M15 27H25" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="9" r="2" stroke="#3E6FA8" stroke-width="1.5"/></svg>
+          </div>
+          <div class="project-info">
+            <div class="project-name">Robot Explorador</div>
+            <span class="project-cat">ROBÓTICA</span>
+            <div class="project-skills">
+              <span class="skill-chip">Programación</span>
+              <span class="skill-chip">Electrónica</span>
+              <span class="skill-chip">Diseño mecánico</span>
+              <span class="skill-chip">Resolución</span>
+            </div>
+          </div>
+          <div>
+            <span class="mission-badge">
+              <svg width="10" height="10" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="4" fill="#fff"/></svg>
+              En curso
+            </span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-thumb">
+            <svg width="34" height="34" viewBox="0 0 40 40" fill="none"><rect x="5" y="20" width="9" height="15" rx="1" stroke="#3E6FA8" stroke-width="1.5"/><rect x="16" y="12" width="9" height="23" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="27" y="17" width="9" height="18" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><path d="M4 35H37" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M18.5 3 L21.5 4 L23 14 L19.5 14 L18.8 21 L14.5 9 L17.5 9Z" fill="#FBB03B"/></svg>
+          </div>
+          <div class="project-info">
+            <div class="project-name">Ciudad del Futuro 3D</div>
+            <span class="project-cat">DISEÑO 3D</span>
+            <div class="project-skills">
+              <span class="skill-chip">Modelado 3D</span>
+              <span class="skill-chip">Creatividad</span>
+              <span class="skill-chip">Sostenibilidad</span>
+            </div>
+          </div>
+          <div>
+            <span class="mission-badge">
+              <svg width="10" height="10" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="4" fill="#fff"/></svg>
+              En curso
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Lang mini-modal (for collapsed state) -->
-    <div class="lang-modal" id="lang-modal">
-      <div class="lang-modal-backdrop" onclick="closeLangModal()"></div>
-      <div class="lang-modal-box">
-        <button class="lang-modal-btn active" id="modal-lang-ESP" onclick="setLang('ESP');closeLangModal()">ESP</button>
-        <button class="lang-modal-btn" id="modal-lang-ENG" onclick="setLang('ENG');closeLangModal()">ENG</button>
-        <button class="lang-modal-btn" id="modal-lang-CAT" onclick="setLang('CAT');closeLangModal()">CAT</button>
+    <!-- PODERES / RAMAS -->
+    <div class="section section-reveal">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><path d="M8 24 L8 14 L16 8 M8 18 L16 18" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="16" cy="8" r="2.5" fill="#2596BE"/><circle cx="16" cy="18" r="2.5" fill="#7CB8F5"/><circle cx="8" cy="24" r="2.5" fill="#3E6FA8"/></svg>
+        Poderes desbloqueados
+      </div>
+      <div class="ramas-wrapper">
+        <div class="grid-ramas">
+          <div class="rama-card" onclick="openModal('Science')">
+            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(-45 20 20)" stroke="#3E6FA8" stroke-width="1.5"/><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(45 20 20)" stroke="#7CB8F5" stroke-width="1.5"/><path d="M17.6 12 L20.4 13 L22 20.8 L19 20.8 L18.2 28.6 L14.2 19.3 L17.2 19.3Z" fill="#FBB03B"/></svg></div>
+            <div class="rama-name">Science</div><div class="rama-level">Nivel 4 · Explorer</div>
+            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="72"></div></div>
+            <div class="rama-bar-legend"><span class="rama-bar-legend-left">540 XP</span><span class="rama-bar-legend-right">+210 para Niv.5</span></div>
+            <button class="rama-btn" onclick="event.stopPropagation();openModal('Science')">Ver poderes →</button>
+          </div>
+          <div class="rama-card" onclick="openModal('Technology')">
+            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><rect x="12" y="12" width="16" height="16" rx="3" stroke="#2596BE" stroke-width="1.5"/><path d="M20 6V12M20 28V34M6 20H12M28 20H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="20" r="2.5" fill="#FBB03B"/></svg></div>
+            <div class="rama-name">Technology</div><div class="rama-level">Nivel 6 · Builder</div>
+            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="89"></div></div>
+            <div class="rama-bar-legend"><span class="rama-bar-legend-left">820 XP</span><span class="rama-bar-legend-right">+100 para Niv.7</span></div>
+            <button class="rama-btn" onclick="event.stopPropagation();openModal('Technology')">Ver poderes →</button>
+          </div>
+          <div class="rama-card" onclick="openModal('Engineering')">
+            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="22" r="9" stroke="#3E6FA8" stroke-width="1.5"/><circle cx="20" cy="22" r="4" stroke="#2596BE" stroke-width="1.5"/><path d="M20 10V13M20 31V34M8 22H11M29 22H32" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M17.6 17 L20.4 18 L21.8 22.8 L19.2 22.8 L18.5 27 L15.5 20.3 L18 20.3Z" fill="#FBB03B"/></svg></div>
+            <div class="rama-name">Engineering</div><div class="rama-level">Nivel 5 · Maker</div>
+            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="61"></div></div>
+            <div class="rama-bar-legend"><span class="rama-bar-legend-left">430 XP</span><span class="rama-bar-legend-right">+270 para Niv.6</span></div>
+            <button class="rama-btn" onclick="event.stopPropagation();openModal('Engineering')">Ver poderes →</button>
+          </div>
+          <div class="rama-card" onclick="openModal('Art')">
+            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M8 30 L16 14 L24 22 L32 10" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><rect x="5" y="27" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="13" y="11" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><rect x="21" y="19" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="29" y="7" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/></svg></div>
+            <div class="rama-name">Art</div><div class="rama-level">Nivel 4 · Creator</div>
+            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="55"></div></div>
+            <div class="rama-bar-legend"><span class="rama-bar-legend-left">380 XP</span><span class="rama-bar-legend-right">+320 para Niv.5</span></div>
+            <button class="rama-btn" onclick="event.stopPropagation();openModal('Art')">Ver poderes →</button>
+          </div>
+          <div class="rama-card" onclick="openModal('Maths')">
+            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M8 34 L8 8 M8 34 L34 34" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><rect x="11" y="22" width="5" height="12" stroke="#3E6FA8" stroke-width="1.5"/><rect x="19" y="16" width="5" height="18" stroke="#2596BE" stroke-width="1.5"/><rect x="27" y="10" width="5" height="24" stroke="#3E6FA8" stroke-width="1.5"/><path d="M17 14 L20 15 L21 21 L18.5 21 L17.8 26 L15 19 L17.5 19Z" fill="#FBB03B"/></svg></div>
+            <div class="rama-name">Maths</div><div class="rama-level">Nivel 3 · Solver</div>
+            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="38"></div></div>
+            <div class="rama-bar-legend"><span class="rama-bar-legend-left">270 XP</span><span class="rama-bar-legend-right">+430 para Niv.4</span></div>
+            <button class="rama-btn" onclick="event.stopPropagation();openModal('Maths')">Ver poderes →</button>
+          </div>
+          <div class="rama-card" onclick="openModal('Transversals')">
+            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M20 9 L31 27 L9 27Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><circle cx="20" cy="9" r="3" fill="#2596BE"/><circle cx="31" cy="27" r="3" fill="#7CB8F5"/><circle cx="9" cy="27" r="3" fill="#7CB8F5"/><circle cx="20" cy="20" r="2" fill="#FBB03B"/></svg></div>
+            <div class="rama-name">Transversals</div><div class="rama-level">Nivel 5 · Leader</div>
+            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="78"></div></div>
+            <div class="rama-bar-legend"><span class="rama-bar-legend-left">400 XP</span><span class="rama-bar-legend-right">+110 para Niv.6</span></div>
+            <button class="rama-btn" onclick="event.stopPropagation();openModal('Transversals')">Ver poderes →</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- PAGE HOME -->
-    <div id="page-home" class="page active">
+    <!-- ARCHIVO DE MISIONES -->
+    <div class="section section-reveal">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="#3E6FA8" stroke-width="1.5"/><rect x="18" y="5" width="9" height="9" rx="2" stroke="#7CB8F5" stroke-width="1.5"/><rect x="5" y="18" width="9" height="9" rx="2" stroke="#7CB8F5" stroke-width="1.5"/><rect x="18" y="18" width="9" height="9" rx="2" stroke="#2596BE" stroke-width="1.5"/></svg>
+        Archivo de misiones
+      </div>
+      <div class="grid-auto">
+        <div class="completed-card">
+          <div class="completed-header">
+            <div><div class="completed-name">Estación Meteorológica</div><div class="completed-dates">15 ene – 12 feb 2025 · <span style="color:var(--cta)">Electrónica</span></div></div>
+            <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>320 XP</div>
+          </div>
+          <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver poderes</button>
+          <div class="skills-expanded">
+            <div class="skill-pill-row"><span class="skill-pill-name">Sensores & Arduino</span><span class="skill-pill-xp">+120 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">Análisis de datos</span><span class="skill-pill-xp">+100 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">Trabajo en equipo</span><span class="skill-pill-xp">+100 XP</span></div>
+          </div>
+        </div>
+        <div class="completed-card">
+          <div class="completed-header">
+            <div><div class="completed-name">Videojuego en Scratch</div><div class="completed-dates">3 nov – 28 nov 2024 · <span style="color:var(--cta)">Programación</span></div></div>
+            <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>280 XP</div>
+          </div>
+          <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver poderes</button>
+          <div class="skills-expanded">
+            <div class="skill-pill-row"><span class="skill-pill-name">Lógica de programación</span><span class="skill-pill-xp">+130 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">Diseño de personajes</span><span class="skill-pill-xp">+80 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">Creatividad narrativa</span><span class="skill-pill-xp">+70 XP</span></div>
+          </div>
+        </div>
+        <div class="completed-card">
+          <div class="completed-header">
+            <div><div class="completed-name">Puente de Espaguetis</div><div class="completed-dates">5 oct – 25 oct 2024 · <span style="color:var(--cta)">Ingeniería</span></div></div>
+            <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>200 XP</div>
+          </div>
+          <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver poderes</button>
+          <div class="skills-expanded">
+            <div class="skill-pill-row"><span class="skill-pill-name">Resistencia de materiales</span><span class="skill-pill-xp">+90 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">Trabajo cooperativo</span><span class="skill-pill-xp">+70 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">Prototipado</span><span class="skill-pill-xp">+40 XP</span></div>
+          </div>
+        </div>
+        <div class="completed-card">
+          <div class="completed-header">
+            <div><div class="completed-name">App de Reciclaje</div><div class="completed-dates">10 sep – 2 oct 2024 · <span style="color:var(--cta)">Programación</span></div></div>
+            <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>250 XP</div>
+          </div>
+          <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver poderes</button>
+          <div class="skills-expanded">
+            <div class="skill-pill-row"><span class="skill-pill-name">Diseño de apps</span><span class="skill-pill-xp">+110 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">Sostenibilidad</span><span class="skill-pill-xp">+80 XP</span></div>
+            <div class="skill-pill-row"><span class="skill-pill-name">UX Design</span><span class="skill-pill-xp">+60 XP</span></div>
+          </div>
+        </div>
+      </div>
+      <button class="more-btn" onclick="showPage('projects')" style="margin-top:12px">Ver todas las misiones →</button>
+    </div>
 
-      <div class="hero-zone">
-        <!-- blob glow -->
-        <div class="hero-blob-core"></div>
-        <div class="hero-blob-shine"></div>
-
-        <!-- mascot + bubble glued together as one unit, centered -->
-        <div class="mascot-row">
-          <div class="mascot-unit">
-            <svg class="mascot-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="70" cy="92" rx="44" ry="38" fill="#c8dff7"/>
-              <ellipse cx="70" cy="90" rx="39" ry="33" fill="#bdd5f5"/>
-              <ellipse cx="70" cy="68" rx="40" ry="42" fill="#8ab2e8"/>
-              <ellipse cx="70" cy="71" rx="39" ry="41" fill="#7ba6e2"/>
-              <ellipse cx="70" cy="73" rx="25" ry="27" fill="#eef2ff"/>
-              <ellipse cx="36" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
-              <ellipse cx="104" cy="55" rx="11" ry="13" fill="#7ba6e2"/>
-              <ellipse cx="36" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
-              <ellipse cx="104" cy="55" rx="6.5" ry="8.5" fill="#b8ccf0"/>
-              <ellipse cx="60" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
-              <ellipse cx="80" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
-              <circle cx="61.5" cy="66" r="1.8" fill="white"/>
-              <circle cx="81.5" cy="66" r="1.8" fill="white"/>
-              <ellipse cx="70" cy="77" rx="4" ry="2.8" fill="#2F3A4A"/>
-              <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-              <ellipse cx="30" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(-22 30 94)"/>
-              <ellipse cx="110" cy="94" rx="9" ry="15" fill="#7ba6e2" transform="rotate(22 110 94)"/>
-              <ellipse cx="54" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
-              <ellipse cx="86" cy="123" rx="12" ry="10" fill="#7ba6e2"/>
-              <ellipse cx="54" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
-              <ellipse cx="86" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
-              <text x="108" y="43" font-size="14" fill="#FEF3C6" font-family="sans-serif">✦</text>
-              <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
-              <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
+    <!-- ACTITUD -->
+    <div class="section section-reveal">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><path d="M16 4 L20 13 L29 16 L20 19 L16 28 L12 19 L3 16 L12 13Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><path d="M14.9 10.8 L17.1 11.1 L18.2 17.6 L16.3 17.6 L15.7 22.4 L13.5 15.2 L15.4 15.2Z" fill="#FBB03B"/></svg>
+        Actitud
+      </div>
+      <div class="grid-actitud" id="actitud-list">
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#dcfce7">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
+              <path d="M18 32 L26 40 L42 22" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="42" cy="18" r="5" fill="#FBB03B" opacity=".8"/>
             </svg>
-            <!-- bubble is child of mascot-unit so it moves with it -->
-            <div class="mascot-bubble">Let's Ignite!</div>
           </div>
+          <div class="actitud-info"><div class="actitud-name">Ayudó a un compañero</div><div class="actitud-date">14 may 2025</div></div>
+          <div class="actitud-xp pos">+20 XP</div>
         </div>
-
-        <!-- PROFILE — centered, stacked -->
-        <div class="profile-hero">
-          <div class="profile-name">Álvaro López</div>
-          <div class="profile-school"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M4 10 L12 5 L20 10 L20 20 L4 20 Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><rect x="9" y="14" width="6" height="6" stroke="#7CB8F5" stroke-width="1.5"/></svg>CEIP San Pablo · Madrid</div>
-          <div class="profile-groups">
-            <span class="group-chip">Makers 5A</span>
-            <span class="group-chip">Robótica Avanzada</span>
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#fef9c3">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#fde68a"/>
+              <path d="M30 14 L33.5 23 L44 23 L36 29 L39 38 L30 32 L21 38 L24 29 L16 23 L26.5 23Z" fill="#FBB03B"/>
+            </svg>
           </div>
-          <div class="level-block">
-            <span class="level-label">Nivel</span>
-            <div class="level-num-row">
-              <!-- left corner mark -->
-              <svg class="level-corner-l" width="20" height="28" viewBox="0 0 20 28" fill="none">
-                <path d="M18 2 L2 2 L2 26" stroke="#2596BE" stroke-width="2" stroke-linecap="square" fill="none"/>
-              </svg>
-              <!-- amber bolt -->
-              <svg width="20" height="32" viewBox="0 0 32 48" fill="none">
-                <path d="M18.5 3 L24 4.5 L28 22 L20 22 L18 42 L5 17 L13 17 Z" fill="#FBB03B"/>
-              </svg>
-              <span class="level-num">7</span>
-              <!-- right corner mark (mirrored) -->
-              <svg class="level-corner-r" width="20" height="28" viewBox="0 0 20 28" fill="none">
-                <path d="M18 2 L2 2 L2 26" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square" fill="none"/>
-              </svg>
-            </div>
-            <span class="level-name">Héroe Digital</span>
-          </div>
+          <div class="actitud-info"><div class="actitud-name">Participación excepcional</div><div class="actitud-date">12 may 2025</div></div>
+          <div class="actitud-xp pos">+30 XP</div>
         </div>
-
-        <!-- XP block -->
-        <div class="xp-block">
-          <div class="xp-nums-row">
-            <span class="xp-current">2.840</span>
-            <span class="xp-unit">XP</span>
-            <span class="xp-sep">/</span>
-            <span class="xp-next">3.200 XP</span>
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#fee2e2">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#fecaca"/>
+              <path d="M30 16 L44 40 L16 40Z" stroke="#dc2626" stroke-width="3" stroke-linejoin="round" fill="none"/>
+              <path d="M30 25 L30 33 M30 36 L30 37" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/>
+            </svg>
           </div>
-          <div class="xp-bar-track">
-            <div class="xp-bar-fill" style="width:88.75%"></div>
-          </div>
-          <div class="xp-legend">
-            <span class="xp-legend-left">Nivel 7</span>
-            <span>360 XP para Nivel 8</span>
-          </div>
+          <div class="actitud-info"><div class="actitud-name">Llegó tarde a clase</div><div class="actitud-date">8 may 2025</div></div>
+          <div class="actitud-xp neg">-10 XP</div>
         </div>
-
-      </div><!-- /hero-zone -->
-      <div id="scroll-sentinel" style="height:0;pointer-events:none"></div>
-
-      <div class="content">
-
-        <!-- ALUMNO VIEW -->
-        <div id="students-view">
-
-          <div class="section section-warm" style="padding-top:20px">            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>Proyecto actual</div>
-            <div class="grid-auto">
-              <div class="project-card">
-                <div class="project-thumb"><svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="10" y="15" width="20" height="17" rx="2" stroke="#3E6FA8" stroke-width="1.5"/><rect x="14" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="21" y="19" width="5" height="5" rx="1" stroke="#2596BE" stroke-width="1.5"/><path d="M20 11V15M14 32V36M26 32V36M6 22H10M30 22H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M15 27H25" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="9" r="2" stroke="#3E6FA8" stroke-width="1.5"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="project-info">
-                  <div class="project-name">Robot Explorador</div>
-                  <span class="project-cat">ROBÓTICA</span>
-                  <div class="project-desc">Construimos un robot autónomo capaz de esquivar obstáculos usando sensores ultrasónicos y Arduino.</div>
-                  <div class="project-skills">
-                    <span class="skill-chip">Programación</span>
-                    <span class="skill-chip">Electrónica</span>
-                    <span class="skill-chip">Diseño mecánico</span>
-                    <span class="skill-chip">Resolución</span>
-                  </div>
-                </div>
-              </div>
-              <div class="project-card">
-                <div class="project-thumb"><svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="5" y="20" width="9" height="15" rx="1" stroke="#3E6FA8" stroke-width="1.5"/><rect x="16" y="12" width="9" height="23" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="27" y="17" width="9" height="18" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><path d="M4 35H37" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M19.0 13.5 L21.0 13.8 L21.9 19.4 L20.2 19.4 L19.8 23.5 L17.8 17.3 L19.5 17.3 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="project-info">
-                  <div class="project-name">Ciudad del Futuro 3D</div>
-                  <span class="project-cat">DISEÑO 3D</span>
-                  <div class="project-desc">Modelamos una ciudad futurista sostenible con Tinkercad, incluyendo energías renovables y movilidad verde.</div>
-                  <div class="project-skills">
-                    <span class="skill-chip">Modelado 3D</span>
-                    <span class="skill-chip">Creatividad</span>
-                    <span class="skill-chip">Sostenibilidad</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#ede9fe">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#ddd6fe"/>
+              <circle cx="30" cy="26" r="8" stroke="#7c3aed" stroke-width="2.5" fill="none"/>
+              <path d="M30 34V40M26 40H34" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M27.5 22 L30 23 L31 28 L28.5 28 L28 32 L25.5 25 L27.5 25Z" fill="#FBB03B"/>
+            </svg>
           </div>
-
-          <div class="section section-alt">
-            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M8 24 L8 14 L16 8 M8 18 L16 18" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="16" cy="8" r="2" fill="#2596BE"/><circle cx="16" cy="18" r="2" fill="#7CB8F5"/><circle cx="8" cy="24" r="2" fill="#3E6FA8"/></svg>Mis ramas</div>
-            <div class="ramas-wrapper">
-            <div class="grid-ramas">
-              <div class="rama-card" onclick="openModal('Science')">
-                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(-45 20 20)" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(45 20 20)" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="round"/><path d="M18.2 11.8 L21.8 12.3 L23.5 22.5 L20.4 22.5 L19.6 30.1 L16.0 18.7 L19.1 18.7 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="rama-name">Science</div><div class="rama-level">Nivel 4 · Explorer</div>
-                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:72%;background:#FBB03B"></div></div>
-                <div class="rama-bar-legend"><span class="rama-bar-legend-left">540 XP</span><span class="rama-bar-legend-right">+210 para Niv. 5</span></div>
-                <button class="rama-btn" onclick="event.stopPropagation();openModal('Science')">Ver detalles →</button>
-              </div>
-              <div class="rama-card" onclick="openModal('Technology')">
-                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="12" width="16" height="16" rx="3" stroke="#2596BE" stroke-width="1.5"/><path d="M20 6V12M20 28V34M6 20H12M28 20H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="20" r="2.5" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="rama-name">Technology</div><div class="rama-level">Nivel 6 · Builder</div>
-                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:89%;background:#FBB03B"></div></div>
-                <div class="rama-bar-legend"><span class="rama-bar-legend-left">820 XP</span><span class="rama-bar-legend-right">+100 para Niv. 7</span></div>
-                <button class="rama-btn" onclick="event.stopPropagation();openModal('Technology')">Ver detalles →</button>
-              </div>
-              <div class="rama-card" onclick="openModal('Engineering')">
-                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="22" r="9" stroke="#3E6FA8" stroke-width="1.5"/><circle cx="20" cy="22" r="4" stroke="#2596BE" stroke-width="1.5"/><path d="M20 10V13M20 31V34M8 22H11M29 22H32" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M19.0 17.2 L21.0 17.5 L22.0 23.5 L20.3 23.5 L19.7 27.9 L17.7 21.3 L19.5 21.3 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="rama-name">Engineering</div><div class="rama-level">Nivel 5 · Maker</div>
-                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:61%;background:#FBB03B"></div></div>
-                <div class="rama-bar-legend"><span class="rama-bar-legend-left">430 XP</span><span class="rama-bar-legend-right">+270 para Niv. 6</span></div>
-                <button class="rama-btn" onclick="event.stopPropagation();openModal('Engineering')">Ver detalles →</button>
-              </div>
-              <div class="rama-card" onclick="openModal('Art')">
-                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 30 L16 14 L24 22 L32 10" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><rect x="5" y="27" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="13" y="11" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><rect x="21" y="19" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="29" y="7" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="rama-name">Art</div><div class="rama-level">Nivel 4 · Creator</div>
-                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:55%;background:#FBB03B"></div></div>
-                <div class="rama-bar-legend"><span class="rama-bar-legend-left">380 XP</span><span class="rama-bar-legend-right">+320 para Niv. 5</span></div>
-                <button class="rama-btn" onclick="event.stopPropagation();openModal('Art')">Ver detalles →</button>
-              </div>
-              <div class="rama-card" onclick="openModal('Maths')">
-                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 34 L8 8 M8 34 L34 34" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><rect x="11" y="22" width="5" height="12" stroke="#3E6FA8" stroke-width="1.5"/><rect x="19" y="16" width="5" height="18" stroke="#2596BE" stroke-width="1.5"/><rect x="27" y="10" width="5" height="24" stroke="#3E6FA8" stroke-width="1.5"/><path d="M19.1 13.8 L20.9 14.1 L21.8 19.3 L20.2 19.3 L19.8 23.2 L18.0 17.4 L19.6 17.4 Z" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#3E6FA8" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="rama-name">Maths</div><div class="rama-level">Nivel 3 · Solver</div>
-                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:38%;background:#FBB03B"></div></div>
-                <div class="rama-bar-legend"><span class="rama-bar-legend-left">270 XP</span><span class="rama-bar-legend-right">+430 para Niv. 4</span></div>
-                <button class="rama-btn" onclick="event.stopPropagation();openModal('Maths')">Ver detalles →</button>
-              </div>
-              <div class="rama-card" onclick="openModal('Transversals')">
-                <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 9 L31 27 L9 27 Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><circle cx="20" cy="9" r="3" fill="#2596BE"/><circle cx="31" cy="27" r="3" fill="#7CB8F5"/><circle cx="9" cy="27" r="3" fill="#7CB8F5"/><circle cx="20" cy="20" r="2" fill="#FBB03B"/><path d="M15 15 L17 15 M15 15 L15 17" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 25 L23 25 M25 25 L25 23" stroke="#2596BE" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M15 25 L17 25 M15 25 L15 23" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/><path d="M25 15 L23 15 M25 15 L25 17" stroke="#7CB8F5" stroke-width="1.2" fill="none" stroke-linecap="square"/></svg></div>
-                <div class="rama-name">Transversals</div><div class="rama-level">Nivel 5 · Leader</div>
-                <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:78%;background:#FBB03B"></div></div>
-                <div class="rama-bar-legend"><span class="rama-bar-legend-left">400 XP</span><span class="rama-bar-legend-right">+110 para Niv. 6</span></div>
-                <button class="rama-btn" onclick="event.stopPropagation();openModal('Transversals')">Ver detalles →</button>
-              </div>
-            </div><!-- /grid-ramas -->
-            </div><!-- /ramas-wrapper -->
-          </div>
-
-          <div class="section section-warm">
-            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><rect x="5" y="5" width="9" height="9" rx="2" stroke="#3E6FA8" stroke-width="1.5"/><rect x="18" y="5" width="9" height="9" rx="2" stroke="#7CB8F5" stroke-width="1.5"/><rect x="5" y="18" width="9" height="9" rx="2" stroke="#7CB8F5" stroke-width="1.5"/><rect x="18" y="18" width="9" height="9" rx="2" stroke="#2596BE" stroke-width="1.5"/></svg>Últimos proyectos</div>
-            <div class="grid-auto">
-              <div class="completed-card">
-                <div class="completed-header">
-                  <div><div class="completed-name">Estación Meteorológica</div><div class="completed-dates">15 ene – 12 feb 2025 · <span style="color:var(--cta)">Electrónica</span></div></div>
-                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>320 XP</div>
-                </div>
-                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
-                <div class="skills-expanded">
-                  <div class="skill-pill-row"><span class="skill-pill-name">Sensores & Arduino</span><span class="skill-pill-xp">+120 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">Análisis de datos</span><span class="skill-pill-xp">+100 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">Trabajo en equipo</span><span class="skill-pill-xp">+100 XP</span></div>
-                </div>
-              </div>
-              <div class="completed-card">
-                <div class="completed-header">
-                  <div><div class="completed-name">Videojuego en Scratch</div><div class="completed-dates">3 nov – 28 nov 2024 · <span style="color:var(--cta)">Programación</span></div></div>
-                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>280 XP</div>
-                </div>
-                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
-                <div class="skills-expanded">
-                  <div class="skill-pill-row"><span class="skill-pill-name">Lógica de programación</span><span class="skill-pill-xp">+130 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">Diseño de personajes</span><span class="skill-pill-xp">+80 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">Creatividad narrativa</span><span class="skill-pill-xp">+70 XP</span></div>
-                </div>
-              </div>
-              <div class="completed-card">
-                <div class="completed-header">
-                  <div><div class="completed-name">Puente de Espaguetis</div><div class="completed-dates">5 oct – 25 oct 2024 · <span style="color:var(--cta)">Ingeniería</span></div></div>
-                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>200 XP</div>
-                </div>
-                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
-                <div class="skills-expanded">
-                  <div class="skill-pill-row"><span class="skill-pill-name">Resistencia de materiales</span><span class="skill-pill-xp">+90 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">Trabajo cooperativo</span><span class="skill-pill-xp">+70 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">Prototipado</span><span class="skill-pill-xp">+40 XP</span></div>
-                </div>
-              </div>
-              <div class="completed-card">
-                <div class="completed-header">
-                  <div><div class="completed-name">App de Reciclaje</div><div class="completed-dates">10 sep – 2 oct 2024 · <span style="color:var(--cta)">Programación</span></div></div>
-                  <div class="completed-xp"><svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>250 XP</div>
-                </div>
-                <button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver habilidades</button>
-                <div class="skills-expanded">
-                  <div class="skill-pill-row"><span class="skill-pill-name">Diseño de apps</span><span class="skill-pill-xp">+110 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">Sostenibilidad</span><span class="skill-pill-xp">+80 XP</span></div>
-                  <div class="skill-pill-row"><span class="skill-pill-name">UX Design</span><span class="skill-pill-xp">+60 XP</span></div>
-                </div>
-              </div>
-            </div>
-            <button class="more-btn" onclick="showPage('projects')" style="margin-top:12px">Ver todos los proyectos →</button>
-          </div>
-
-          <div class="section section-alt">
-            <div class="section-title"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M16 4 L20 13 L29 16 L20 19 L16 28 L12 19 L3 16 L12 13 Z" stroke="#3E6FA8" stroke-width="1.5" fill="none" stroke-linejoin="miter"/><path d="M14.8 10.3 L17.2 10.7 L18.4 17.7 L16.3 17.7 L15.7 23.0 L13.3 15.1 L15.4 15.1 Z" fill="#FBB03B"/></svg>Actitud</div>
-            <div class="grid-actitud" id="actitud-list">
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M8 17 L13 22 L24 11" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">Ayudó a un compañero</div><div class="actitud-date">14 may 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 5 L22 16 L16 27 L10 16 Z" stroke="#1aab6d" stroke-width="1.5" stroke-linejoin="miter"/><path d="M14.9 10.8 L17.1 11.1 L18.2 17.6 L16.3 17.6 L15.7 22.4 L13.5 15.2 L15.4 15.2 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Participación excepcional</div><div class="actitud-date">12 may 2025</div></div><div class="actitud-xp pos">+30 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 6 L27 26 L5 26 Z" stroke="#e05252" stroke-width="1.5" stroke-linejoin="miter"/><path d="M16 14 L16 20 M16 23 L16 23.5" stroke="#e05252" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Llegó tarde a clase</div><div class="actitud-date">8 may 2025</div></div><div class="actitud-xp neg">-10 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="13" r="5" stroke="#1aab6d" stroke-width="1.5"/><path d="M16 18V24M12 24H20" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/><path d="M15.1 8.8 L16.9 9.1 L17.8 14.3 L16.2 14.3 L15.8 18.2 L14.0 12.4 L15.6 12.4 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Idea creativa destacada</div><div class="actitud-date">5 may 2025</div></div><div class="actitud-xp pos">+25 XP</div></div>
-            </div>
-            <div class="grid-actitud" id="actitud-extra" style="display:none;margin-top:10px">
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="10" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><circle cx="22" cy="13" r="4" stroke="#1aab6d" stroke-width="1.5"/><path d="M10 17 L10 24 L22 24 L22 17" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">Liderazgo en grupo</div><div class="actitud-date">2 may 2025</div></div><div class="actitud-xp pos">+20 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon neg"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="9" stroke="#e05252" stroke-width="1.5"/><path d="M16 10 L16 16 L22 16" stroke="#e05252" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/></svg></div><div class="actitud-info"><div class="actitud-name">No entregó tarea a tiempo</div><div class="actitud-date">28 abr 2025</div></div><div class="actitud-xp neg">-15 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M10 6 L10 18 Q10 24 16 24 Q22 24 22 18 L22 6 Z" stroke="#1aab6d" stroke-width="1.5" stroke-linejoin="miter"/><path d="M12 27 L20 27 M16 24 L16 27" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/><path d="M15.1 9.8 L16.9 10.1 L17.8 15.3 L16.2 15.3 L15.8 19.2 L14.0 13.4 L15.6 13.4 Z" fill="#FBB03B"/></svg></div><div class="actitud-info"><div class="actitud-name">Mejor proyecto de la semana</div><div class="actitud-date">25 abr 2025</div></div><div class="actitud-xp pos">+50 XP</div></div>
-              <div class="actitud-card"><div class="actitud-icon pos"><svg width="20" height="20" viewBox="0 0 32 32" fill="none"><rect x="8" y="5" width="16" height="22" rx="2" stroke="#1aab6d" stroke-width="1.5"/><path d="M11 11 L21 11 M11 16 L21 16 M11 21 L17 21" stroke="#1aab6d" stroke-width="1.5" stroke-linecap="square"/></svg></div><div class="actitud-info"><div class="actitud-name">Documentó su proyecto</div><div class="actitud-date">22 abr 2025</div></div><div class="actitud-xp pos">+15 XP</div></div>
-            </div>
-            <button class="load-more-btn" id="actitud-btn" onclick="loadMoreActitud()" style="margin-top:12px">Cargar más acciones ↓</button>
-          </div>
-
-          <div style="height:24px"></div>
-
-        </div><!-- /students-view -->
-
-        <div id="family-view" style="display:none">
-          <div class="family-empty">
-            <div class="family-empty-icon"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><path d="M4 20 L4 4 L20 4" stroke="#2596BE" stroke-width="2" fill="none" stroke-linecap="square"/><path d="M76 20 L76 4 L60 4" stroke="#7CB8F5" stroke-width="2" fill="none" stroke-linecap="square"/><path d="M4 60 L4 76 L20 76" stroke="#7CB8F5" stroke-width="2" fill="none" stroke-linecap="square"/><path d="M76 60 L76 76 L60 76" stroke="#2596BE" stroke-width="2" fill="none" stroke-linecap="square"/><circle cx="28" cy="28" r="9" stroke="#3E6FA8" stroke-width="1.5"/><circle cx="52" cy="28" r="9" stroke="#7CB8F5" stroke-width="1.5"/><path d="M28 37 L28 52 L52 52 L52 37" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><path d="M38.2 31.8 L41.8 32.3 L43.5 42.5 L40.4 42.5 L39.6 50.1 L36.0 38.7 L39.1 38.7 Z" fill="#FBB03B"/></svg></div>
-            <div class="family-empty-title">Vista de Familia</div>
-            <div class="family-empty-sub">Próximamente disponible. Aquí podrás seguir el progreso de tu hijo de forma clara y detallada.</div>
-          </div>
-        </div>
-
-      </div><!-- /content -->
-    </div><!-- /page-home -->
-
-    <!-- PAGE PROYECTOS -->
-    <div id="page-projects" class="page">
-      <div class="projects-page-header">
-        <button class="back-btn" onclick="showPage('home')">← Volver a inicio</button>
-        <span class="projects-page-title">Todos los proyectos</span>
-      </div>
-      <div class="section">
-        <div class="grid-auto" id="projects-grid"></div>
-        <div class="pagination">
-          <button class="page-btn" id="prev-page" onclick="changePage(-1)" disabled>← Anterior</button>
-          <span class="page-indicator" id="page-indicator">Pág. 1 / 2</span>
-          <button class="page-btn" id="next-page" onclick="changePage(1)">Siguiente →</button>
+          <div class="actitud-info"><div class="actitud-name">Idea creativa destacada</div><div class="actitud-date">5 may 2025</div></div>
+          <div class="actitud-xp pos">+25 XP</div>
         </div>
       </div>
+      <div class="grid-actitud" id="actitud-extra" style="display:none;margin-top:10px">
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#dbeafe">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#bfdbfe"/>
+              <circle cx="22" cy="26" r="7" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+              <circle cx="38" cy="26" r="7" stroke="#2563eb" stroke-width="2.5" fill="none"/>
+              <path d="M16 44 L16 40 Q16 34 22 34 H38 Q44 34 44 40 L44 44" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="actitud-info"><div class="actitud-name">Liderazgo en grupo</div><div class="actitud-date">2 may 2025</div></div>
+          <div class="actitud-xp pos">+20 XP</div>
+        </div>
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#fee2e2">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#fecaca"/>
+              <circle cx="30" cy="24" r="9" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+              <path d="M30 18 L30 24 L36 24" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="actitud-info"><div class="actitud-name">No entregó tarea a tiempo</div><div class="actitud-date">28 abr 2025</div></div>
+          <div class="actitud-xp neg">-15 XP</div>
+        </div>
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#fef9c3">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#fde68a"/>
+              <path d="M22 14 L22 30 Q22 38 30 38 Q38 38 38 30 L38 14Z" stroke="#b45309" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+              <path d="M24 42 L36 42 M30 38 L30 42" stroke="#b45309" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M28 20 L30.4 21 L31.5 26.5 L29.2 26.5 L28.6 31 L26 23 L28.5 23Z" fill="#FBB03B"/>
+            </svg>
+          </div>
+          <div class="actitud-info"><div class="actitud-name">Mejor proyecto de la semana</div><div class="actitud-date">25 abr 2025</div></div>
+          <div class="actitud-xp pos">+50 XP</div>
+        </div>
+        <div class="actitud-card">
+          <div class="actitud-icon" style="background:#dcfce7">
+            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
+              <rect x="18" y="14" width="24" height="30" rx="4" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+              <path d="M22 22 L38 22 M22 28 L38 28 M22 34 L32 34" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="actitud-info"><div class="actitud-name">Documentó su proyecto</div><div class="actitud-date">22 abr 2025</div></div>
+          <div class="actitud-xp pos">+15 XP</div>
+        </div>
+      </div>
+      <button class="load-more-btn" id="actitud-btn" onclick="loadMoreActitud()" style="margin-top:12px">Cargar más acciones ↓</button>
     </div>
+    <div style="height:24px"></div>
 
-  </div><!-- /app -->
+  </div><!-- /students-view -->
 
-  <!-- FLOATING PROFILE SWITCHER — fixed bottom, overlays content -->
-  <div class="profile-switcher">
-    <div class="switcher-options">
-      <button class="switcher-btn active" id="sw-student" onclick="setView('student')">
-        <span class="switcher-icon">
-          <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-        </span>
-        Alumno
-      </button>
-      <button class="switcher-btn" id="sw-family" onclick="setView('family')">
-        <span class="switcher-icon">
-          <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
-            <circle cx="11" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/>
-            <circle cx="21" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M4 28c0-4 3-7 7-7h10c4 0 7 3 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-        </span>
-        Familia
-      </button>
+  <div id="family-view" style="display:none">
+    <div class="family-empty">
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none"><path d="M4 20 L4 4 L20 4" stroke="#2596BE" stroke-width="2" stroke-linecap="square"/><path d="M76 20 L76 4 L60 4" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square"/><path d="M4 60 L4 76 L20 76" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square"/><path d="M76 60 L76 76 L60 76" stroke="#2596BE" stroke-width="2" stroke-linecap="square"/><circle cx="28" cy="28" r="9" stroke="#3E6FA8" stroke-width="1.5"/><circle cx="52" cy="28" r="9" stroke="#7CB8F5" stroke-width="1.5"/><path d="M28 37 L28 52 L52 52 L52 37" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><path d="M18.5 22 L21 23 L22.5 28.5 L20 28.5 L19.4 33 L16.5 25 L19 25Z" fill="#FBB03B"/></svg>
+      <div class="family-empty-title">Vista de Familia</div>
+      <div class="family-empty-sub">Próximamente disponible.</div>
     </div>
   </div>
+  </div><!-- /content -->
+</div><!-- /page-home -->
 
-  <div class="desktop-side">
-    <div class="side-card">
-      <h3>IGNITE NEXUS</h3>
-      <p>Portal del alumno. Alterna entre <strong>Alumno</strong> y <strong>Familia</strong> con el toggle superior.</p>
-    </div>
-    <div class="side-card">
-      <h3>Perfil hero</h3>
-      <p>Nombre, escuela, grupos, nivel y barra de XP apilados centrados sobre el fondo cálido. La burbuja "Let's Ignite" queda pegada al muñeco en cualquier ancho de pantalla.</p>
-    </div>
-    <div class="side-card">
-      <h3>Responsive</h3>
-      <p>Todas las secciones usan <code>auto-fill</code> grid. Las tarjetas se colocan en columnas cuando hay espacio y van hacia abajo cuando no hay.</p>
+<!-- PAGE PROYECTOS -->
+<div id="page-projects" class="page">
+  <div class="projects-page-header">
+    <button class="back-btn" onclick="showPage('home')">← Volver a inicio</button>
+    <span class="projects-page-title">Todas las misiones</span>
+  </div>
+  <div class="section" style="max-width:1400px;margin:0 auto">
+    <div class="grid-auto" id="projects-grid"></div>
+    <div class="pagination">
+      <button class="page-btn" id="prev-page" onclick="changePage(-1)" disabled>← Anterior</button>
+      <span class="page-indicator" id="page-indicator">Pág. 1 / 2</span>
+      <button class="page-btn" id="next-page" onclick="changePage(1)">Siguiente →</button>
     </div>
   </div>
+</div>
 
-</div><!-- /outer -->
+</div><!-- /app -->
 
-<!-- MODAL -->
+<!-- RAMA MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -1011,101 +1059,311 @@ body { font-family: 'Figtree', sans-serif; background: var(--warm); color: var(-
   </div>
 </div>
 
+<!-- MASCOT MODAL -->
+<div class="mascot-modal" id="mascot-modal">
+  <div class="mascot-modal-box">
+    <button class="modal-close" onclick="document.getElementById('mascot-modal').classList.remove('open')">✕</button>
+    <div class="mascot-modal-title">Elige tu compañero</div>
+    <div class="mascot-modal-sub">Toca un personaje para seleccionarlo. Desbloqueas más al subir de nivel.</div>
+    <div class="mascot-grid" id="mascot-grid"></div>
+  </div>
+</div>
+
+<!-- FLOATING SWITCHER -->
+<div class="profile-switcher">
+  <div class="switcher-options">
+    <button class="switcher-btn active" id="sw-student" onclick="setView('student')">
+      <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Alumno
+    </button>
+    <button class="switcher-btn" id="sw-family" onclick="setView('family')">
+      <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="11" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="21" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 28c0-4 3-7 7-7h10c4 0 7 3 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Familia
+    </button>
+  </div>
+</div>
+
 <script>
+// ── XP COUNTER ANIMATION ───────────────────────────────────────
+const XP_TARGET = 2840;
+const XP_PERCENT = 88.75;
+function animateXP() {
+  const counter = document.getElementById('xp-counter');
+  const bar = document.getElementById('xp-bar');
+  let start = null;
+  const duration = 1600;
+  function step(ts) {
+    if (!start) start = ts;
+    const p = Math.min((ts - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(ease * XP_TARGET);
+    counter.textContent = val.toLocaleString('es-ES');
+    bar.style.width = (ease * XP_PERCENT) + '%';
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+setTimeout(animateXP, 600);
+
+// ── RAMA BAR ANIMATIONS ────────────────────────────────────────
+function animateRamaBars() {
+  document.querySelectorAll('.rama-bar-fill[data-target]').forEach(bar => {
+    setTimeout(() => {
+      bar.style.width = bar.dataset.target + '%';
+    }, 300 + Math.random()*400);
+  });
+}
+setTimeout(animateRamaBars, 800);
+
+// ── SECTION REVEAL (IntersectionObserver) ─────────────────────
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.section-reveal').forEach(el => revealObs.observe(el));
+
+// ── PROFILE FADE — fades when first content section scrolls up ─
+const profileHero = document.querySelector('.profile-hero');
+const xpBlock = document.querySelector('.xp-block');
+const firstSection = document.querySelector('.section-reveal');
+if (firstSection && profileHero) {
+  const fadeObs = new IntersectionObserver(([e]) => {
+    const fading = !e.isIntersecting;
+    profileHero.classList.toggle('fading', fading);
+    xpBlock.classList.toggle('fading', fading);
+  }, { threshold: 0, rootMargin: '-30px 0px 0px 0px' });
+  fadeObs.observe(firstSection);
+}
+
+// ── TOPBAR COLLAPSE ────────────────────────────────────────────
+const topbar = document.getElementById('topbar');
+const topbarWrapper = document.getElementById('topbar-wrapper');
+const sentinel = document.getElementById('scroll-sentinel');
+if (sentinel && topbarWrapper) {
+  const obs = new IntersectionObserver(
+    ([e]) => topbarWrapper.classList.toggle('collapsed', !e.isIntersecting),
+    { threshold: 0, rootMargin: '60px 0px 0px 0px' }
+  );
+  obs.observe(sentinel);
+}
+
+// ── LANG ───────────────────────────────────────────────────────
+function setLang(code) {
+  ['ESP','ENG','CAT'].forEach(l => {
+    document.getElementById('lang-'+l).classList.toggle('active', l===code);
+    const mb = document.getElementById('modal-lang-'+l);
+    if (mb) mb.classList.toggle('active', l===code);
+  });
+}
+function handleLangBtn(code) {
+  if (document.getElementById('topbar-wrapper').classList.contains('collapsed')) {
+    document.getElementById('lang-modal').classList.add('open');
+  } else {
+    setLang(code);
+  }
+}
+function closeLangModal() { document.getElementById('lang-modal').classList.remove('open'); }
+
+// ── PALETTE ───────────────────────────────────────────────────
+const PALETTES = ['amarillo','bosque','oceano','cosmos'];
+const PALETTE_LOCKED = { cosmos: 10 };
+let currentLevel = 7;
+function setPalette(name) {
+  if (PALETTE_LOCKED[name] && currentLevel < PALETTE_LOCKED[name]) { showPaletteLock(name); return; }
+  document.body.setAttribute('data-theme', name);
+  PALETTES.forEach(p => document.getElementById('pal-'+p)?.classList.toggle('active', p===name));
+  document.getElementById('palette-modal').classList.remove('open');
+}
+function showPaletteLock(name) {
+  alert('🔒 Desbloqueas esta paleta en Nivel ' + (PALETTE_LOCKED[name]||10) + '. ¡Sigue acumulando XP!');
+}
+
+// ── VIEW SWITCHER ─────────────────────────────────────────────
+function setView(m) {
+  const f = m==='family';
+  document.getElementById('students-view').style.display = f?'none':'block';
+  document.getElementById('family-view').style.display = f?'block':'none';
+  document.getElementById('sw-student').classList.toggle('active',!f);
+  document.getElementById('sw-family').classList.toggle('active',f);
+}
+
+// ── PAGE NAV ──────────────────────────────────────────────────
+function showPage(n) {
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── SKILL EXPAND + XP PARTICLES ───────────────────────────────
+function toggleSkills(btn) {
+  const box = btn.nextElementSibling;
+  const arrow = btn.querySelector('.expand-arrow');
+  const open = box.classList.toggle('open');
+  arrow.style.transform = open ? 'rotate(180deg)' : '';
+  if (open) spawnParticles(btn);
+}
+function spawnParticles(anchor) {
+  const rect = anchor.getBoundingClientRect();
+  const count = 6;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('span');
+    p.className = 'xp-particle';
+    p.textContent = '+XP';
+    p.style.left = (rect.left + Math.random()*rect.width) + 'px';
+    p.style.top = (rect.top + window.scrollY - 10) + 'px';
+    p.style.position = 'absolute';
+    p.style.animationDelay = (i * 80) + 'ms';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 900 + i*80);
+  }
+}
+
+// ── ACTITUD ───────────────────────────────────────────────────
+let aL = false;
+function loadMoreActitud() {
+  if (!aL) {
+    document.getElementById('actitud-extra').style.display='grid';
+    document.getElementById('actitud-btn').textContent='Mostrar menos ↑';
+    aL = true;
+  } else {
+    document.getElementById('actitud-extra').style.display='none';
+    document.getElementById('actitud-btn').textContent='Cargar más acciones ↓';
+    aL = false;
+  }
+}
+
+// ── PROJECTS PAGE ─────────────────────────────────────────────
 const allProjects=[
-  {name:'Robot Explorador',dates:'En curso',cat:'Robótica',desc:'Construimos un robot autónomo capaz de esquivar obstáculos usando sensores ultrasónicos y Arduino.',skills:[{n:'Programación Arduino',x:0},{n:'Sensores',x:0},{n:'Diseño mecánico',x:0}],xp:'En curso'},
-  {name:'Estación Meteorológica',dates:'15 ene – 12 feb 2025',cat:'Electrónica',desc:'Diseñamos una estación meteorológica con sensores de temperatura, humedad y presión conectados a Arduino que envía datos en tiempo real.',skills:[{n:'Sensores & Arduino',x:120},{n:'Análisis de datos',x:100},{n:'Trabajo en equipo',x:100}],xp:320},
-  {name:'Videojuego en Scratch',dates:'3 nov – 28 nov 2024',cat:'Programación',desc:'Creamos un videojuego de plataformas con personaje propio, niveles, puntuación y efectos de sonido usando Scratch.',skills:[{n:'Lógica de programación',x:130},{n:'Diseño de personajes',x:80},{n:'Creatividad narrativa',x:70}],xp:280},
-  {name:'Puente de Espaguetis',dates:'5 oct – 25 oct 2024',cat:'Ingeniería',desc:'Construimos un puente con espaguetis y pegamento capaz de soportar el mayor peso posible, aplicando conceptos básicos de ingeniería estructural.',skills:[{n:'Resistencia de materiales',x:90},{n:'Trabajo cooperativo',x:70},{n:'Prototipado',x:40}],xp:200},
-  {name:'App de Reciclaje',dates:'10 sep – 2 oct 2024',cat:'Programación',desc:'Desarrollamos una app móvil con MIT App Inventor que guía al usuario sobre cómo reciclar cada tipo de residuo correctamente.',skills:[{n:'Diseño de apps',x:110},{n:'Sostenibilidad',x:80},{n:'UX Design',x:60}],xp:250},
-  {name:'Planetario Virtual',dates:'5 jun – 28 jun 2024',cat:'Ciencia',desc:'Creamos un planetario interactivo en Scratch con los planetas del sistema solar, sus características y órbitas animadas.',skills:[{n:'Astronomía',x:100},{n:'Presentación oral',x:80},{n:'Investigación',x:70}],xp:250},
-  {name:'Cañón de Aire',dates:'3 may – 24 may 2024',cat:'Física',desc:'Construimos un cañón de aire comprimido y medimos el alcance de proyectiles a distintos ángulos para estudiar trayectorias parabólicas.',skills:[{n:'Aerodinámica',x:90},{n:'Matemáticas aplicadas',x:80},{n:'Experimentación',x:60}],xp:230},
-  {name:'Llavero 3D',dates:'1 abr – 19 abr 2024',cat:'Diseño 3D',desc:'Diseñamos y modelamos llaveros personalizados con Tinkercad y los imprimimos en 3D con la impresora del laboratorio.',skills:[{n:'Modelado 3D',x:120},{n:'Impresión 3D',x:80},{n:'Creatividad',x:50}],xp:250},
-  {name:'Casa Domótica',dates:'5 mar – 28 mar 2024',cat:'IoT',desc:'Automatizamos una maqueta de casa con luces, puertas y sensores controlados por Arduino y comandos de voz básicos.',skills:[{n:'Electrónica',x:110},{n:'Automatización',x:90},{n:'Programación',x:80}],xp:280},
-  {name:'Generador Musical IA',dates:'2 feb – 22 feb 2024',cat:'IA',desc:'Entrenamos un modelo sencillo de machine learning para generar melodías originales a partir de patrones rítmicos de entrada.',skills:[{n:'Machine Learning',x:130},{n:'Música computacional',x:100},{n:'Python',x:90}],xp:320},
-  {name:'Monitor de Agua',dates:'10 ene – 30 ene 2024',cat:'Ciencia',desc:'Construimos un dispositivo con sensores de pH y turbidez para monitorizar la calidad del agua de distintas fuentes locales.',skills:[{n:'Química',x:80},{n:'Sensores',x:90},{n:'Datos',x:70}],xp:240},
-  {name:'Coche Autónomo Mini',dates:'5 dic – 20 dic 2023',cat:'Robótica',desc:'Programamos un coche a escala que sigue líneas y evita obstáculos usando cámaras y sensores IR con control PID.',skills:[{n:'Control PID',x:120},{n:'Visión artificial',x:100},{n:'Electrónica',x:80}],xp:300},
-  {name:'Brazo Robótico',dates:'1 nov – 25 nov 2023',cat:'Robótica',desc:'Diseñamos y ensamblamos un brazo robótico de 4 ejes controlado con servomotores y una interfaz de joystick.',skills:[{n:'Servomotores',x:110},{n:'Programación',x:100},{n:'Diseño',x:70}],xp:280},
-  {name:'Radio AM Casera',dates:'5 oct – 28 oct 2023',cat:'Electrónica',desc:'Construimos una emisora de radio AM funcional con componentes básicos y la sintonizamos en la banda de 530–1600 kHz.',skills:[{n:'Ondas electromagnéticas',x:90},{n:'Circuitos',x:100},{n:'Soldadura',x:60}],xp:250},
+  {name:'Robot Explorador',dates:'En curso',cat:'Robótica',skills:[{n:'Programación Arduino',x:0},{n:'Sensores',x:0},{n:'Diseño mecánico',x:0}],xp:'En curso'},
+  {name:'Estación Meteorológica',dates:'15 ene – 12 feb 2025',cat:'Electrónica',skills:[{n:'Sensores & Arduino',x:120},{n:'Análisis de datos',x:100},{n:'Trabajo en equipo',x:100}],xp:320},
+  {name:'Videojuego en Scratch',dates:'3 nov – 28 nov 2024',cat:'Programación',skills:[{n:'Lógica de programación',x:130},{n:'Diseño de personajes',x:80},{n:'Creatividad narrativa',x:70}],xp:280},
+  {name:'Puente de Espaguetis',dates:'5 oct – 25 oct 2024',cat:'Ingeniería',skills:[{n:'Resistencia de materiales',x:90},{n:'Trabajo cooperativo',x:70},{n:'Prototipado',x:40}],xp:200},
+  {name:'App de Reciclaje',dates:'10 sep – 2 oct 2024',cat:'Programación',skills:[{n:'Diseño de apps',x:110},{n:'Sostenibilidad',x:80},{n:'UX Design',x:60}],xp:250},
+  {name:'Planetario Virtual',dates:'5 jun – 28 jun 2024',cat:'Ciencia',skills:[{n:'Astronomía',x:100},{n:'Presentación oral',x:80},{n:'Investigación',x:70}],xp:250},
+  {name:'Cañón de Aire',dates:'3 may – 24 may 2024',cat:'Física',skills:[{n:'Aerodinámica',x:90},{n:'Matemáticas',x:80},{n:'Experimentación',x:60}],xp:230},
+  {name:'Llavero 3D',dates:'1 abr – 19 abr 2024',cat:'Diseño 3D',skills:[{n:'Modelado 3D',x:120},{n:'Impresión 3D',x:80},{n:'Creatividad',x:50}],xp:250},
+  {name:'Casa Domótica',dates:'5 mar – 28 mar 2024',cat:'IoT',skills:[{n:'Electrónica',x:110},{n:'Automatización',x:90},{n:'Programación',x:80}],xp:280},
+  {name:'Generador Musical IA',dates:'2 feb – 22 feb 2024',cat:'IA',skills:[{n:'Machine Learning',x:130},{n:'Música',x:100},{n:'Python',x:90}],xp:320},
+  {name:'Monitor de Agua',dates:'10 ene – 30 ene 2024',cat:'Ciencia',skills:[{n:'Química',x:80},{n:'Sensores',x:90},{n:'Datos',x:70}],xp:240},
+  {name:'Coche Autónomo',dates:'5 dic – 20 dic 2023',cat:'Robótica',skills:[{n:'Control PID',x:120},{n:'Visión artificial',x:100},{n:'Electrónica',x:80}],xp:300},
+  {name:'Brazo Robótico',dates:'1 nov – 25 nov 2023',cat:'Robótica',skills:[{n:'Servomotores',x:110},{n:'Programación',x:100},{n:'Diseño',x:70}],xp:280},
+  {name:'Radio AM Casera',dates:'5 oct – 28 oct 2023',cat:'Electrónica',skills:[{n:'Ondas',x:90},{n:'Circuitos',x:100},{n:'Soldadura',x:60}],xp:250},
 ];
 const PAGE_SIZE=12; let cp=0;
 const tp=Math.ceil(allProjects.length/PAGE_SIZE);
+const xpSvg='<svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>';
 function renderProjects(){
   const g=document.getElementById('projects-grid');
   const s=allProjects.slice(cp*PAGE_SIZE,(cp+1)*PAGE_SIZE);
-  g.innerHTML=s.map(p=>`<div class="completed-card"><div class="completed-header"><div><div class="completed-name">${p.name}</div><div class="completed-dates">${p.dates} · <span style="color:var(--cta)">${p.cat}</span></div></div><div class="completed-xp">${typeof p.xp==='number'?'<svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14.0 L14.6 14.0 Z" fill="#FBB03B"/></svg>'+p.xp+' XP':'En curso'}</div></div><button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver detalles</button><div class="skills-expanded"><p style="font-size:12px;color:#6b8ba6;line-height:1.55;margin-bottom:10px">${p.desc}</p><div style="font-size:11px;font-weight:800;color:var(--blue-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Habilidades</div>${p.skills.map(s=>`<div class="skill-pill-row"><span class="skill-pill-name">${s.n}</span><span class="skill-pill-xp">${s.x>0?'+'+s.x+' XP':'—'}</span></div>`).join('')}</div></div>`).join('');
+  g.innerHTML=s.map(p=>`<div class="completed-card"><div class="completed-header"><div><div class="completed-name">${p.name}</div><div class="completed-dates">${p.dates} · <span style="color:var(--cta)">${p.cat}</span></div></div><div class="completed-xp">${typeof p.xp==='number'?xpSvg+p.xp+' XP':'🔥 '+p.xp}</div></div><button class="expand-btn" onclick="toggleSkills(this)"><span class="expand-arrow">▼</span> Ver poderes</button><div class="skills-expanded">${p.skills.map(s=>`<div class="skill-pill-row"><span class="skill-pill-name">${s.n}</span><span class="skill-pill-xp">${s.x>0?'+'+s.x+' XP':'—'}</span></div>`).join('')}</div></div>`).join('');
   document.getElementById('page-indicator').textContent='Pág. '+(cp+1)+' / '+tp;
   document.getElementById('prev-page').disabled=cp===0;
   document.getElementById('next-page').disabled=cp>=tp-1;
 }
 function changePage(d){cp=Math.max(0,Math.min(tp-1,cp+d));renderProjects();window.scrollTo(0,0);}
 renderProjects();
-function showPage(n){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');window.scrollTo(0,0);}
-// ── TOPBAR COLLAPSE ON SCROLL ──────────────────────────────────────────────
-const topbar = document.getElementById('topbar');
-const sentinel = document.getElementById('scroll-sentinel');
-if (sentinel && topbar) {
-  const obs = new IntersectionObserver(
-    ([entry]) => {
-      topbar.classList.toggle('collapsed', !entry.isIntersecting);
-    },
-    { threshold: 0, rootMargin: '60px 0px 0px 0px' }
-  );
-  obs.observe(sentinel);
+
+// ── MASCOT SELECTOR ───────────────────────────────────────────
+const mascots = [
+  { id:'spark', name:'Spark', minLevel:1, svgColor:'#7ba6e2', desc:'Tu compañero original' },
+  { id:'ember', name:'Ember', minLevel:1, svgColor:'#f97316', desc:'Espíritu de fuego' },
+  { id:'pixel', name:'Pixel', minLevel:3, svgColor:'#8b5cf6', desc:'El hacker amigable' },
+  { id:'bolt',  name:'Bolt',  minLevel:5, svgColor:'#FBB03B', desc:'Velocidad pura' },
+  { id:'nova',  name:'Nova',  minLevel:7, svgColor:'#e94560', desc:'Energía cósmica' },
+  { id:'sage',  name:'Sage',  minLevel:10,svgColor:'#16a34a', desc:'Sabiduría del bosque' },
+];
+let selectedMascot = 'spark';
+function openMascotModal() {
+  const grid = document.getElementById('mascot-grid');
+  grid.innerHTML = mascots.map(m => {
+    const locked = currentLevel < m.minLevel;
+    return `<div class="mascot-option ${locked?'locked-option':''} ${m.id===selectedMascot?'selected':''}" onclick="${locked?'':'selectMascot(\''+m.id+'\')'}">
+      ${locked?`<span class="mascot-lock-badge">Niv.${m.minLevel}</span>`:''}
+      <svg width="64" height="64" viewBox="0 0 140 140" fill="none">
+        <ellipse cx="70" cy="92" rx="44" ry="38" fill="${m.svgColor}55"/>
+        <ellipse cx="70" cy="70" rx="38" ry="40" fill="${m.svgColor}"/>
+        <ellipse cx="70" cy="73" rx="24" ry="26" fill="#eef2ff"/>
+        <ellipse cx="60" cy="68" rx="5" ry="6" fill="#2F3A4A"/><ellipse cx="80" cy="68" rx="5" ry="6" fill="#2F3A4A"/>
+        <circle cx="61.5" cy="66" r="1.6" fill="white"/><circle cx="81.5" cy="66" r="1.6" fill="white"/>
+        <path d="M63 80 Q70 85 77 80" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      </svg>
+      <div class="mascot-name-label">${m.name}</div>
+      <div style="font-size:10px;color:#8aa4be;font-weight:500">${m.desc}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('mascot-modal').classList.add('open');
+}
+function selectMascot(id) {
+  selectedMascot = id;
+  const m = mascots.find(x => x.id === id);
+
+  // Update selected state in modal
+  document.querySelectorAll('.mascot-option').forEach(el => {
+    const label = el.querySelector('.mascot-name-label')?.textContent;
+    el.classList.toggle('selected', label === m.name);
+  });
+
+  // Replace main mascot SVG with the chosen mascot's colour
+  const c = m.svgColor;
+  const cLight = c + '55'; // translucent version for body shadow
+  const mainSvg = document.getElementById('mascot-svg');
+  mainSvg.innerHTML = `
+    <ellipse cx="70" cy="92" rx="44" ry="38" fill="${cLight}"/>
+    <ellipse cx="70" cy="90" rx="39" ry="33" fill="${c}88"/>
+    <ellipse cx="70" cy="68" rx="40" ry="42" fill="${c}"/>
+    <ellipse cx="70" cy="71" rx="39" ry="41" fill="${c}"/>
+    <ellipse cx="70" cy="73" rx="25" ry="27" fill="#eef2ff"/>
+    <ellipse cx="36" cy="55" rx="11" ry="13" fill="${c}"/>
+    <ellipse cx="104" cy="55" rx="11" ry="13" fill="${c}"/>
+    <ellipse cx="36" cy="55" rx="6.5" ry="8.5" fill="${c}cc"/>
+    <ellipse cx="104" cy="55" rx="6.5" ry="8.5" fill="${c}cc"/>
+    <ellipse cx="60" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+    <ellipse cx="80" cy="68" rx="5.5" ry="6.5" fill="#2F3A4A"/>
+    <circle cx="61.5" cy="66" r="1.8" fill="white"/>
+    <circle cx="81.5" cy="66" r="1.8" fill="white"/>
+    <ellipse cx="70" cy="77" rx="4" ry="2.8" fill="#2F3A4A"/>
+    <path d="M63 82 Q70 87 77 82" stroke="#2F3A4A" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    <ellipse cx="30" cy="94" rx="9" ry="15" fill="${c}" transform="rotate(-22 30 94)"/>
+    <ellipse cx="110" cy="94" rx="9" ry="15" fill="${c}" transform="rotate(22 110 94)"/>
+    <ellipse cx="54" cy="123" rx="12" ry="10" fill="${c}"/>
+    <ellipse cx="86" cy="123" rx="12" ry="10" fill="${c}"/>
+    <ellipse cx="54" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+    <ellipse cx="86" cy="130" rx="14" ry="7" fill="#2F3A4A"/>
+    <text x="108" y="43" font-size="14" fill="#FEF3C6" font-family="sans-serif">✦</text>
+    <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
+    <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
+  `;
+
+  // Animate it
+  mainSvg.style.transform = 'scale(0.85) rotate(-5deg)';
+  mainSvg.style.transition = 'transform .25s ease';
+  setTimeout(() => { mainSvg.style.transform = 'scale(1) rotate(0deg)'; }, 50);
+
+  // Random bubble
+  const bubbles = ['¡Let\'s Ignite!','¡A por ello!','¡Tú puedes!','¡Sube de nivel!','¡Reto aceptado!'];
+  document.getElementById('mascot-bubble').textContent = bubbles[Math.floor(Math.random() * bubbles.length)];
+
+  setTimeout(() => document.getElementById('mascot-modal').classList.remove('open'), 350);
 }
 
-// ── LANG SELECTOR ──────────────────────────────────────────────────────────
-let currentLang = 'ESP';
-function setLang(code) {
-  currentLang = code;
-  // sync topbar buttons
-  ['ESP','ENG','CAT'].forEach(l => {
-    const b = document.getElementById('lang-'+l);
-    if (b) b.classList.toggle('active', l === code);
-  });
-  // sync modal buttons
-  ['ESP','ENG','CAT'].forEach(l => {
-    const b = document.getElementById('modal-lang-'+l);
-    if (b) b.classList.toggle('active', l === code);
-  });
-}
-function handleLangBtn(code) {
-  if (document.getElementById('topbar').classList.contains('collapsed')) {
-    // collapsed: only the active button shows — open modal to pick
-    document.getElementById('lang-modal').classList.add('open');
-  } else {
-    // expanded: all 3 visible — switch directly
-    setLang(code);
-  }
-}
-function handleLangSelectorClick() {
-  // only open modal when collapsed; in expanded state buttons work directly
-}
-function closeLangModal() {
-  document.getElementById('lang-modal').classList.remove('open');
-}
-// legacy stub (handled above)
-function setView(m){
-  const f=m==='family';
-  document.getElementById('students-view').style.display=f?'none':'block';
-  document.getElementById('family-view').style.display=f?'block':'none';
-  // sync floating switcher
-  document.getElementById('sw-student').classList.toggle('active',!f);
-  document.getElementById('sw-family').classList.toggle('active',f);
-}
-function toggleSkills(b){const x=b.nextElementSibling;const a=b.querySelector('.expand-arrow');const o=x.classList.toggle('open');a.style.transform=o?'rotate(180deg)':'';}
-let aL=false;
-function loadMoreActitud(){if(!aL){document.getElementById('actitud-extra').style.display='grid';document.getElementById('actitud-btn').textContent='Mostrar menos ↑';aL=true;}else{document.getElementById('actitud-extra').style.display='none';document.getElementById('actitud-btn').textContent='Cargar más acciones ↓';aL=false;}}
-const rd={
-  Science:{desc:'Exploración del mundo natural, experimentación y método científico.',color:'#3E6FA8',xp:540,level:'Explorer · Nivel 4',skills:[{n:'Metodología científica',xp:130,lv:'Niv. 3',d:'Diseña experimentos con hipótesis y variables.'},{n:'Biología aplicada',xp:110,lv:'Niv. 3',d:'Comprende seres vivos y ecosistemas.'},{n:'Física básica',xp:150,lv:'Niv. 4',d:'Entiende fuerzas, movimiento y energía.'},{n:'Química experimental',xp:80,lv:'Niv. 2',d:'Realiza reacciones y observa cambios químicos.'},{n:'Astronomía',xp:70,lv:'Niv. 2',d:'Conoce el sistema solar y fenómenos astronómicos.'}]},
-  Technology:{desc:'Uso creativo y crítico de herramientas digitales y tecnológicas.',color:'#2596BE',xp:820,level:'Builder · Nivel 6',skills:[{n:'Programación en bloques',xp:180,lv:'Niv. 5',d:'Scratch, MakeCode y entornos visuales.'},{n:'Python básico',xp:200,lv:'Niv. 6',d:'Variables, bucles, funciones y listas.'},{n:'Arduino & Hardware',xp:220,lv:'Niv. 6',d:'Programación de microcontroladores y sensores.'},{n:'Inteligencia Artificial',xp:130,lv:'Niv. 4',d:'Modelos de ML y herramientas de IA.'},{n:'Seguridad digital',xp:90,lv:'Niv. 3',d:'Privacidad, contraseñas y ciberseguridad.'}]},
-  Engineering:{desc:'Diseño, construcción y resolución de problemas con ingenio.',color:'#e07a2b',xp:430,level:'Maker · Nivel 5',skills:[{n:'Diseño mecánico',xp:120,lv:'Niv. 4',d:'Engranajes, palancas y estructuras.'},{n:'Prototipado rápido',xp:100,lv:'Niv. 3',d:'Crea modelos de prueba rápidamente.'},{n:'Electrónica',xp:130,lv:'Niv. 4',d:'Circuitos, componentes y soldadura.'},{n:'Resolución de problemas',xp:80,lv:'Niv. 3',d:'Analiza y soluciona retos técnicos.'}]},
-  Art:{desc:'Expresión creativa, diseño visual y estética aplicada a proyectos.',color:'#9b5bcc',xp:380,level:'Creator · Nivel 4',skills:[{n:'Modelado 3D',xp:150,lv:'Niv. 5',d:'Tinkercad, Blender y herramientas 3D.'},{n:'Diseño gráfico',xp:100,lv:'Niv. 3',d:'Composición, color y tipografía.'},{n:'Narrativa visual',xp:80,lv:'Niv. 3',d:'Cuentos, storyboards y presentaciones.'},{n:'Creatividad',xp:50,lv:'Niv. 2',d:'Originalidad e innovación en proyectos.'}]},
-  Maths:{desc:'Pensamiento lógico, razonamiento numérico y resolución cuantitativa.',color:'#1aab6d',xp:270,level:'Solver · Nivel 3',skills:[{n:'Geometría',xp:90,lv:'Niv. 3',d:'Formas, medidas y relaciones espaciales.'},{n:'Álgebra básica',xp:80,lv:'Niv. 3',d:'Variables, ecuaciones y patrones.'},{n:'Estadística',xp:60,lv:'Niv. 2',d:'Análisis e interpretación de datos.'},{n:'Matemáticas aplicadas',xp:40,lv:'Niv. 2',d:'Usa las mates para resolver proyectos.'}]},
-  Transversals:{desc:'Habilidades de equipo, comunicación, liderazgo y actitud.',color:'#e05252',xp:400,level:'Leader · Nivel 5',skills:[{n:'Trabajo en equipo',xp:130,lv:'Niv. 5',d:'Colabora y coordina con sus compañeros.'},{n:'Comunicación oral',xp:100,lv:'Niv. 4',d:'Presenta y explica sus proyectos.'},{n:'Liderazgo',xp:80,lv:'Niv. 4',d:'Toma iniciativa y motiva al grupo.'},{n:'Pensamiento crítico',xp:50,lv:'Niv. 3',d:'Evalúa ideas con criterio propio.'},{n:'Gestión del tiempo',xp:40,lv:'Niv. 2',d:'Organiza sus tareas y cumple plazos.'}]},
+// ── RAMA MODAL ────────────────────────────────────────────────
+const ramaData={
+  Science:{desc:'Exploración del mundo natural y método científico.',color:'#3E6FA8',xp:540,level:'Explorer · Nivel 4',skills:[{n:'Metodología científica',xp:130,lv:'Niv. 3',d:'Diseña experimentos con hipótesis y variables.'},{n:'Biología aplicada',xp:110,lv:'Niv. 3',d:'Comprende seres vivos y ecosistemas.'},{n:'Física básica',xp:150,lv:'Niv. 4',d:'Entiende fuerzas, movimiento y energía.'},{n:'Química experimental',xp:80,lv:'Niv. 2',d:'Realiza reacciones y observa cambios.'},{n:'Astronomía',xp:70,lv:'Niv. 2',d:'Conoce el sistema solar.'}]},
+  Technology:{desc:'Uso creativo de herramientas digitales y tecnológicas.',color:'#2596BE',xp:820,level:'Builder · Nivel 6',skills:[{n:'Programación en bloques',xp:180,lv:'Niv. 5',d:'Scratch, MakeCode y entornos visuales.'},{n:'Python básico',xp:200,lv:'Niv. 6',d:'Variables, bucles, funciones y listas.'},{n:'Arduino & Hardware',xp:220,lv:'Niv. 6',d:'Microcontroladores y sensores.'},{n:'Inteligencia Artificial',xp:130,lv:'Niv. 4',d:'Modelos de ML básicos.'},{n:'Seguridad digital',xp:90,lv:'Niv. 3',d:'Privacidad y ciberseguridad.'}]},
+  Engineering:{desc:'Diseño, construcción y resolución de problemas.',color:'#e07a2b',xp:430,level:'Maker · Nivel 5',skills:[{n:'Diseño mecánico',xp:120,lv:'Niv. 4',d:'Engranajes, palancas y estructuras.'},{n:'Prototipado rápido',xp:100,lv:'Niv. 3',d:'Crea modelos de prueba rápidamente.'},{n:'Electrónica',xp:130,lv:'Niv. 4',d:'Circuitos y componentes.'},{n:'Resolución de problemas',xp:80,lv:'Niv. 3',d:'Analiza y soluciona retos técnicos.'}]},
+  Art:{desc:'Expresión creativa y diseño visual aplicado a proyectos.',color:'#9b5bcc',xp:380,level:'Creator · Nivel 4',skills:[{n:'Modelado 3D',xp:150,lv:'Niv. 5',d:'Tinkercad, Blender y herramientas 3D.'},{n:'Diseño gráfico',xp:100,lv:'Niv. 3',d:'Composición, color y tipografía.'},{n:'Narrativa visual',xp:80,lv:'Niv. 3',d:'Storyboards y presentaciones.'},{n:'Creatividad',xp:50,lv:'Niv. 2',d:'Originalidad e innovación.'}]},
+  Maths:{desc:'Pensamiento lógico y razonamiento numérico.',color:'#1aab6d',xp:270,level:'Solver · Nivel 3',skills:[{n:'Geometría',xp:90,lv:'Niv. 3',d:'Formas, medidas y relaciones espaciales.'},{n:'Álgebra básica',xp:80,lv:'Niv. 3',d:'Variables, ecuaciones y patrones.'},{n:'Estadística',xp:60,lv:'Niv. 2',d:'Análisis e interpretación de datos.'},{n:'Matemáticas aplicadas',xp:40,lv:'Niv. 2',d:'Mates para resolver proyectos.'}]},
+  Transversals:{desc:'Habilidades de equipo, comunicación y liderazgo.',color:'#e05252',xp:400,level:'Leader · Nivel 5',skills:[{n:'Trabajo en equipo',xp:130,lv:'Niv. 5',d:'Colabora y coordina.'},{n:'Comunicación oral',xp:100,lv:'Niv. 4',d:'Presenta y explica proyectos.'},{n:'Liderazgo',xp:80,lv:'Niv. 4',d:'Toma iniciativa y motiva.'},{n:'Pensamiento crítico',xp:50,lv:'Niv. 3',d:'Evalúa ideas con criterio.'},{n:'Gestión del tiempo',xp:40,lv:'Niv. 2',d:'Organiza y cumple plazos.'}]},
 };
-function openModal(r){const d=rd[r];document.getElementById('modal-title').textContent=r+' — '+d.level;document.getElementById('modal-subtitle').textContent=d.desc+' · Total: '+d.xp+' XP';document.getElementById('modal-skills').innerHTML=d.skills.map(s=>`<div class="skill-row"><div class="skill-dot" style="background:${d.color}"></div><div style="flex:1"><div class="skill-row-name">${s.n} <span style="font-size:10px;color:#8aa4be;font-weight:600">${s.lv}</span></div><div class="skill-row-desc">${s.d}</div></div><div class="skill-row-xp" style="color:${d.color}">${s.xp} XP</div></div>`).join('');document.getElementById('modal').classList.add('open');}
-function closeModal(e){if(!e||e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('open');}
+function openModal(r){
+  const d=ramaData[r];
+  document.getElementById('modal-title').textContent=r+' — '+d.level;
+  document.getElementById('modal-subtitle').textContent=d.desc+' · Total: '+d.xp+' XP';
+  document.getElementById('modal-skills').innerHTML=d.skills.map(s=>`<div class="skill-row"><div class="skill-dot" style="background:${d.color}"></div><div style="flex:1"><div class="skill-row-name">${s.n} <span style="font-size:11px;color:#8aa4be">${s.lv}</span></div><div class="skill-row-desc">${s.d}</div></div><div class="skill-row-xp" style="color:${d.color}">${s.xp} XP</div></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal')) document.getElementById('modal').classList.remove('open');
+}
 </script>
 </body>
 </html>
