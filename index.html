@@ -266,20 +266,35 @@ body {
 }
 .mascot-svg:hover { transform: scale(1.04) rotate(-2deg); }
 .mascot-bubble {
-  position: absolute; right: -114px; bottom: 64px;
-  background: var(--text); color: #fff; border-radius: 16px;
+  position: absolute;
+  left: calc(100% + 10px);
+  bottom: 64px;
+  /* Wide enough to be horizontal, narrows on small screens */
+  max-width: clamp(160px, 35vw, 340px);
+  width: max-content;
+  white-space: normal; line-height: 1.4;
+  background: var(--text); color: var(--card-a); border-radius: 16px;
   padding: 8px 14px; font-size: 13px; font-weight: 700;
-  white-space: nowrap; box-shadow: 0 4px 16px rgba(47,58,74,.20);
+  box-shadow: 0 4px 16px rgba(47,58,74,.20);
   animation: bubblePop .4s .3s both;
-  pointer-events: all;
+  pointer-events: all; cursor: pointer;
+  text-align: center;
+  transition: transform .15s, opacity .15s;
 }
+.mascot-bubble:hover { transform: scale(1.04); opacity: .9; }
 .mascot-bubble::before {
-  content: ''; position: absolute; left: -9px; top: 50%; transform: translateY(-50%);
+  content: ''; position: absolute; left: -9px; top: 14px;
   border: 6px solid transparent; border-right-color: var(--text);
 }
 @keyframes bubblePop { from { opacity: 0; transform: scale(.7) translateY(8px); } to { opacity: 1; transform: none; } }
-@media (max-width: 360px) {
-  .mascot-bubble { position: relative; right: auto; bottom: auto; display: block; margin: 4px auto 0; }
+/* Narrow screens: bubble falls below mascot */
+@media (max-width: 480px) {
+  .mascot-bubble {
+    position: relative; left: auto; bottom: auto;
+    display: block; margin: 6px auto 0;
+    width: clamp(160px, 72vw, 320px);
+    text-align: center;
+  }
   .mascot-bubble::before { display: none; }
   .mascot-unit { flex-direction: column; align-items: center; }
 }
@@ -578,6 +593,28 @@ body {
 .color-swatch { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
 .color-name { font-size: 10px; font-weight: 700; color: var(--text); text-align: center; }
 
+/* Frase grid */
+.frase-modal { display:none; position:fixed; inset:0; background:rgba(47,58,74,.5); z-index:300; align-items:flex-end; justify-content:center; }
+.frase-modal.open { display:flex; }
+.frase-modal-backdrop { position:absolute; inset:0; }
+.frase-modal-box { position:relative; z-index:1; background:var(--card-a); border-radius:28px 28px 0 0; width:100%; max-width:520px; max-height:80vh; overflow-y:auto; padding:26px 22px 36px; animation:slideUp .22s ease; }
+.frase-modal-title { font-size:20px; font-weight:900; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:9px; }
+.frase-modal-sub { font-size:13px; color:#8aa4be; margin-bottom:18px; }
+.frase-grid { display: flex; flex-direction: column; gap: 8px; }
+.frase-option {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 14px; cursor: pointer;
+  border: 2px solid transparent; background: var(--card-b);
+  font-family: 'Figtree', sans-serif; transition: border-color .15s, transform .15s;
+  text-align: left; position: relative;
+}
+.frase-option:hover:not(.locked-frase) { transform: translateX(3px); border-color: var(--accent); }
+.frase-option.selected-frase { border-color: var(--blue-dark); background: rgba(62,111,168,.06); }
+.frase-option.locked-frase { opacity: .45; cursor: not-allowed; }
+.frase-text { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
+.frase-level { font-size: 10px; font-weight: 800; color: var(--muted); margin-left: auto; flex-shrink: 0; }
+.frase-icon { font-size: 20px; flex-shrink: 0; }
+
 /* ═══ FLOATING SWITCHER ════════════════════════════ */
 .profile-switcher {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -772,7 +809,7 @@ body {
             <text x="12" y="42" font-size="11" fill="#7CB8F5" font-family="sans-serif">✦</text>
             <text x="63" y="20" font-size="10" fill="#2596BE" font-family="sans-serif">⭐</text>
           </svg>
-          <div class="mascot-bubble" id="mascot-bubble">Let's Ignite!</div>
+          <div class="mascot-bubble" id="mascot-bubble" onclick="openFraseModal()" title="Cambiar frase">Let's Ignite!</div>
         </div>
       </div>
 
@@ -830,11 +867,9 @@ body {
           </div>
         </div>
       </div><!-- /hero-profile-area -->
-
+      <div id="scroll-sentinel"></div>
     </div><!-- /hero-sticky-track -->
   </div><!-- /hero-zone -->
-
-  <div id="scroll-sentinel"></div>
   <div class="content">
   <div id="students-view">
 
@@ -1151,7 +1186,7 @@ body {
   <div class="mascot-modal-box">
     <button class="modal-close" onclick="document.getElementById('mascot-modal').classList.remove('open')">✕</button>
     <div class="mascot-modal-title">Personaliza tu personaje</div>
-    <!-- Tabs: Personaje (big) / Tipo (small) -->
+    <!-- Tabs: Personaje (big) / Tipo (small) / Frase (small) -->
     <div class="mascot-tabs">
       <button class="mascot-tab mascot-tab-main active" id="tab-shape" onclick="switchMascotTab('shape')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="5" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1161,6 +1196,7 @@ body {
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 4 7 4 11c0 3 2 5.5 5 6.5V20h6v-2.5c3-1 5-3.5 5-6.5 0-4-4-8-8-8Z" stroke="currentColor" stroke-width="2"/></svg>
         Tipo
       </button>
+
     </div>
     <!-- Personaje panel -->
     <div id="panel-shape">
@@ -1172,6 +1208,21 @@ body {
       <div class="mascot-modal-sub" style="font-size:12px">Cambia el tipo de tu personaje. Se desbloquean más al subir de nivel.</div>
       <div class="color-grid" id="color-grid"></div>
     </div>
+
+  </div>
+</div>
+
+<!-- FRASE MODAL -->
+<div class="frase-modal" id="frase-modal">
+  <div class="frase-modal-backdrop" onclick="closeFraseModal()"></div>
+  <div class="frase-modal-box">
+    <button class="modal-close" onclick="closeFraseModal()">✕</button>
+    <div class="frase-modal-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="5" width="18" height="14" rx="4" stroke="currentColor" stroke-width="2"/></svg>
+      Elige tu lema
+    </div>
+    <div class="frase-modal-sub">Toca una frase para que aparezca en tu bocadillo. Se desbloquean más al subir de nivel.</div>
+    <div class="frase-grid" id="frase-grid"></div>
   </div>
 </div>
 
@@ -1247,7 +1298,7 @@ const sentinel = document.getElementById('scroll-sentinel');
 if (sentinel && topbarWrapper) {
   const obs = new IntersectionObserver(
     ([e]) => topbarWrapper.classList.toggle('collapsed', !e.isIntersecting),
-    { threshold: 0, rootMargin: '60px 0px 0px 0px' }
+    { threshold: 0, rootMargin: '0px 0px 0px 0px' }
   );
   obs.observe(sentinel);
 }
@@ -1463,14 +1514,40 @@ function renderMascotMain() {
   if (el) { el.innerHTML = mascotSVG(selectedMascot); }
 }
 
+// Phrases — unlocked by level, philosophy/purpose vibes
+const frases = [
+  { id:'ignite',    text:"¡Let's Ignite!",          minLevel:1,  icon:'⚡' },
+  { id:'aprendo',   text:'Aprendo un poco más cada día', minLevel:1, icon:'📚' },
+  { id:'error',     text:'Los errores me hacen crecer',  minLevel:1, icon:'🌱' },
+  { id:'crear',     text:'Crear es mi superpoder',       minLevel:2, icon:'✨' },
+  { id:'curioso',   text:'La curiosidad no tiene límites', minLevel:2, icon:'🔭' },
+  { id:'equipo',    text:'Juntos llegamos más lejos',    minLevel:3, icon:'🤝' },
+  { id:'pregunta',  text:'Cada pregunta abre una puerta',minLevel:3, icon:'🚪' },
+  { id:'reto',      text:'Los retos son oportunidades',  minLevel:4, icon:'🏆' },
+  { id:'codigo',    text:'El código es mi idioma',       minLevel:4, icon:'💻' },
+  { id:'persiste',  text:'Persistir es la clave',        minLevel:5, icon:'🔑' },
+  { id:'imagine',   text:'Imagina, diseña, construye',   minLevel:5, icon:'🛠️' },
+  { id:'impacto',   text:'Quiero cambiar el mundo',      minLevel:6, icon:'🌍' },
+  { id:'robot',     text:'Dominaré la robótica',         minLevel:6, icon:'🤖' },
+  { id:'datos',     text:'Los datos cuentan historias',  minLevel:7, icon:'📊' },
+  { id:'conecto',   text:'Conecto ideas para innovar',   minLevel:7, icon:'💡' },
+  { id:'heroe',     text:'Soy héroe de mi aprendizaje',  minLevel:8, icon:'⚔️' },
+  { id:'future',    text:'El futuro lo construyo hoy',   minLevel:9, icon:'🚀' },
+  { id:'legend',    text:'Seré una leyenda del código',  minLevel:10,icon:'🌟' },
+];
+
+let selectedFrase = frases[0];
+
 function switchMascotTab(tab) {
-  document.getElementById('tab-shape').classList.toggle('active', tab==='shape');
-  document.getElementById('tab-color').classList.toggle('active', tab==='color');
-  document.getElementById('panel-shape').style.display = tab==='shape' ? '' : 'none';
-  document.getElementById('panel-color').style.display = tab==='color' ? '' : 'none';
+  ['shape','color'].forEach(t => {
+    document.getElementById('tab-'+t)?.classList.toggle('active', t===tab);
+    document.getElementById('panel-'+(t==='shape'?'shape':'color'))?.style && (document.getElementById('panel-'+(t==='shape'?'shape':'color')).style.display = t===tab ? '' : 'none');
+  });
 }
 
-function openMascotModal() {
+function openMascotModal(defaultTab) {
+  const tab = defaultTab || 'shape';
+
   // Render shape grid
   const grid = document.getElementById('mascot-grid');
   grid.innerHTML = mascots.map(m => {
@@ -1507,7 +1584,7 @@ function openMascotModal() {
     </div>`;
   }).join('');
 
-  switchMascotTab('shape');
+  switchMascotTab(tab);
   document.getElementById('mascot-modal').classList.add('open');
 }
 
@@ -1537,6 +1614,40 @@ function selectColor(hex) {
   randomBubble();
 }
 
+function openFraseModal() {
+  const grid = document.getElementById('frase-grid');
+  grid.innerHTML = frases.map(f => {
+    const locked = currentLevel < f.minLevel;
+    const isSel = f.id === selectedFrase.id;
+    return `<button class="frase-option ${locked?'locked-frase':''} ${isSel?'selected-frase':''}"
+      onclick="${locked?'':'selectFrase(\''+f.id+'\')'}">
+      <span class="frase-icon">${f.icon}</span>
+      <span class="frase-text">${f.text}</span>
+      ${locked
+        ? `<span class="frase-level">🔒 Niv.${f.minLevel}</span>`
+        : f.minLevel > 1 ? `<span class="frase-level" style="color:var(--accent)">Niv.${f.minLevel}</span>` : ''}
+    </button>`;
+  }).join('');
+  document.getElementById('frase-modal').classList.add('open');
+}
+function closeFraseModal() {
+  document.getElementById('frase-modal').classList.remove('open');
+}
+
+function selectFrase(id) {
+  const f = frases.find(x => x.id === id);
+  if (!f) return;
+  selectedFrase = f;
+  // Update bubble
+  document.getElementById('mascot-bubble').textContent = f.text;
+  // Update selected state in grid
+  document.querySelectorAll('.frase-option').forEach(el => {
+    el.classList.toggle('selected-frase', el.querySelector('.frase-text')?.textContent === f.text);
+  });
+  // Close modal after brief delay
+  setTimeout(() => document.getElementById('frase-modal').classList.remove('open'), 320);
+}
+
 function animateMascot() {
   const el = document.getElementById('mascot-svg');
   el.style.transition = 'transform .25s ease';
@@ -1545,11 +1656,11 @@ function animateMascot() {
 }
 
 function randomBubble() {
-  const b = ['¡Let\'s Ignite!','¡A por ello!','¡Tú puedes!','¡Sube de nivel!','¡Reto aceptado!'];
-  document.getElementById('mascot-bubble').textContent = b[Math.floor(Math.random()*b.length)];
+  // Keep the user's chosen phrase; only called on mascot shape change
+  document.getElementById('mascot-bubble').textContent = selectedFrase.text;
 }
 
-// Init
+// ── INIT ─────────────────────────────────────────────────────
 renderMascotMain();
 
 // ── RAMA MODAL ────────────────────────────────────────────────
