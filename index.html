@@ -593,7 +593,19 @@ body {
 .color-swatch { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
 .color-name { font-size: 10px; font-weight: 700; color: var(--text); text-align: center; }
 
-/* Frase grid */
+/* Accessories grid */
+.acc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px,1fr)); gap: 12px; }
+.acc-option {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 12px 6px; border-radius: 16px; cursor: pointer;
+  border: 2.5px solid transparent; background: var(--card-b);
+  transition: border-color .2s, transform .15s; position: relative; text-align: center;
+}
+.acc-option:hover:not(.locked-acc) { transform: scale(1.05); border-color: var(--accent); }
+.acc-option.selected-acc { border-color: var(--blue-dark); background: rgba(62,111,168,.08); }
+.acc-option.locked-acc { opacity: .45; cursor: not-allowed; }
+.acc-preview { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
+.acc-name { font-size: 11px; font-weight: 800; color: var(--text); }
 .frase-modal { display:none; position:fixed; inset:0; background:rgba(47,58,74,.5); z-index:300; align-items:flex-end; justify-content:center; }
 .frase-modal.open { display:flex; }
 .frase-modal-backdrop { position:absolute; inset:0; }
@@ -1186,7 +1198,7 @@ body {
   <div class="mascot-modal-box">
     <button class="modal-close" onclick="document.getElementById('mascot-modal').classList.remove('open')">✕</button>
     <div class="mascot-modal-title">Personaliza tu personaje</div>
-    <!-- Tabs: Personaje (big) / Tipo (small) / Frase (small) -->
+    <!-- Tabs: Personaje (big) / Tipo (small) / Accesorios (small) -->
     <div class="mascot-tabs">
       <button class="mascot-tab mascot-tab-main active" id="tab-shape" onclick="switchMascotTab('shape')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="5" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1196,7 +1208,10 @@ body {
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 4 7 4 11c0 3 2 5.5 5 6.5V20h6v-2.5c3-1 5-3.5 5-6.5 0-4-4-8-8-8Z" stroke="currentColor" stroke-width="2"/></svg>
         Tipo
       </button>
-
+      <button class="mascot-tab mascot-tab-secondary" id="tab-acc" onclick="switchMascotTab('acc')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 10 Q12 4 19 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><ellipse cx="8" cy="12" rx="3" ry="2.5" stroke="currentColor" stroke-width="2"/><ellipse cx="16" cy="12" rx="3" ry="2.5" stroke="currentColor" stroke-width="2"/><path d="M11 12 H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Accesorios
+      </button>
     </div>
     <!-- Personaje panel -->
     <div id="panel-shape">
@@ -1207,6 +1222,11 @@ body {
     <div id="panel-color" style="display:none">
       <div class="mascot-modal-sub" style="font-size:12px">Cambia el tipo de tu personaje. Se desbloquean más al subir de nivel.</div>
       <div class="color-grid" id="color-grid"></div>
+    </div>
+    <!-- Accesorios panel -->
+    <div id="panel-acc" style="display:none">
+      <div class="mascot-modal-sub" style="font-size:12px">Pon un accesorio a tu personaje. Se desbloquean más al subir de nivel.</div>
+      <div class="acc-grid" id="acc-grid"></div>
     </div>
 
   </div>
@@ -1451,6 +1471,115 @@ const mascotColors = [
 
 let selectedMascot = 'spark';
 let selectedColor  = '#7ba6e2';
+let selectedAcc    = 'none'; // no accessory by default
+
+// Accessories — SVG overlays drawn on top of the mascot (viewBox 0 0 140 140)
+const accessories = [
+  {
+    id: 'none', name: 'Ninguno', minLevel: 1,
+    svg: '' // empty = no accessory
+  },
+  {
+    id: 'gafas', name: 'Gafas', minLevel: 1,
+    svg: `<g>
+      <ellipse cx="55" cy="62" rx="12" ry="9" fill="none" stroke="#2F3A4A" stroke-width="3"/>
+      <ellipse cx="85" cy="62" rx="12" ry="9" fill="none" stroke="#2F3A4A" stroke-width="3"/>
+      <line x1="67" y1="62" x2="73" y2="62" stroke="#2F3A4A" stroke-width="2.5"/>
+      <line x1="43" y1="62" x2="36" y2="60" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="97" y1="62" x2="104" y2="60" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
+    </g>`
+  },
+  {
+    id: 'gafas-sol', name: 'Gafas de sol', minLevel: 2,
+    svg: `<g>
+      <ellipse cx="55" cy="62" rx="12" ry="9" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
+      <ellipse cx="85" cy="62" rx="12" ry="9" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
+      <line x1="67" y1="62" x2="73" y2="62" stroke="#FBB03B" stroke-width="2.5"/>
+      <line x1="43" y1="62" x2="36" y2="60" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="97" y1="62" x2="104" y2="60" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="55" cy="62" rx="12" ry="9" fill="#FBB03B" fill-opacity=".18"/>
+      <ellipse cx="85" cy="62" rx="12" ry="9" fill="#FBB03B" fill-opacity=".18"/>
+    </g>`
+  },
+  {
+    id: 'sombrero', name: 'Sombrero', minLevel: 3,
+    svg: `<g>
+      <ellipse cx="70" cy="42" rx="28" ry="7" fill="#2F3A4A"/>
+      <rect x="50" y="18" width="40" height="26" rx="8" fill="#2F3A4A"/>
+      <rect x="52" y="30" width="36" height="5" rx="2" fill="#FBB03B"/>
+    </g>`
+  },
+  {
+    id: 'gorra', name: 'Gorra', minLevel: 4,
+    svg: `<g>
+      <path d="M42 46 Q70 28 98 46 Q84 48 70 48 Q56 48 42 46Z" fill="#3E6FA8"/>
+      <path d="M42 46 Q56 48 70 48 Q84 48 98 46 L98 52 Q84 54 70 54 Q56 54 42 52Z" fill="#2596BE"/>
+      <path d="M42 46 Q36 50 32 54 Q42 52 42 46Z" fill="#3E6FA8"/>
+      <rect x="56" y="36" width="28" height="4" rx="2" fill="#FBB03B"/>
+    </g>`
+  },
+  {
+    id: 'corona', name: 'Corona', minLevel: 6,
+    svg: `<g>
+      <path d="M44 50 L44 34 L56 42 L70 28 L84 42 L96 34 L96 50 Z" fill="#FBB03B" stroke="#f59e0b" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="70" cy="30" r="4" fill="#e94560"/>
+      <circle cx="44" cy="36" r="3" fill="#e94560"/>
+      <circle cx="96" cy="36" r="3" fill="#e94560"/>
+      <rect x="44" y="48" width="52" height="8" rx="3" fill="#FBB03B"/>
+    </g>`
+  },
+  {
+    id: 'antenas', name: 'Antenas', minLevel: 5,
+    svg: `<g>
+      <line x1="58" y1="34" x2="52" y2="14" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="52" cy="12" r="5" fill="#e94560"/>
+      <line x1="82" y1="34" x2="88" y2="14" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="88" cy="12" r="5" fill="#e94560"/>
+    </g>`
+  },
+  {
+    id: 'halo', name: 'Halo', minLevel: 7,
+    svg: `<ellipse cx="70" cy="24" rx="24" ry="7" fill="none" stroke="#FBB03B" stroke-width="4" opacity=".9"/>`
+  },
+  {
+    id: 'bowtie', name: 'Pajarita', minLevel: 8,
+    svg: `<g>
+      <path d="M52 106 L62 112 L52 118 Z" fill="#e94560"/>
+      <path d="M88 106 L78 112 L88 118 Z" fill="#e94560"/>
+      <ellipse cx="70" cy="112" rx="8" ry="5" fill="#c0103a"/>
+    </g>`
+  },
+  {
+    id: 'mochila', name: 'Mochila', minLevel: 9,
+    svg: `<g>
+      <rect x="22" y="58" width="18" height="30" rx="5" fill="#3E6FA8" stroke="#2596BE" stroke-width="1.5"/>
+      <rect x="25" y="64" width="12" height="8" rx="2" fill="#7CB8F5"/>
+      <line x1="27" y1="56" x2="27" y2="88" stroke="#2596BE" stroke-width="1.5"/>
+      <line x1="37" y1="56" x2="37" y2="88" stroke="#2596BE" stroke-width="1.5"/>
+    </g>`
+  },
+  {
+    id: 'capa', name: 'Capa', minLevel: 10,
+    svg: `<g>
+      <path d="M36 78 Q28 100 32 120 Q50 110 70 112 Q90 110 108 120 Q112 100 104 78 Q90 90 70 92 Q50 90 36 78Z" fill="#e94560" opacity=".9"/>
+      <path d="M36 78 Q50 90 70 92 Q90 90 104 78 L100 72 Q84 84 70 86 Q56 84 40 72Z" fill="#c0103a"/>
+    </g>`
+  },
+];
+
+function selectAcc(id) {
+  selectedAcc = id;
+  document.querySelectorAll('.acc-option').forEach(el => {
+    el.classList.toggle('selected-acc', el.querySelector('.acc-name')?.textContent === accessories.find(a=>a.id===id)?.name);
+  });
+  renderMascotMain();
+  animateMascot();
+  setTimeout(() => document.getElementById('mascot-modal').classList.remove('open'), 350);
+}
+
+function accSVG(id) {
+  return accessories.find(a => a.id === id)?.svg || '';
+}
 
 function mascotSVG(id) {
   switch (id) {
@@ -1511,7 +1640,7 @@ function mascotSVG(id) {
 
 function renderMascotMain() {
   const el = document.getElementById('mascot-svg');
-  if (el) { el.innerHTML = mascotSVG(selectedMascot); }
+  if (el) { el.innerHTML = mascotSVG(selectedMascot) + accSVG(selectedAcc); }
 }
 
 // Phrases — unlocked by level, philosophy/purpose vibes
@@ -1539,9 +1668,12 @@ const frases = [
 let selectedFrase = frases[0];
 
 function switchMascotTab(tab) {
-  ['shape','color'].forEach(t => {
-    document.getElementById('tab-'+t)?.classList.toggle('active', t===tab);
-    document.getElementById('panel-'+(t==='shape'?'shape':'color'))?.style && (document.getElementById('panel-'+(t==='shape'?'shape':'color')).style.display = t===tab ? '' : 'none');
+  ['shape','color','acc'].forEach(t => {
+    const btnId = t === 'shape' ? 'tab-shape' : t === 'color' ? 'tab-color' : 'tab-acc';
+    const panelId = t === 'shape' ? 'panel-shape' : t === 'color' ? 'panel-color' : 'panel-acc';
+    document.getElementById(btnId)?.classList.toggle('active', t===tab);
+    const panel = document.getElementById(panelId);
+    if (panel) panel.style.display = t===tab ? '' : 'none';
   });
 }
 
@@ -1581,6 +1713,31 @@ function openMascotModal(defaultTab) {
       <span class="color-swatch" style="background:${c.hex}"></span>
       <span class="color-name">${c.name}</span>
       ${locked?`<span style="font-size:9px;color:var(--muted);font-weight:700">🔒 Niv.${c.minLevel}</span>`:''}
+    </div>`;
+  }).join('');
+
+  // Render accessories grid
+  const agrid = document.getElementById('acc-grid');
+  agrid.innerHTML = accessories.map(a => {
+    const locked = currentLevel < a.minLevel && a.id !== 'none';
+    const isSel = a.id === selectedAcc;
+    return `<div class="acc-option ${locked?'locked-acc':''} ${isSel?'selected-acc':''}"
+      onclick="${locked?'':'selectAcc(\''+a.id+'\')'}">
+      ${locked?`<span class="mascot-lock-badge">Niv.${a.minLevel}</span>`:''}
+      <div class="acc-preview">
+        <svg width="56" height="56" viewBox="0 0 140 140" fill="none">
+          <!-- mini mascot base -->
+          <ellipse cx="70" cy="74" rx="32" ry="34" fill="${selectedColor}88"/>
+          <ellipse cx="70" cy="76" rx="20" ry="22" fill="#eef2ff"/>
+          <ellipse cx="62" cy="70" rx="4" ry="5" fill="#2F3A4A"/>
+          <ellipse cx="78" cy="70" rx="4" ry="5" fill="#2F3A4A"/>
+          <circle cx="63.2" cy="68.5" r="1.4" fill="white"/>
+          <circle cx="79.2" cy="68.5" r="1.4" fill="white"/>
+          <path d="M64 80 Q70 84 76 80" stroke="#2F3A4A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          ${a.svg}
+        </svg>
+      </div>
+      <div class="acc-name">${a.name}</div>
     </div>`;
   }).join('');
 
