@@ -858,7 +858,8 @@ body {
       <!-- Mascot: sticky inside the track, rises immediately with scroll -->
       <div class="mascot-row">
         <div class="mascot-unit" id="mascot-unit"
-          onmouseenter="startMascotAnim()" onmouseleave="stopMascotAnim()">
+          onmouseenter="startMascotAnim()" onmouseleave="stopMascotAnim()"
+          ontouchstart="handleMascotTouch(event)" ontouchend="stopMascotAnim()" ontouchcancel="stopMascotAnim()">
           <canvas class="mascot-anim-canvas" id="mascot-anim-canvas"></canvas>
           <svg class="mascot-svg" id="mascot-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="openMascotModal()">
             <ellipse cx="70" cy="92" rx="44" ry="38" fill="#c8dff7"/>
@@ -911,6 +912,7 @@ body {
               <!-- Fusion zone: bolt + number together -->
               <div class="level-fusion" id="level-fusion"
                 onmouseenter="startBoltFusion()" onmouseleave="stopBoltFusion()"
+                ontouchstart="handleBoltTouch(event)" ontouchend="stopBoltFusion()" ontouchcancel="stopBoltFusion()"
                 onclick="openBoltModal()">
                 <canvas id="fusion-canvas" width="120" height="70"></canvas>
                 <div class="level-fusion-inner">
@@ -1532,6 +1534,69 @@ function renderProjects(){
 }
 function changePage(d){cp=Math.max(0,Math.min(tp-1,cp+d));renderProjects();window.scrollTo(0,0);}
 renderProjects();
+
+// ── TOUCH HANDLERS (long press = animation, tap = modal) ──────
+let mascotTouchTimer = null;
+let boltTouchTimer = null;
+
+function handleMascotTouch(e) {
+  mascotTouchTimer = setTimeout(() => {
+    startMascotAnim();
+    mascotTouchTimer = null;
+  }, 280);
+}
+
+// Override touchend: if timer still pending it was a short tap → open modal
+// If timer already fired → it was long press → stop anim
+const _origStopMascot = stopMascotAnim;
+document.addEventListener('DOMContentLoaded', () => {
+  const unit = document.getElementById('mascot-unit');
+  if (unit) {
+    unit.addEventListener('touchend', (e) => {
+      if (mascotTouchTimer) {
+        clearTimeout(mascotTouchTimer);
+        mascotTouchTimer = null;
+        // short tap → open modal (handled by onclick on SVG)
+      } else {
+        stopMascotAnim();
+      }
+    }, { passive: true });
+    unit.addEventListener('touchcancel', () => {
+      clearTimeout(mascotTouchTimer);
+      mascotTouchTimer = null;
+      stopMascotAnim();
+    }, { passive: true });
+  }
+});
+
+function handleBoltTouch(e) {
+  boltTouchTimer = setTimeout(() => {
+    startBoltFusion();
+    boltTouchTimer = null;
+  }, 280);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const fusion = document.getElementById('level-fusion');
+  if (fusion) {
+    fusion.addEventListener('touchend', (e) => {
+      if (boltTouchTimer) {
+        clearTimeout(boltTouchTimer);
+        boltTouchTimer = null;
+        // short tap → open bolt modal
+        openBoltModal();
+        e.preventDefault();
+      } else {
+        stopBoltFusion();
+      }
+    }, { passive: false });
+    fusion.addEventListener('touchcancel', () => {
+      clearTimeout(boltTouchTimer);
+      boltTouchTimer = null;
+      stopBoltFusion();
+    }, { passive: true });
+  }
+});
 
 // ── LEVEL FUSION ANIMATIONS ───────────────────────────────────
 let fusionRAF = null;
