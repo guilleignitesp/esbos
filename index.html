@@ -258,13 +258,20 @@ body {
 }
 .mascot-unit {
   position: relative; display: inline-flex; align-items: flex-end; flex-shrink: 0;
-  pointer-events: all;     /* but clicks on the mascot itself still work */
+  pointer-events: all;
 }
 .mascot-svg { width: 140px; height: 140px; display: block; cursor: pointer;
   filter: drop-shadow(0 12px 28px rgba(62,111,168,.25)) drop-shadow(0 2px 6px rgba(62,111,168,.12));
-  transition: transform .2s;
+  transition: transform .15s ease, filter .3s;
 }
-.mascot-svg:hover { transform: scale(1.04) rotate(-2deg); }
+.mascot-anim-canvas {
+  /* Centered exactly over the SVG (140×140), with 30px padding each side */
+  position: absolute;
+  left: -30px; top: -30px;
+  width: 200px; height: 200px;
+  pointer-events: none; z-index: 3;
+  opacity: 0; transition: opacity .25s;
+}
 .mascot-bubble {
   position: absolute;
   left: calc(100% + 10px);
@@ -324,6 +331,23 @@ body {
 .level-corner-l { flex-shrink: 0; align-self: center; }
 .level-corner-r { flex-shrink: 0; align-self: center; transform: scaleX(-1); }
 .level-num { font-size: 52px; font-weight: 900; color: var(--blue-dark); line-height: 1; }
+/* Level fusion zone */
+.level-fusion {
+  position: relative; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 16px; transition: transform .2s;
+}
+.level-fusion:hover { transform: scale(1.06); }
+.level-fusion-inner {
+  display: flex; align-items: center; gap: 6px;
+  position: relative; z-index: 2; padding: 4px 10px;
+}
+#fusion-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1; border-radius: 16px;
+  opacity: 0; transition: opacity .3s;
+}
+.level-fusion:hover #fusion-canvas { opacity: 1; }
 .level-name { font-size: 17px; font-weight: 700; color: var(--cta); }
 
 /* XP BLOCK */
@@ -606,6 +630,45 @@ body {
 .acc-option.locked-acc { opacity: .45; cursor: not-allowed; }
 .acc-preview { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; }
 .acc-name { font-size: 11px; font-weight: 800; color: var(--text); }
+/* ── BOLT MODAL ──────────────────────────────────── */
+.bolt-modal { display:none; position:fixed; inset:0; background:rgba(10,10,20,.65); z-index:300; align-items:flex-end; justify-content:center; }
+.bolt-modal.open { display:flex; }
+.bolt-modal-backdrop { position:absolute; inset:0; }
+.bolt-modal-box { position:relative; z-index:1; background:var(--card-a); border-radius:28px 28px 0 0; width:100%; max-width:600px; max-height:82vh; overflow-y:auto; padding:26px 22px 36px; animation:slideUp .22s ease; }
+.bolt-modal-title { font-size:20px; font-weight:900; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:9px; }
+.bolt-modal-sub { font-size:13px; color:#8aa4be; margin-bottom:20px; }
+.bolt-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }
+.bolt-card { border-radius:18px; padding:16px 12px; cursor:pointer; border:2.5px solid transparent; position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; gap:10px; transition:transform .2s,box-shadow .2s,border-color .2s,background .3s; background:var(--card-b); }
+.bolt-card:not(.bolt-locked):hover { transform:translateY(-4px) scale(1.03); }
+.bolt-card.bolt-selected { border-color:var(--bc,#FBB03B) !important; box-shadow:0 0 0 1px var(--bc,#FBB03B); }
+.bolt-card.bolt-locked { opacity:.45; cursor:not-allowed; }
+.bolt-icon-wrap { transition:filter .25s,transform .25s; display:flex; align-items:center; justify-content:center; }
+.bolt-card:not(.bolt-locked):hover .bolt-icon-wrap { transform:scale(1.18); filter:drop-shadow(0 0 8px var(--bc,#FBB03B)) drop-shadow(0 0 20px var(--bc,#FBB03B)); }
+.bolt-brand { font-size:15px; font-weight:900; letter-spacing:.5px; }
+.bolt-tagline { font-size:10px; font-weight:600; color:var(--muted); text-align:center; line-height:1.4; }
+.bolt-level-badge { position:absolute; top:8px; right:8px; font-size:10px; font-weight:800; color:var(--muted); }
+.bolt-card[data-bolt="ferri"]:not(.bolt-locked):hover { background:#1a0000; }
+.bolt-card[data-bolt="apfel"]:not(.bolt-locked):hover { background:#f0f0f5; }
+.bolt-card[data-bolt="nextra"]:not(.bolt-locked):hover { background:#111; }
+.bolt-card[data-bolt="galaxi"]:not(.bolt-locked):hover { background:#0a0a2e; }
+.bolt-card[data-bolt="goog"]:not(.bolt-locked):hover { background:#fff; }
+.bolt-card[data-bolt="teslo"]:not(.bolt-locked):hover { background:#0a0a0a; }
+.bolt-card[data-bolt="amazo"]:not(.bolt-locked):hover { background:#131921; }
+.bolt-card[data-bolt="netti"]:not(.bolt-locked):hover { background:#141414; }
+.bolt-card[data-bolt="spotif"]:not(.bolt-locked):hover { background:#0d1117; }
+@keyframes ferriShake { 0%,100%{transform:scale(1.18) rotate(0)} 33%{transform:scale(1.18) rotate(-2.5deg)} 66%{transform:scale(1.18) rotate(2.5deg)} }
+.bolt-card[data-bolt="ferri"]:not(.bolt-locked):hover .bolt-icon-wrap { animation:ferriShake .1s infinite; }
+@keyframes tesloZap { 0%,100%{opacity:1;transform:scale(1.18)} 50%{opacity:.3;transform:scale(1.22)} }
+.bolt-card[data-bolt="teslo"]:not(.bolt-locked):hover .bolt-icon-wrap { animation:tesloZap .25s infinite; filter:drop-shadow(0 0 10px #FF2800) drop-shadow(0 0 22px #FF2800); }
+@keyframes googSpin { 0%{filter:drop-shadow(0 0 8px #4285F4)} 25%{filter:drop-shadow(0 0 8px #34A853)} 50%{filter:drop-shadow(0 0 8px #FBBC05)} 75%{filter:drop-shadow(0 0 8px #EA4335)} 100%{filter:drop-shadow(0 0 8px #4285F4)} }
+.bolt-card[data-bolt="goog"]:not(.bolt-locked):hover .bolt-icon-wrap { animation:googSpin 1s linear infinite; transform:scale(1.18); }
+@keyframes spotifEq { 0%,100%{transform:scale(1.18) scaleY(1)} 50%{transform:scale(1.18) scaleY(1.12)} }
+.bolt-card[data-bolt="spotif"]:not(.bolt-locked):hover .bolt-icon-wrap { animation:spotifEq .35s ease-in-out infinite; }
+@keyframes amazoBounce { 0%,100%{transform:scale(1.18) translateY(0)} 50%{transform:scale(1.18) translateY(-5px)} }
+.bolt-card[data-bolt="amazo"]:not(.bolt-locked):hover .bolt-icon-wrap { animation:amazoBounce .45s ease-in-out infinite; }
+@keyframes nettiZoom { 0%,100%{transform:scale(1.18)} 50%{transform:scale(1.28)} }
+.bolt-card[data-bolt="netti"]:not(.bolt-locked):hover .bolt-icon-wrap { animation:nettiZoom .55s ease-in-out infinite; }
+
 .frase-modal { display:none; position:fixed; inset:0; background:rgba(47,58,74,.5); z-index:300; align-items:flex-end; justify-content:center; }
 .frase-modal.open { display:flex; }
 .frase-modal-backdrop { position:absolute; inset:0; }
@@ -794,7 +857,9 @@ body {
 
       <!-- Mascot: sticky inside the track, rises immediately with scroll -->
       <div class="mascot-row">
-        <div class="mascot-unit" id="mascot-unit">
+        <div class="mascot-unit" id="mascot-unit"
+          onmouseenter="startMascotAnim()" onmouseleave="stopMascotAnim()">
+          <canvas class="mascot-anim-canvas" id="mascot-anim-canvas"></canvas>
           <svg class="mascot-svg" id="mascot-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="openMascotModal()">
             <ellipse cx="70" cy="92" rx="44" ry="38" fill="#c8dff7"/>
             <ellipse cx="70" cy="90" rx="39" ry="33" fill="#bdd5f5"/>
@@ -843,10 +908,18 @@ body {
               <svg class="level-corner-l" width="20" height="28" viewBox="0 0 20 28" fill="none">
                 <path d="M18 2 L2 2 L2 26" stroke="#2596BE" stroke-width="2" stroke-linecap="square" fill="none"/>
               </svg>
-              <svg width="20" height="32" viewBox="0 0 32 48" fill="none">
-                <path d="M18.5 3 L24 4.5 L28 22 L20 22 L18 42 L5 17 L13 17Z" fill="#FBB03B"/>
-              </svg>
-              <span class="level-num" id="level-display">7</span>
+              <!-- Fusion zone: bolt + number together -->
+              <div class="level-fusion" id="level-fusion"
+                onmouseenter="startBoltFusion()" onmouseleave="stopBoltFusion()"
+                onclick="openBoltModal()">
+                <canvas id="fusion-canvas" width="120" height="70"></canvas>
+                <div class="level-fusion-inner">
+                  <svg id="level-bolt" width="18" height="26" viewBox="7 2 16 31" fill="none">
+                    <path id="level-bolt-path" d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/>
+                  </svg>
+                  <span class="level-num" id="level-display">7</span>
+                </div>
+              </div>
               <svg class="level-corner-r" width="20" height="28" viewBox="0 0 20 28" fill="none">
                 <path d="M18 2 L2 2 L2 26" stroke="#7CB8F5" stroke-width="2" stroke-linecap="square" fill="none"/>
               </svg>
@@ -1232,6 +1305,20 @@ body {
   </div>
 </div>
 
+<!-- BOLT MODAL -->
+<div class="bolt-modal" id="bolt-modal">
+  <div class="bolt-modal-backdrop" onclick="closeBoltModal()"></div>
+  <div class="bolt-modal-box">
+    <button class="modal-close" onclick="closeBoltModal()">✕</button>
+    <div class="bolt-modal-title">
+      <svg width="18" height="24" viewBox="7 2 16 31" fill="none"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>
+      Elige tu rayo
+    </div>
+    <div class="bolt-modal-sub">Cada rayo tiene su propio estilo. Desbloqueas más al subir de nivel.</div>
+    <div class="bolt-grid" id="bolt-grid"></div>
+  </div>
+</div>
+
 <!-- FRASE MODAL -->
 <div class="frase-modal" id="frase-modal">
   <div class="frase-modal-backdrop" onclick="closeFraseModal()"></div>
@@ -1446,7 +1533,753 @@ function renderProjects(){
 function changePage(d){cp=Math.max(0,Math.min(tp-1,cp+d));renderProjects();window.scrollTo(0,0);}
 renderProjects();
 
-// ── MASCOT SELECTOR ───────────────────────────────────────────
+// ── LEVEL FUSION ANIMATIONS ───────────────────────────────────
+let fusionRAF = null;
+let fusionActive = false;
+let fusionFrame = 0;
+
+let numAnimRAF = null;
+
+function startBoltFusion() {
+  fusionActive = true;
+  fusionFrame = 0;
+  const canvas = document.getElementById('fusion-canvas');
+  const numEl = document.getElementById('level-display');
+  if (!canvas) return;
+  const container = document.getElementById('level-fusion');
+  const r = container.getBoundingClientRect();
+  canvas.width = r.width * devicePixelRatio;
+  canvas.height = r.height * devicePixelRatio;
+  canvas.style.width = r.width + 'px';
+  canvas.style.height = r.height + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const w = r.width, h = r.height;
+  cancelAnimationFrame(fusionRAF);
+  cancelAnimationFrame(numAnimRAF);
+
+  let nf = 0;
+
+  function animateNum() {
+    if (!fusionActive) {
+      // Reset number
+      numEl.style.transform = '';
+      numEl.style.color = '';
+      numEl.style.textShadow = '';
+      numEl.style.filter = '';
+      return;
+    }
+    nf++;
+    const t = nf * 0.06;
+
+    switch(selectedBolt) {
+      case 'sparkle':
+        // Gentle breathe + golden glow
+        const sc = 1 + Math.sin(t) * 0.08;
+        numEl.style.transform = `scale(${sc})`;
+        numEl.style.textShadow = `0 0 ${12+Math.sin(t)*8}px rgba(251,176,59,0.7)`;
+        break;
+
+      case 'ferri':
+        // Shake + red flash
+        const shake = Math.sin(nf*1.8) * 3;
+        numEl.style.transform = `translateX(${shake}px) scale(1.05)`;
+        const ri = Math.floor(180 + Math.sin(t*2)*75);
+        numEl.style.color = `rgb(${ri},0,0)`;
+        numEl.style.textShadow = `0 0 16px rgba(255,40,0,0.8)`;
+        break;
+
+      case 'apfel':
+        // Elegant fade between white and grey, subtle scale
+        const gray = Math.floor(130 + Math.sin(t*0.7)*60);
+        numEl.style.color = `rgb(${gray},${gray},${gray+10})`;
+        numEl.style.transform = `scale(${1 + Math.sin(t*0.5)*0.04})`;
+        numEl.style.textShadow = `0 2px 12px rgba(200,200,210,0.6)`;
+        break;
+
+      case 'teslo':
+        // Electric flicker
+        const flicker = nf % 5 < 2 ? 1.08 : 1.0;
+        numEl.style.transform = `scale(${flicker})`;
+        numEl.style.color = nf % 6 < 3 ? '#FF2800' : '#FF8080';
+        numEl.style.textShadow = `0 0 20px rgba(255,40,0,0.9), 0 0 40px rgba(255,40,0,0.5)`;
+        break;
+
+      case 'galaxi':
+        // Orbit glow — colour pulses between blue and cyan
+        const hue = 200 + Math.sin(t)*20;
+        numEl.style.color = `hsl(${hue},90%,60%)`;
+        numEl.style.transform = `scale(${1 + Math.sin(t*0.8)*0.06})`;
+        numEl.style.textShadow = `0 0 18px hsla(${hue},100%,70%,0.9)`;
+        break;
+
+      case 'nextra':
+        // Grow bold, black to white flash
+        const phase = (nf % 40) / 40;
+        const lightness = Math.floor(20 + phase * 80);
+        numEl.style.color = `hsl(0,0%,${lightness}%)`;
+        numEl.style.transform = `scale(${1 + Math.sin(t*1.2)*0.1})`;
+        numEl.style.textShadow = `0 0 10px rgba(255,255,255,${0.3+phase*0.4})`;
+        break;
+
+      case 'goog':
+        // Cycle through 4 Google colours
+        const googColors = ['#4285F4','#34A853','#FBBC05','#EA4335'];
+        const gi = Math.floor((nf/18) % 4);
+        numEl.style.color = googColors[gi];
+        numEl.style.transform = `scale(${1 + Math.sin(t*1.5)*0.07}) rotate(${Math.sin(t)*4}deg)`;
+        numEl.style.textShadow = `0 0 16px ${googColors[gi]}cc`;
+        break;
+
+      case 'spotif':
+        // Bounce up/down like equalizer
+        const bounce = Math.abs(Math.sin(t*2)) * 8;
+        numEl.style.transform = `translateY(-${bounce}px) scale(${1+bounce*0.008})`;
+        numEl.style.color = `hsl(${141+Math.sin(t)*10},70%,${35+Math.abs(Math.sin(t*2))*20}%)`;
+        numEl.style.textShadow = `0 ${bounce}px 20px rgba(29,185,84,0.7)`;
+        break;
+
+      case 'amazo':
+        // Happy bounce + orange warmth
+        const ab = Math.abs(Math.sin(t*1.4)) * 10;
+        numEl.style.transform = `translateY(-${ab}px) scale(${1+ab*0.012})`;
+        numEl.style.color = `hsl(${37+Math.sin(t)*8},100%,${45+ab*1.5}%)`;
+        numEl.style.textShadow = `0 ${ab+4}px 16px rgba(255,153,0,0.7)`;
+        break;
+
+      case 'netti':
+        // Dramatic zoom in/out + deep red
+        const zoom = 1 + Math.sin(t*0.8)*0.12;
+        const red = Math.floor(180 + Math.abs(Math.sin(t))*75);
+        numEl.style.transform = `scale(${zoom})`;
+        numEl.style.color = `rgb(${red},0,0)`;
+        numEl.style.textShadow = `0 0 24px rgba(229,9,20,0.9), 0 0 48px rgba(229,9,20,0.4)`;
+        break;
+    }
+    numAnimRAF = requestAnimationFrame(animateNum);
+  }
+  animateNum();
+
+  function draw() {
+    if (!fusionActive) { ctx.clearRect(0,0,w,h); return; }
+    fusionFrame++;
+    ctx.clearRect(0, 0, w, h);
+    switch(selectedBolt) {
+      case 'sparkle': drawIgnite(ctx, w, h, fusionFrame); break;
+      case 'ferri':   drawFerri(ctx, w, h, fusionFrame); break;
+      case 'apfel':   drawApfel(ctx, w, h, fusionFrame); break;
+      case 'teslo':   drawTeslo(ctx, w, h, fusionFrame); break;
+      case 'galaxi':  drawGalaxi(ctx, w, h, fusionFrame); break;
+      case 'nextra':  drawNextra(ctx, w, h, fusionFrame); break;
+      case 'goog':    drawGoog(ctx, w, h, fusionFrame); break;
+      case 'spotif':  drawSpotif(ctx, w, h, fusionFrame); break;
+      case 'amazo':   drawAmazo(ctx, w, h, fusionFrame); break;
+      case 'netti':   drawNetti(ctx, w, h, fusionFrame); break;
+      default:        drawIgnite(ctx, w, h, fusionFrame);
+    }
+    fusionRAF = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function stopBoltFusion() {
+  fusionActive = false;
+  cancelAnimationFrame(fusionRAF);
+  cancelAnimationFrame(numAnimRAF);
+  const canvas = document.getElementById('fusion-canvas');
+  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  const numEl = document.getElementById('level-display');
+  if (numEl) {
+    numEl.style.transition = 'transform .3s ease, color .4s ease, text-shadow .3s ease';
+    numEl.style.transform = '';
+    numEl.style.color = '';
+    numEl.style.textShadow = '';
+  }
+}
+
+// ── IGNITE: golden pulse rings expanding outward ──────────────
+function drawIgnite(ctx, w, h, f) {
+  const cx = w/2, cy = h/2;
+  for (let i = 0; i < 3; i++) {
+    const r = ((f*1.5 + i*28) % 60);
+    const alpha = 1 - r/60;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(251,176,59,${alpha * 0.7})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+}
+
+// ── FERRI: racing speed lines shooting from left ──────────────
+function drawFerri(ctx, w, h, f) {
+  const lines = [0.3, 0.45, 0.55, 0.7];
+  lines.forEach((yFrac, i) => {
+    const y = h * yFrac;
+    const speed = 4 + i;
+    const x = w - ((f * speed + i * 30) % (w + 60));
+    const len = 30 + i * 10;
+    const grd = ctx.createLinearGradient(x, y, x+len, y);
+    grd.addColorStop(0, 'rgba(255,40,0,0)');
+    grd.addColorStop(0.5, 'rgba(255,40,0,0.9)');
+    grd.addColorStop(1, 'rgba(200,169,81,0.8)');
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x+len, y);
+    ctx.strokeStyle = grd;
+    ctx.lineWidth = 1.5 + i*0.5;
+    ctx.stroke();
+  });
+  // Vignette border
+  const vgrd = ctx.createRadialGradient(w/2, h/2, h*0.2, w/2, h/2, h*0.8);
+  vgrd.addColorStop(0, 'rgba(255,40,0,0)');
+  vgrd.addColorStop(1, 'rgba(200,0,0,0.15)');
+  ctx.fillStyle = vgrd;
+  ctx.fillRect(0, 0, w, h);
+}
+
+// ── APFEL: clean minimal shimmer sweep ────────────────────────
+function drawApfel(ctx, w, h, f) {
+  const x = ((f*2) % (w+40)) - 20;
+  const grd = ctx.createLinearGradient(x-20, 0, x+20, h);
+  grd.addColorStop(0, 'rgba(255,255,255,0)');
+  grd.addColorStop(0.5, 'rgba(255,255,255,0.35)');
+  grd.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, w, h);
+  // Subtle border pulse
+  const alpha = (Math.sin(f*0.05)+1)/2 * 0.3;
+  ctx.strokeStyle = `rgba(168,168,179,${alpha})`;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(2, 2, w-4, h-4, 14);
+  ctx.stroke();
+}
+
+// ── TESLO: electric zap arcs between bolt and number ─────────
+function drawTeslo(ctx, w, h, f) {
+  if (f % 4 < 2) return; // flicker
+  const x1=w*0.25, x2=w*0.72, y=h/2;
+  ctx.beginPath();
+  ctx.moveTo(x1, y);
+  // Jagged lightning path
+  const segs = 5;
+  for (let i=1; i<=segs; i++) {
+    const px = x1 + (x2-x1)*(i/segs);
+    const py = y + (Math.random()-0.5)*18;
+    ctx.lineTo(px, py);
+  }
+  ctx.strokeStyle = `rgba(255,60,60,${0.5+Math.random()*0.5})`;
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = '#FF2800';
+  ctx.shadowBlur = 8;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  // Glow dot at endpoints
+  ctx.beginPath();
+  ctx.arc(x1, y, 3, 0, Math.PI*2);
+  ctx.fillStyle = '#FF4040';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x2, y, 3, 0, Math.PI*2);
+  ctx.fill();
+}
+
+// ── GALAXI: orbiting particles in ellipse ────────────────────
+function drawGalaxi(ctx, w, h, f) {
+  const cx=w/2, cy=h/2, rx=w*0.42, ry=h*0.38;
+  const t = f*0.04;
+  for (let i=0; i<6; i++) {
+    const angle = t + i*(Math.PI*2/6);
+    const px = cx + Math.cos(angle)*rx;
+    const py = cy + Math.sin(angle)*ry;
+    const alpha = (Math.sin(angle)+1)/2;
+    ctx.beginPath();
+    ctx.arc(px, py, 2.5, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(79,195,247,${0.4+alpha*0.6})`;
+    ctx.fill();
+  }
+  // Orbit ring
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(79,195,247,0.2)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+// ── NEXTRA: dynamic swoosh arc ────────────────────────────────
+function drawNextra(ctx, w, h, f) {
+  const prog = ((f*3) % 200) / 200;
+  const startAngle = Math.PI + Math.PI*0.6;
+  const endAngle = startAngle + Math.PI*0.8 * prog;
+  ctx.beginPath();
+  ctx.arc(w/2, h/2+4, Math.min(w,h)*0.4, startAngle, endAngle);
+  const grd = ctx.createLinearGradient(0, 0, w, h);
+  grd.addColorStop(0, 'rgba(255,255,255,0)');
+  grd.addColorStop(0.7, 'rgba(255,255,255,0.7)');
+  grd.addColorStop(1, 'rgba(255,255,255,0.9)');
+  ctx.strokeStyle = grd;
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+}
+
+// ── GOOG: multicolor rotating dots ───────────────────────────
+function drawGoog(ctx, w, h, f) {
+  const colors = ['#4285F4','#34A853','#FBBC05','#EA4335'];
+  const cx=w/2, cy=h/2, r=Math.min(w,h)*0.38;
+  const t = f*0.05;
+  colors.forEach((c,i) => {
+    const a = t + i*(Math.PI*2/4);
+    const px = cx + Math.cos(a)*r;
+    const py = cy + Math.sin(a)*r;
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI*2);
+    ctx.fillStyle = c;
+    ctx.fill();
+    // Trail
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a-0.3)*r, cy + Math.sin(a-0.3)*r, 2.5, 0, Math.PI*2);
+    ctx.fillStyle = c + '80';
+    ctx.fill();
+  });
+}
+
+// ── SPOTIF: equalizer bars ────────────────────────────────────
+function drawSpotif(ctx, w, h, f) {
+  const bars = 7, bw = 5, gap = (w - bars*bw) / (bars+1);
+  for (let i=0; i<bars; i++) {
+    const bh = (Math.sin(f*0.1 + i*0.9)+1)/2 * h*0.65 + h*0.1;
+    const x = gap + i*(bw+gap);
+    const y = h - bh - 4;
+    const grd = ctx.createLinearGradient(0, y, 0, h);
+    grd.addColorStop(0, '#1DB954');
+    grd.addColorStop(1, '#148A3D');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.roundRect(x, y, bw, bh, 2);
+    ctx.fill();
+  }
+}
+
+// ── AMAZO: bouncing smile arc ─────────────────────────────────
+function drawAmazo(ctx, w, h, f) {
+  const bounce = Math.abs(Math.sin(f*0.08)) * 10;
+  const cy = h/2 + bounce;
+  ctx.beginPath();
+  ctx.arc(w/2, cy, w*0.35, 0.1*Math.PI, 0.9*Math.PI);
+  const grd = ctx.createLinearGradient(0, 0, w, 0);
+  grd.addColorStop(0, 'rgba(255,153,0,0)');
+  grd.addColorStop(0.5, 'rgba(255,153,0,0.9)');
+  grd.addColorStop(1, 'rgba(255,153,0,0)');
+  ctx.strokeStyle = grd;
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+  // Stars
+  const s = (f*2) % 40;
+  ctx.fillStyle = `rgba(255,153,0,${1-s/40})`;
+  ctx.beginPath();
+  ctx.arc(w*0.2 + Math.sin(f*0.07)*8, h*0.25, 2, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(w*0.8 + Math.cos(f*0.09)*6, h*0.25, 2, 0, Math.PI*2);
+  ctx.fill();
+}
+
+// ── NETTI: dramatic red vignette with scan line ───────────────
+function drawNetti(ctx, w, h, f) {
+  const vgrd = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.7);
+  vgrd.addColorStop(0, 'rgba(229,9,20,0)');
+  vgrd.addColorStop(1, `rgba(229,9,20,${0.25+Math.sin(f*0.06)*0.15})`);
+  ctx.fillStyle = vgrd;
+  ctx.fillRect(0, 0, w, h);
+  // Scan line sweeping down
+  const sy = ((f*2) % (h+20)) - 10;
+  const sgrd = ctx.createLinearGradient(0, sy-4, 0, sy+4);
+  sgrd.addColorStop(0, 'rgba(229,9,20,0)');
+  sgrd.addColorStop(0.5, 'rgba(255,40,40,0.5)');
+  sgrd.addColorStop(1, 'rgba(229,9,20,0)');
+  ctx.fillStyle = sgrd;
+  ctx.fillRect(0, sy-4, w, 8);
+}
+
+// ── MASCOT HOVER ANIMATIONS ───────────────────────────────────
+let mascotAnimRAF = null;
+let mascotAnimActive = false;
+let mascotAnimFrame = 0;
+
+function startMascotAnim() {
+  mascotAnimActive = true;
+  mascotAnimFrame = 0;
+  const canvas = document.getElementById('mascot-anim-canvas');
+  const svg = document.getElementById('mascot-svg');
+  if (!canvas || !svg) return;
+
+  // Fixed 200×200 canvas, centred over the 140×140 SVG
+  const W = 200, H = 200;
+  canvas.width = W * devicePixelRatio;
+  canvas.height = H * devicePixelRatio;
+  canvas.style.opacity = '1';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const cx = W/2, cy = H/2;
+
+  function draw() {
+    if (!mascotAnimActive) { ctx.clearRect(0,0,W,H); return; }
+    mascotAnimFrame++;
+    ctx.clearRect(0, 0, W, H);
+    const f = mascotAnimFrame;
+
+    // Animate the SVG itself
+    animateMascotSVG(svg, f);
+
+    switch(selectedMascot) {
+      case 'spark': drawSparkAnim(ctx, W, H, cx, cy, f); break;
+      case 'ember': drawEmberAnim(ctx, W, H, cx, cy, f); break;
+      case 'pixel': drawPixelAnim(ctx, W, H, cx, cy, f); break;
+      case 'bolt':  drawBoltAnim(ctx, W, H, cx, cy, f); break;
+      case 'nova':  drawNovaAnim(ctx, W, H, cx, cy, f); break;
+      case 'sage':  drawSageAnim(ctx, W, H, cx, cy, f); break;
+    }
+    mascotAnimRAF = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function animateMascotSVG(svg, f) {
+  const t = f * 0.06;
+  switch(selectedMascot) {
+    case 'spark':
+      // Gentle float + wobble
+      svg.style.transform = `translateY(${Math.sin(t)*5}px) rotate(${Math.sin(t*0.7)*3}deg)`;
+      break;
+    case 'ember':
+      // Rise and sway like a flame
+      svg.style.transform = `translateY(${Math.sin(t*1.2)*4 - 3}px) scaleX(${1+Math.sin(t*1.5)*0.03}) scaleY(${1+Math.abs(Math.sin(t*1.2))*0.04})`;
+      svg.style.filter = `drop-shadow(0 0 12px rgba(249,115,22,0.7)) drop-shadow(0 0 24px rgba(249,115,22,0.4))`;
+      break;
+    case 'pixel':
+      // Glitch jump — occasional snap offset
+      const glitch = f%22 < 2 ? (Math.random()-0.5)*8 : 0;
+      const vglitch = f%30 < 2 ? (Math.random()-0.5)*5 : 0;
+      svg.style.transform = `translate(${glitch}px, ${vglitch}px)`;
+      svg.style.filter = f%22 < 2
+        ? `drop-shadow(3px 0 rgba(139,92,246,0.8)) drop-shadow(-3px 0 rgba(59,130,246,0.8))`
+        : `drop-shadow(0 12px 28px rgba(62,111,168,.25))`;
+      break;
+    case 'bolt':
+      // Fast lean forward + vibrate
+      const lean = -8 + Math.sin(t*3)*2;
+      const vib = Math.sin(f*2)*1.5;
+      svg.style.transform = `rotate(${lean}deg) translateX(${vib}px)`;
+      svg.style.filter = `drop-shadow(0 0 14px rgba(251,176,59,0.8))`;
+      break;
+    case 'nova':
+      // Slow orbit/float + gentle spin
+      svg.style.transform = `translateX(${Math.cos(t*0.5)*6}px) translateY(${Math.sin(t*0.7)*5}px) rotate(${Math.sin(t*0.3)*4}deg)`;
+      svg.style.filter = `drop-shadow(0 0 16px rgba(233,69,96,0.65)) drop-shadow(0 0 32px rgba(233,69,96,0.3))`;
+      break;
+    case 'sage':
+      // Calm sway + gentle bob
+      svg.style.transform = `translateX(${Math.sin(t*0.6)*4}px) translateY(${Math.abs(Math.sin(t*0.9))*-4}px) rotate(${Math.sin(t*0.5)*2}deg)`;
+      svg.style.filter = `drop-shadow(0 0 14px rgba(22,163,74,0.6)) drop-shadow(0 8px 20px rgba(22,163,74,0.3))`;
+      break;
+  }
+}
+
+function stopMascotAnim() {
+  mascotAnimActive = false;
+  cancelAnimationFrame(mascotAnimRAF);
+  const canvas = document.getElementById('mascot-anim-canvas');
+  if (canvas) {
+    canvas.style.opacity = '0';
+    setTimeout(() => {
+      if (!mascotAnimActive) canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+    }, 250);
+  }
+  const svg = document.getElementById('mascot-svg');
+  if (svg) {
+    svg.style.transition = 'transform .4s ease, filter .4s ease';
+    svg.style.transform = '';
+    svg.style.filter = 'drop-shadow(0 12px 28px rgba(62,111,168,.25)) drop-shadow(0 2px 6px rgba(62,111,168,.12))';
+  }
+}
+
+// SPARK — electric sparks shooting outward (chispas!)
+function drawSparkAnim(ctx, W, H, cx, cy, f) {
+  const c = selectedColor;
+  for (let i = 0; i < 8; i++) {
+    const angle = (f*0.04 + i * Math.PI*2/8);
+    const life = ((f + i*14) % 40) / 40;
+    const r = 30 + life * 55;
+    const alpha = 1 - life;
+    const px = cx + Math.cos(angle)*r;
+    const py = cy + Math.sin(angle)*r;
+    // Spark line
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(angle)*(r-12), cy + Math.sin(angle)*(r-12));
+    ctx.lineTo(px, py);
+    ctx.strokeStyle = `rgba(251,176,59,${alpha*0.9})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Tip dot
+    ctx.beginPath();
+    ctx.arc(px, py, 2.5*(1-life), 0, Math.PI*2);
+    ctx.fillStyle = `rgba(251,176,59,${alpha})`;
+    ctx.fill();
+  }
+  // Pulse ring around mascot
+  const pr = 72 + Math.sin(f*0.08)*6;
+  ctx.beginPath();
+  ctx.arc(cx, cy, pr, 0, Math.PI*2);
+  ctx.strokeStyle = `rgba(251,176,59,${0.2+Math.sin(f*0.08)*0.15})`;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+// EMBER — fire particles rising upward
+function drawEmberAnim(ctx, W, H, cx, cy, f) {
+  for (let i = 0; i < 12; i++) {
+    const seed = i * 137.5;
+    const life = ((f*1.2 + seed) % 60) / 60;
+    const x = cx + (Math.sin(seed) * 30) + Math.sin(f*0.04+seed)*8;
+    const startY = cy + 60;
+    const y = startY - life * 90;
+    const size = (1-life) * 5 + 1;
+    const alpha = life < 0.7 ? life/0.7 : 1-(life-0.7)/0.3;
+    // Colour transitions orange → yellow → transparent
+    const r = 255, g = Math.floor(100 + life*155), b = Math.floor(life*60);
+    ctx.beginPath();
+    ctx.arc(x, y, size, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${r},${g},${b},${alpha*0.85})`;
+    ctx.fill();
+  }
+  // Heat shimmer glow at base
+  const grd = ctx.createRadialGradient(cx, cy+55, 5, cx, cy+55, 45);
+  grd.addColorStop(0, `rgba(249,115,22,${0.3+Math.sin(f*0.07)*0.15})`);
+  grd.addColorStop(1, 'rgba(249,115,22,0)');
+  ctx.fillStyle = grd;
+  ctx.fillRect(cx-50, cy+10, 100, 60);
+}
+
+// PIXEL — glitchy scanlines and binary digits
+function drawPixelAnim(ctx, W, H, cx, cy, f) {
+  ctx.font = 'bold 9px monospace';
+  // Binary rain
+  for (let col = 0; col < 6; col++) {
+    const x = 18 + col * 30;
+    for (let row = 0; row < 5; row++) {
+      const life = ((f*0.8 + col*17 + row*11) % 50) / 50;
+      const alpha = Math.sin(life * Math.PI) * 0.7;
+      const bit = Math.floor((f + col*3 + row*7) / 12) % 2;
+      ctx.fillStyle = `rgba(139,92,246,${alpha})`;
+      ctx.fillText(bit, x, 12 + row * 22 + life*10);
+    }
+  }
+  // Glitch horizontal slices
+  if (f % 20 < 3) {
+    const gy = 20 + Math.random() * 140;
+    ctx.fillStyle = `rgba(139,92,246,0.15)`;
+    ctx.fillRect(0, gy, W, 4 + Math.random()*6);
+  }
+  // Corner brackets
+  const bl = 14, bt = 2;
+  [
+    [20, 20], [W-20, 20], [20, H-20], [W-20, H-20]
+  ].forEach(([bx,by], i) => {
+    const sx = i%2===0 ? 1 : -1, sy = i<2 ? 1 : -1;
+    ctx.strokeStyle = `rgba(139,92,246,${0.5+Math.sin(f*0.05)*0.3})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(bx, by + sy*bl); ctx.lineTo(bx, by); ctx.lineTo(bx + sx*bl, by);
+    ctx.stroke();
+  });
+}
+
+// BOLT — speed lines and a shock ring
+function drawBoltAnim(ctx, W, H, cx, cy, f) {
+  // Speed lines from left
+  for (let i = 0; i < 5; i++) {
+    const y = cy - 30 + i*15;
+    const speed = 6 + i*1.5;
+    const x = W - ((f*speed + i*40) % (W+80));
+    const len = 20 + i*12;
+    const grd = ctx.createLinearGradient(x, y, x+len, y);
+    grd.addColorStop(0, 'rgba(251,176,59,0)');
+    grd.addColorStop(0.6, 'rgba(251,176,59,0.9)');
+    grd.addColorStop(1, 'rgba(255,220,100,0.6)');
+    ctx.beginPath();
+    ctx.moveTo(x, y); ctx.lineTo(x+len, y);
+    ctx.strokeStyle = grd; ctx.lineWidth = 1.5+i*0.4; ctx.stroke();
+  }
+  // Electric ring
+  const er = 68 + Math.sin(f*0.12)*4;
+  for (let seg = 0; seg < 12; seg++) {
+    const a1 = (seg/12)*Math.PI*2 + f*0.05;
+    const a2 = a1 + Math.PI/13;
+    const wobble = 1 + (Math.random()-0.5)*0.08;
+    ctx.beginPath();
+    ctx.arc(cx, cy, er*wobble, a1, a2);
+    ctx.strokeStyle = `rgba(251,176,59,${0.4+Math.random()*0.5})`;
+    ctx.lineWidth = 2; ctx.stroke();
+  }
+}
+
+// NOVA — orbital rings + stardust
+function drawNovaAnim(ctx, W, H, cx, cy, f) {
+  // Two orbital rings tilted
+  const rings = [
+    { rx:62, ry:18, rot:-0.35, speed:0.03 },
+    { rx:55, ry:14, rot:0.4,   speed:-0.04 },
+  ];
+  rings.forEach(ring => {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(ring.rot);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, ring.rx, ring.ry, f*ring.speed, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(233,69,96,0.45)`;
+    ctx.lineWidth = 1.5; ctx.stroke();
+    // Orbiting dot
+    const a = f * ring.speed * 2;
+    ctx.beginPath();
+    ctx.arc(Math.cos(a)*ring.rx, Math.sin(a)*ring.ry, 3.5, 0, Math.PI*2);
+    ctx.fillStyle = '#FBB03B'; ctx.fill();
+    ctx.restore();
+  });
+  // Stardust
+  for (let i = 0; i < 6; i++) {
+    const a = f*0.03 + i*1.05;
+    const r = 60 + Math.sin(f*0.05+i)*15;
+    const px = cx + Math.cos(a)*r, py = cy + Math.sin(a)*r;
+    const alpha = (Math.sin(f*0.07+i)+1)/2;
+    ctx.beginPath();
+    ctx.arc(px, py, 1.8, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${alpha*0.8})`; ctx.fill();
+  }
+}
+
+// SAGE — leaf particles floating and pollen wisps
+function drawSageAnim(ctx, W, H, cx, cy, f) {
+  // Floating leaves
+  for (let i = 0; i < 7; i++) {
+    const seed = i * 53;
+    const life = ((f*0.7 + seed) % 80) / 80;
+    const x = cx - 40 + (seed % 80) + Math.sin(f*0.03+seed)*12;
+    const y = cy + 50 - life * 110;
+    const alpha = life < 0.6 ? life/0.6 : 1-(life-0.6)/0.4;
+    const size = 4 + (seed%3);
+    // Leaf shape (ellipse rotated)
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(Math.sin(f*0.04+seed)*0.6);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, size, size*1.7, 0, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(22,163,74,${alpha*0.8})`;
+    ctx.fill();
+    ctx.restore();
+  }
+  // Pollen ring glow
+  const pr = 70 + Math.sin(f*0.06)*5;
+  const grd = ctx.createRadialGradient(cx, cy, pr-8, cx, cy, pr+8);
+  grd.addColorStop(0, 'rgba(34,197,94,0)');
+  grd.addColorStop(0.5, `rgba(34,197,94,${0.12+Math.sin(f*0.06)*0.07})`);
+  grd.addColorStop(1, 'rgba(34,197,94,0)');
+  ctx.fillStyle = grd; ctx.fillRect(0,0,W,H);
+}
+
+// ── BOLT SELECTOR ─────────────────────────────────────────────
+const bolts = [
+  {
+    id:'sparkle', name:'Sparkle', tagline:'El original · energía pura', minLevel:1,
+    color:'#FBB03B', fill:'#FBB03B', stroke:'none', defs:''
+  },
+  {
+    id:'ferri', name:'Ferri', tagline:'Velocidad · potencia · pasión', minLevel:1,
+    color:'#FF2800', fill:'url(#ferri-g)', stroke:'#C8A951',
+    defs:`<linearGradient id="ferri-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF6040"/><stop offset="1" stop-color="#CC1500"/></linearGradient>`
+  },
+  {
+    id:'apfel', name:'Apfel', tagline:'Diseño · simplicidad · magia', minLevel:2,
+    color:'#A8A8B3', fill:'url(#apfel-g)', stroke:'none',
+    defs:`<linearGradient id="apfel-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8E8ED"/><stop offset="1" stop-color="#8E8EA0"/></linearGradient>`
+  },
+  {
+    id:'teslo', name:'Teslo', tagline:'Eléctrico · futuro · silencioso', minLevel:3,
+    color:'#FF2800', fill:'url(#teslo-g)', stroke:'none',
+    defs:`<linearGradient id="teslo-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF4040"/><stop offset="1" stop-color="#CC0000"/></linearGradient>`
+  },
+  {
+    id:'galaxi', name:'Galaxi', tagline:'Infinito · cosmos · innovación', minLevel:4,
+    color:'#4FC3F7', fill:'url(#galaxi-g)', stroke:'#4FC3F7',
+    defs:`<linearGradient id="galaxi-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1428A0"/><stop offset="0.5" stop-color="#4FC3F7"/><stop offset="1" stop-color="#1428A0"/></linearGradient>`
+  },
+  {
+    id:'nextra', name:'Nextra', tagline:'Just do it · sin límites', minLevel:5,
+    color:'#888', fill:'url(#nextra-g)', stroke:'none',
+    defs:`<linearGradient id="nextra-g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#111"/><stop offset="1" stop-color="#555"/></linearGradient>`
+  },
+  {
+    id:'goog', name:'Goog', tagline:'Curiosidad · colores · saber', minLevel:5,
+    color:'#4285F4', fill:'url(#goog-g)', stroke:'none',
+    defs:`<linearGradient id="goog-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4285F4"/><stop offset="0.33" stop-color="#34A853"/><stop offset="0.66" stop-color="#FBBC05"/><stop offset="1" stop-color="#EA4335"/></linearGradient>`
+  },
+  {
+    id:'spotif', name:'Spotif', tagline:'Ritmo · verde · música', minLevel:6,
+    color:'#1DB954', fill:'url(#spotif-g)', stroke:'none',
+    defs:`<linearGradient id="spotif-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1DB954"/><stop offset="1" stop-color="#148A3D"/></linearGradient>`
+  },
+  {
+    id:'amazo', name:'Amazo', tagline:'Todo · rápido · para ti', minLevel:7,
+    color:'#FF9900', fill:'url(#amazo-g)', stroke:'none',
+    defs:`<linearGradient id="amazo-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB347"/><stop offset="1" stop-color="#E88000"/></linearGradient>`
+  },
+  {
+    id:'netti', name:'Netti', tagline:'Drama · épica · acción', minLevel:8,
+    color:'#E50914', fill:'url(#netti-g)', stroke:'none',
+    defs:`<linearGradient id="netti-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF2020"/><stop offset="1" stop-color="#8B0000"/></linearGradient>`
+  },
+];
+
+let selectedBolt = 'sparkle';
+
+function boltSVGContent(b) {
+  const defs = b.defs ? `<defs>${b.defs}</defs>` : '';
+  const strokeAttr = b.stroke && b.stroke !== 'none' ? ` stroke="${b.stroke}" stroke-width="0.8"` : '';
+  return `${defs}<path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="${b.fill}"${strokeAttr}/>`;
+}
+
+function openBoltModal() {
+  const grid = document.getElementById('bolt-grid');
+  grid.innerHTML = bolts.map(b => {
+    const locked = currentLevel < b.minLevel;
+    const isSel = b.id === selectedBolt;
+    return `<div class="bolt-card ${locked?'bolt-locked':''} ${isSel?'bolt-selected':''}"
+      data-bolt="${b.id}" style="--bc:${b.color}"
+      onclick="${locked?'':'selectBolt(\''+b.id+'\')'}">
+      ${locked ? `<span class="bolt-level-badge">🔒 Niv.${b.minLevel}</span>` : ''}
+      <div class="bolt-icon-wrap">
+        <svg width="44" height="58" viewBox="7 2 16 31" fill="none">${boltSVGContent(b)}</svg>
+      </div>
+      <div class="bolt-brand" style="color:${b.color}">${b.name}</div>
+      <div class="bolt-tagline">${b.tagline}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('bolt-modal').classList.add('open');
+}
+
+function closeBoltModal() { document.getElementById('bolt-modal').classList.remove('open'); }
+
+function selectBolt(id) {
+  selectedBolt = id;
+  const b = bolts.find(x => x.id === id);
+  const levelBolt = document.getElementById('level-bolt');
+  if (levelBolt) levelBolt.innerHTML = boltSVGContent(b);
+  document.querySelectorAll('.bolt-card').forEach(el => el.classList.toggle('bolt-selected', el.dataset.bolt === id));
+  setTimeout(() => closeBoltModal(), 350);
+}
+
 // ── MASCOT SELECTOR ───────────────────────────────────────────
 const mascots = [
   { id:'spark', name:'Spark', minLevel:1,  desc:'Bolita amistosa · el inicial', defaultColor:'#7ba6e2', tipo:'Tipo Normal' },
@@ -1482,23 +2315,23 @@ const accessories = [
   {
     id: 'gafas', name: 'Gafas', minLevel: 1,
     svg: `<g>
-      <ellipse cx="55" cy="62" rx="12" ry="9" fill="none" stroke="#2F3A4A" stroke-width="3"/>
-      <ellipse cx="85" cy="62" rx="12" ry="9" fill="none" stroke="#2F3A4A" stroke-width="3"/>
-      <line x1="67" y1="62" x2="73" y2="62" stroke="#2F3A4A" stroke-width="2.5"/>
-      <line x1="43" y1="62" x2="36" y2="60" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="97" y1="62" x2="104" y2="60" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="60" cy="70" rx="11" ry="8.5" fill="none" stroke="#2F3A4A" stroke-width="3"/>
+      <ellipse cx="80" cy="70" rx="11" ry="8.5" fill="none" stroke="#2F3A4A" stroke-width="3"/>
+      <line x1="71" y1="70" x2="69" y2="70" stroke="#2F3A4A" stroke-width="2.5"/>
+      <line x1="49" y1="69" x2="42" y2="67" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="91" y1="69" x2="98" y2="67" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
     </g>`
   },
   {
     id: 'gafas-sol', name: 'Gafas de sol', minLevel: 2,
     svg: `<g>
-      <ellipse cx="55" cy="62" rx="12" ry="9" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
-      <ellipse cx="85" cy="62" rx="12" ry="9" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
-      <line x1="67" y1="62" x2="73" y2="62" stroke="#FBB03B" stroke-width="2.5"/>
-      <line x1="43" y1="62" x2="36" y2="60" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="97" y1="62" x2="104" y2="60" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
-      <ellipse cx="55" cy="62" rx="12" ry="9" fill="#FBB03B" fill-opacity=".18"/>
-      <ellipse cx="85" cy="62" rx="12" ry="9" fill="#FBB03B" fill-opacity=".18"/>
+      <ellipse cx="60" cy="70" rx="11" ry="8.5" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
+      <ellipse cx="80" cy="70" rx="11" ry="8.5" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
+      <ellipse cx="60" cy="70" rx="11" ry="8.5" fill="#FBB03B" fill-opacity=".22"/>
+      <ellipse cx="80" cy="70" rx="11" ry="8.5" fill="#FBB03B" fill-opacity=".22"/>
+      <line x1="71" y1="70" x2="69" y2="70" stroke="#FBB03B" stroke-width="2.5"/>
+      <line x1="49" y1="69" x2="42" y2="67" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="91" y1="69" x2="98" y2="67" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
     </g>`
   },
   {
@@ -1578,7 +2411,98 @@ function selectAcc(id) {
 }
 
 function accSVG(id) {
-  return accessories.find(a => a.id === id)?.svg || '';
+  // Per-mascot eye and head geometry
+  const geo = {
+    spark: { lx:60, rx:80, ey:70, headTop:28, headCx:70, headW:40 },
+    ember: { lx:61, rx:79, ey:80, headTop:14, headCx:70, headW:28 },
+    pixel: { lx:60, rx:80, ey:81, headTop:30, headCx:70, headW:38 },
+    bolt:  { lx:62, rx:82, ey:70, headTop:28, headCx:72, headW:38 },
+    nova:  { lx:60, rx:80, ey:72, headTop:34, headCx:70, headW:38 },
+    sage:  { lx:60, rx:80, ey:70, headTop:28, headCx:70, headW:38 },
+  };
+  const g = geo[selectedMascot] || geo.spark;
+  const mx = (g.lx + g.rx) / 2; // midpoint between eyes
+  const ey = g.ey;
+  const ht = g.headTop;
+  const hcx = g.headCx;
+  const hw = g.headW;
+
+  switch(id) {
+    case 'none': return '';
+
+    case 'gafas': return `<g>
+      <ellipse cx="${g.lx}" cy="${ey}" rx="11" ry="8.5" fill="none" stroke="#2F3A4A" stroke-width="3"/>
+      <ellipse cx="${g.rx}" cy="${ey}" rx="11" ry="8.5" fill="none" stroke="#2F3A4A" stroke-width="3"/>
+      <line x1="${g.lx+11}" y1="${ey}" x2="${g.rx-11}" y2="${ey}" stroke="#2F3A4A" stroke-width="2.5"/>
+      <line x1="${g.lx-11}" y1="${ey-1}" x2="${g.lx-19}" y2="${ey-3}" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="${g.rx+11}" y1="${ey-1}" x2="${g.rx+19}" y2="${ey-3}" stroke="#2F3A4A" stroke-width="2.5" stroke-linecap="round"/>
+    </g>`;
+
+    case 'gafas-sol': return `<g>
+      <ellipse cx="${g.lx}" cy="${ey}" rx="11" ry="8.5" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
+      <ellipse cx="${g.rx}" cy="${ey}" rx="11" ry="8.5" fill="#1a1a2e" stroke="#FBB03B" stroke-width="2.5"/>
+      <ellipse cx="${g.lx}" cy="${ey}" rx="11" ry="8.5" fill="#FBB03B" fill-opacity=".22"/>
+      <ellipse cx="${g.rx}" cy="${ey}" rx="11" ry="8.5" fill="#FBB03B" fill-opacity=".22"/>
+      <line x1="${g.lx+11}" y1="${ey}" x2="${g.rx-11}" y2="${ey}" stroke="#FBB03B" stroke-width="2.5"/>
+      <line x1="${g.lx-11}" y1="${ey-1}" x2="${g.lx-19}" y2="${ey-3}" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="${g.rx+11}" y1="${ey-1}" x2="${g.rx+19}" y2="${ey-3}" stroke="#FBB03B" stroke-width="2.5" stroke-linecap="round"/>
+    </g>`;
+
+    case 'sombrero': return `<g>
+      <ellipse cx="${hcx}" cy="${ht+14}" rx="${hw}" ry="7" fill="#2F3A4A"/>
+      <rect x="${hcx-hw*0.55}" y="${ht-10}" width="${hw*1.1}" height="${24}" rx="8" fill="#2F3A4A"/>
+      <rect x="${hcx-hw*0.5}" y="${ht+2}" width="${hw}" height="5" rx="2" fill="#FBB03B"/>
+    </g>`;
+
+    case 'gorra': return `<g>
+      <path d="M${hcx-hw} ${ht+18} Q${hcx} ${ht} ${hcx+hw} ${ht+18} Q${hcx+hw*0.7} ${ht+20} ${hcx} ${ht+20} Q${hcx-hw*0.7} ${ht+20} ${hcx-hw} ${ht+18}Z" fill="#3E6FA8"/>
+      <path d="M${hcx-hw} ${ht+18} Q${hcx-hw*0.7} ${ht+20} ${hcx} ${ht+20} Q${hcx+hw*0.7} ${ht+20} ${hcx+hw} ${ht+18} L${hcx+hw} ${ht+24} Q${hcx+hw*0.7} ${ht+26} ${hcx} ${ht+26} Q${hcx-hw*0.7} ${ht+26} ${hcx-hw} ${ht+24}Z" fill="#2596BE"/>
+      <path d="M${hcx-hw} ${ht+18} Q${hcx-hw-8} ${ht+22} ${hcx-hw-10} ${ht+26} Q${hcx-hw} ${ht+24} ${hcx-hw} ${ht+18}Z" fill="#3E6FA8"/>
+      <rect x="${hcx-16}" y="${ht+8}" width="32" height="4" rx="2" fill="#FBB03B"/>
+    </g>`;
+
+    case 'corona': return `<g>
+      <path d="M${hcx-hw*0.6} ${ht+22} L${hcx-hw*0.6} ${ht+6} L${hcx-hw*0.3} ${ht+14} L${hcx} ${ht} L${hcx+hw*0.3} ${ht+14} L${hcx+hw*0.6} ${ht+6} L${hcx+hw*0.6} ${ht+22}Z" fill="#FBB03B" stroke="#f59e0b" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="${hcx}" cy="${ht+2}" r="4" fill="#e94560"/>
+      <circle cx="${hcx-hw*0.6}" cy="${ht+8}" r="3" fill="#e94560"/>
+      <circle cx="${hcx+hw*0.6}" cy="${ht+8}" r="3" fill="#e94560"/>
+      <rect x="${hcx-hw*0.6}" y="${ht+20}" width="${hw*1.2}" height="8" rx="3" fill="#FBB03B"/>
+    </g>`;
+
+    case 'antenas': return `<g>
+      <line x1="${g.lx+2}" y1="${ht+10}" x2="${g.lx-6}" y2="${ht-10}" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="${g.lx-6}" cy="${ht-12}" r="5" fill="#e94560"/>
+      <line x1="${g.rx-2}" y1="${ht+10}" x2="${g.rx+6}" y2="${ht-10}" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="${g.rx+6}" cy="${ht-12}" r="5" fill="#e94560"/>
+    </g>`;
+
+    case 'halo': return `<ellipse cx="${hcx}" cy="${ht-4}" rx="${hw*0.7}" ry="7" fill="none" stroke="#FBB03B" stroke-width="4" opacity=".9"/>`;
+
+    case 'bowtie': {
+      // Bow tie sits just below the face — find chin y
+      const chinY = { spark:86, ember:96, pixel:96, bolt:86, nova:88, sage:86 }[selectedMascot] || 88;
+      return `<g>
+        <path d="M${mx-18} ${chinY} L${mx-8} ${chinY+6} L${mx-18} ${chinY+12}Z" fill="#e94560"/>
+        <path d="M${mx+18} ${chinY} L${mx+8} ${chinY+6} L${mx+18} ${chinY+12}Z" fill="#e94560"/>
+        <ellipse cx="${mx}" cy="${chinY+6}" rx="8" ry="5" fill="#c0103a"/>
+      </g>`;
+    }
+
+    case 'mochila': return `<g>
+      <rect x="22" y="62" width="18" height="28" rx="5" fill="#3E6FA8" stroke="#2596BE" stroke-width="1.5"/>
+      <rect x="25" y="68" width="12" height="8" rx="2" fill="#7CB8F5"/>
+    </g>`;
+
+    case 'capa': {
+      const shoulderY = { spark:72, ember:80, pixel:76, bolt:72, nova:74, sage:72 }[selectedMascot] || 72;
+      return `<g>
+        <path d="M${hcx-hw} ${shoulderY} Q${hcx-hw-8} ${shoulderY+22} ${hcx-hw+6} ${shoulderY+42} Q${hcx} ${shoulderY+50} ${hcx+hw-6} ${shoulderY+42} Q${hcx+hw+8} ${shoulderY+22} ${hcx+hw} ${shoulderY}Z" fill="#e94560" opacity=".9"/>
+        <path d="M${hcx-hw} ${shoulderY} Q${hcx} ${shoulderY+18} ${hcx+hw} ${shoulderY} L${hcx+hw-4} ${shoulderY-6} Q${hcx} ${shoulderY+12} ${hcx-hw+4} ${shoulderY-6}Z" fill="#c0103a"/>
+      </g>`;
+    }
+
+    default: return '';
+  }
 }
 
 function mascotSVG(id) {
