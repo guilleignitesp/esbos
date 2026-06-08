@@ -760,8 +760,8 @@ body {
 .frase-modal-sub { font-size:13px; color:#8aa4be; margin-bottom:18px; }
 
 /* ═══ ARCHIVO DE MISIONES — DONUT RING CARDS ════════ */
-.archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; }
-@media (min-width: 900px) { .archive-grid { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 20px; } }
+.archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; align-items: start; }
+@media (min-width: 900px) { .archive-grid { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 20px; align-items: start; } }
 
 .acard {
   background: var(--card-a); border-radius: 22px;
@@ -796,54 +796,197 @@ body {
 .acard-dates { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 3px; }
 
 /* Donut chart zone */
-.acard-chart { padding: 14px 14px 16px; }
-.donut-wrap { display: flex; align-items: center; gap: 14px; }
-@media (max-width: 340px) { .donut-wrap { flex-direction: column; align-items: stretch; } }
+.acard-chart { padding: 12px 14px 16px; }
 
+/* Donut + legend row — compact, never forces card wider */
+.donut-wrap { display: flex; align-items: center; gap: 12px; width: 100%; min-width: 0; }
 .acard-donut {
-  width: 92px; height: 92px; border-radius: 50%; flex-shrink: 0;
+  width: 74px; height: 74px; border-radius: 50%; flex-shrink: 0;
   position: relative; display: flex; align-items: center; justify-content: center;
 }
-.acard-donut::after {
-  content: ''; position: absolute; inset: 13px;
-  background: var(--card-a); border-radius: 50%;
-}
-.acard-donut-center {
-  position: relative; z-index: 2; text-align: center; line-height: 1;
-}
-.acard-donut-center b { font-size: 18px; font-weight: 900; color: var(--blue-dark); display: block; }
+.acard-donut::after { content: ''; position: absolute; inset: 10px; background: var(--card-a); border-radius: 50%; }
+.acard-donut-center { position: relative; z-index: 2; text-align: center; line-height: 1; }
+.acard-donut-center b { font-size: 17px; font-weight: 900; color: var(--blue-dark); display: block; }
 .acard-donut-center small { font-size: 8px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; }
 
-/* Legend */
-.acard-legend { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.acard-leg-row { display: flex; align-items: center; gap: 6px; }
-.acard-leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.acard-leg-name { font-size: 11px; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-.acard-leg-count { font-size: 10px; font-weight: 700; color: var(--muted); }
-.acard-leg-xp { font-size: 11px; font-weight: 900; }
+/* Legend beside donut */
+.acard-legend { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+.acard-leg-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.acard-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.acard-leg-name { font-size: 12px; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.acard-leg-count { font-size: 10px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.acard-leg-xp { font-size: 12px; font-weight: 900; flex-shrink: 0; margin-left: 2px; }
 
-/* Skill detail expand */
+/* Expand button */
 .acard-expand-btn {
-  display: flex; align-items: center; gap: 5px; margin-top: 12px; padding-top: 12px;
+  display: flex; align-items: center; gap: 5px;
+  margin-top: 12px; padding-top: 12px; width: 100%;
   border-top: 1.5px dashed rgba(124,184,245,.4);
   background: none; border-left: none; border-right: none; border-bottom: none;
-  width: 100%; font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 700;
-  color: var(--blue-dark); cursor: pointer; transition: opacity .15s;
+  font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 700;
+  color: var(--blue-dark); cursor: pointer; transition: opacity .15s; text-align: left;
 }
 .acard-expand-btn:hover { opacity: .75; }
 .acard-expand-arrow { transition: transform .2s; display: inline-block; font-size: 10px; }
-.acard-detail { display: none; margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+
+/* Detail — always full width, hidden by default */
+.acard-detail { display: none; margin-top: 12px; flex-direction: column; gap: 10px; }
 .acard-detail.open { display: flex; }
+
+/* Rama groups inside detail */
 .acard-rama-group { }
-.acard-rama-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+.acard-rama-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
 .acard-rama-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-.acard-rama-name { font-size: 10.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .4px; }
-.acard-rama-total { font-size: 10.5px; font-weight: 800; color: var(--muted); margin-left: auto; }
-.acard-skl { display: flex; align-items: center; gap: 7px; padding: 2px 0; }
-.acard-skl-name { font-size: 11.5px; font-weight: 600; color: var(--text); min-width: 110px; }
-.acard-skl-bar { flex: 1; height: 6px; background: var(--card-b); border-radius: 30px; overflow: hidden; }
+.acard-rama-name { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .4px; }
+.acard-rama-total { font-size: 11px; font-weight: 800; color: var(--muted); margin-left: auto; }
+
+/* Skill rows */
+.acard-skl { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+.acard-skl-name { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acard-skl-bar { width: 72px; flex-shrink: 0; height: 6px; background: var(--card-b); border-radius: 30px; overflow: hidden; }
 .acard-skl-fill { height: 100%; border-radius: 30px; transition: width .8s cubic-bezier(.22,.68,0,1.2); }
-.acard-skl-xp { font-size: 11px; font-weight: 900; width: 44px; text-align: right; flex-shrink: 0; }
+.acard-skl-xp { font-size: 11.5px; font-weight: 900; width: 40px; text-align: right; flex-shrink: 0; }
+
+.acard-name { font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 2px; line-height: 1.2; }
+.acard-dates { font-size: 13.5px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
+.acard-leg-name { font-size: 13.5px; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.acard-leg-count { font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.acard-leg-xp { font-size: 13.5px; font-weight: 900; flex-shrink: 0; margin-left: 2px; }
+.acard-donut-center b { font-size: 19px; font-weight: 900; color: var(--blue-dark); display: block; }
+.acard-donut-center small { font-size: 9px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; }
+.acard-rama-name { font-size: 12.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .4px; }
+.acard-rama-total { font-size: 12px; font-weight: 800; color: var(--muted); margin-left: auto; }
+.acard-skl-name { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acard-skl-xp { font-size: 12.5px; font-weight: 900; width: 40px; text-align: right; flex-shrink: 0; }
+
+/* ═══ GALAXIA DE PODERES ══════════════════════════ */
+.gx-hero{background:linear-gradient(135deg,var(--blue-dark),var(--cta));color:#fff;border-radius:22px;padding:16px 18px;position:relative;overflow:hidden;margin-bottom:14px;box-shadow:0 6px 22px rgba(62,111,168,.18);}
+.gx-hero::after{content:'';position:absolute;right:-28px;top:-36px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.09);}
+.gx-hero-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;position:relative;z-index:2;}
+.gx-k{font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;opacity:.85;}
+.gx-t{font-size:20px;font-weight:900;letter-spacing:-.5px;margin:2px 0 0;}
+.gx-tabs{display:flex;background:rgba(255,255,255,.16);border-radius:30px;padding:3px;gap:2px;flex-wrap:wrap;}
+.gx-tab{border:none;background:none;color:#fff;font-family:'Figtree',sans-serif;font-weight:800;font-size:11.5px;padding:6px 12px;border-radius:30px;cursor:pointer;opacity:.8;display:flex;align-items:center;gap:5px;transition:background .2s,opacity .2s;white-space:nowrap;}
+.gx-tab:hover{opacity:1;}
+.gx-tab.on{background:#fff;color:var(--cta);opacity:1;}
+.gx-stats{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;position:relative;z-index:2;}
+.gx-stat{background:rgba(255,255,255,.16);border-radius:12px;padding:7px 12px;display:flex;align-items:center;gap:7px;}
+.gx-stat b{font-size:16px;font-weight:900;line-height:1;}
+.gx-stat span{font-size:9.5px;font-weight:800;opacity:.85;text-transform:uppercase;letter-spacing:.3px;display:block;margin-top:2px;}
+/* views */
+.gx-view{display:none;}
+.gx-view.on{display:block;animation:viewin .3s ease;}
+/* niveles grid */
+.gx-grid{display:grid;gap:12px;grid-template-columns:1fr;}
+@media(min-width:520px){.gx-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:820px){.gx-grid{grid-template-columns:1fr 1fr 1fr;}}
+.gx-pcard{position:relative;background:var(--card-a);border-radius:20px;border:1px solid rgba(124,184,245,.2);box-shadow:0 4px 16px rgba(62,111,168,.1);padding:14px 12px 12px;cursor:pointer;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;}
+.gx-pcard:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(62,111,168,.18);}
+.gx-crown{position:absolute;top:9px;right:9px;display:flex;align-items:center;gap:3px;background:var(--accent);color:#5a3a00;font-size:9.5px;font-weight:900;padding:3px 8px 3px 6px;border-radius:30px;text-transform:uppercase;}
+.gx-planet{width:108px;height:108px;display:block;}
+.gx-orbit-rot{animation:spin 22s linear infinite;transform-box:view-box;transform-origin:60px 60px;}
+.gx-bob{animation:bob 4.4s ease-in-out infinite;transform-box:view-box;transform-origin:center;}
+.gx-pc-name{font-size:16px;font-weight:900;letter-spacing:-.3px;margin-top:5px;}
+.gx-pc-title{font-size:11px;font-weight:800;color:var(--muted);margin-top:2px;}
+.gx-pc-xp{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:900;margin-top:7px;}
+.gx-power{width:100%;margin-top:9px;}
+.gx-power-row{display:flex;align-items:center;gap:7px;}
+.gx-power-lv{font-size:10.5px;font-weight:900;flex-shrink:0;}
+.gx-power-bar{flex:1;height:8px;background:var(--card-b);border-radius:30px;overflow:hidden;}
+.gx-power-bar i{display:block;height:100%;border-radius:30px;width:0;transition:width 1s cubic-bezier(.22,.68,0,1.2);}
+.gx-pc-foot{margin-top:9px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;font-weight:900;border-radius:10px;padding:6px 10px;width:100%;border:1.5px dashed;}
+/* radar & despegues wrapper */
+.gx-card{background:var(--card-a);border-radius:20px;padding:6px;border:1px solid rgba(124,184,245,.18);box-shadow:0 6px 20px rgba(62,111,168,.1);overflow:hidden;margin-bottom:10px;}
+.gx-card svg{width:100%;height:auto;display:block;border-radius:16px;}
+.gx-radar-stage{position:relative;border-radius:16px;overflow:hidden;}
+.gx-radar-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(135deg,#E7F0FF 0%,#F2F8FF 48%,#FFF4DC 100%);}
+.gx-radar-bg .rb{position:absolute;border-radius:50%;filter:blur(60px);}
+.gx-radar-bg .rb1{width:48%;height:74%;left:-12%;top:-16%;background:var(--blue-main);opacity:.5;animation:rdrift1 24s ease-in-out infinite;}
+.gx-radar-bg .rb2{width:42%;height:62%;right:-10%;top:24%;background:var(--cta);opacity:.4;animation:rdrift2 30s ease-in-out infinite;}
+.gx-radar-bg .rb3{width:38%;height:56%;left:34%;bottom:-20%;background:var(--accent);opacity:.3;animation:rdrift3 27s ease-in-out infinite;}
+@keyframes rdrift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(8%,6%) scale(1.13)}}
+@keyframes rdrift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-9%,-7%) scale(1.1)}}
+@keyframes rdrift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(7%,-9%) scale(1.16)}}
+#gx-scene-radar{position:relative;z-index:1;}
+.gx-replay{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:30px;padding:8px 15px;font-family:'Figtree',sans-serif;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 3px 10px rgba(251,176,59,.35);margin-bottom:10px;transition:transform .15s;}
+.gx-replay:hover{transform:scale(1.05);}
+.gx-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:5px 10px;margin-top:10px;padding:0 4px;}
+.gx-leg-i{display:flex;align-items:center;gap:5px;}
+.gx-leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.gx-leg-n{font-size:11px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
+.gx-leg-p{font-size:11px;font-weight:900;}
+/* POV overlay */
+.gx-pov{position:fixed;inset:0;z-index:200;display:none;overflow:hidden;background:radial-gradient(circle at 50% 35%,#ffffff 0%,#F3F7FE 45%,var(--warm) 100%);}
+.gx-pov.on{display:block;}
+.gx-pov-bg{position:absolute;inset:0;overflow:hidden;z-index:0;}
+.gx-blob{position:absolute;border-radius:50%;filter:blur(85px);opacity:.4;}
+.gx-b1{width:56vmin;height:56vmin;background:var(--blue-main);left:-14vmin;top:-12vmin;animation:drift1 23s ease-in-out infinite;}
+.gx-b2{width:48vmin;height:48vmin;background:var(--cta);right:-16vmin;bottom:4vmin;opacity:.3;animation:drift2 29s ease-in-out infinite;}
+.gx-b3{width:42vmin;height:42vmin;background:var(--accent);left:32vmin;bottom:-16vmin;opacity:.26;animation:drift3 26s ease-in-out infinite;}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(10vmin,7vmin) scale(1.15)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-11vmin,-8vmin) scale(1.12)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9vmin,-9vmin) scale(1.18)}}
+.gx-pov-glow{position:absolute;left:50%;top:50%;width:70vmin;height:70vmin;border-radius:50%;transform:translate(-50%,-50%);filter:blur(65px);opacity:.3;z-index:1;animation:glowpulse 5s ease-in-out infinite;}
+@keyframes glowpulse{0%,100%{opacity:.25}50%{opacity:.38}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes bob{0%,100%{transform:translateY(1.5px);}50%{transform:translateY(-4px);}}
+@keyframes pan1{to{background-position:220px 0}}
+@keyframes pan2{to{background-position:-300px 120px}}
+@keyframes tw{0%,100%{opacity:.6}50%{opacity:.3}}
+@keyframes shoot{0%{transform:translate(0,0) rotate(18deg);opacity:0}4%{opacity:.7}12%{transform:translate(60vw,22vh) rotate(18deg);opacity:0}100%{opacity:0}}
+@keyframes ar{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+.gx-pov-head{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:14px 16px;z-index:8;}
+.gx-pov-head .ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.gx-pov-head .nm{font-size:17px;font-weight:900;letter-spacing:-.3px;line-height:1;}
+.gx-pov-head .ct{font-size:11px;font-weight:800;color:var(--muted);margin-top:2px;}
+.gx-pov-x{margin-left:auto;width:38px;height:38px;border-radius:50%;border:none;background:var(--card-a);box-shadow:0 4px 14px rgba(62,111,168,.18);font-size:18px;font-weight:900;color:var(--text);cursor:pointer;line-height:1;}
+.gx-pov-stage{position:absolute;inset:0;display:flex;align-items:center;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;-ms-overflow-style:none;perspective:1600px;z-index:2;}
+.gx-pov-stage::-webkit-scrollbar{display:none;}
+.gx-pov-track{position:relative;display:flex;align-items:center;height:100%;}
+.gx-pcd{--cw:320px;width:var(--cw);flex-shrink:0;scroll-snap-align:center;position:relative;overflow:hidden;background:rgba(255,255,255,.62);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border-radius:26px;padding:26px 24px 28px;border:1px solid rgba(255,255,255,.75);box-shadow:0 22px 60px rgba(20,40,70,.18);will-change:transform,opacity;transform-origin:center center;}
+.gx-pcd::before{content:'';position:absolute;inset:0;border-radius:26px;background:linear-gradient(155deg,rgba(255,255,255,.55),rgba(255,255,255,0) 42%);pointer-events:none;}
+.gx-pcd>*{position:relative;z-index:1;}
+.gx-pcd-ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.gx-pcd-lvtxt{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;}
+.gx-pcd-nm{font-size:22px;font-weight:900;letter-spacing:-.5px;line-height:1.05;margin-top:4px;}
+.gx-pcd-pips{display:flex;gap:4px;margin:12px 0 14px;}
+.gx-pip{width:9px;height:9px;border-radius:50%;}
+.gx-pip-next{transform:scale(.8);opacity:.6;}
+.gx-pcd-xp{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:900;padding:5px 12px;border-radius:30px;}
+.gx-pcd-desc{font-size:13.5px;font-weight:600;color:#5b7488;line-height:1.55;margin-top:14px;}
+.gx-pov-dots{position:absolute;left:0;right:0;bottom:68px;display:flex;justify-content:center;gap:6px;z-index:10;flex-wrap:wrap;padding:0 16px;}
+.gx-pov-dots i{box-sizing:content-box;width:7px;height:7px;padding:7px;background-clip:content-box;border-radius:50%;background:var(--blue-dark);opacity:.3;cursor:pointer;transition:opacity .25s,width .25s,background .25s;}
+.gx-pov-dots i:hover{opacity:.7;}
+.gx-pov-dots i.on{opacity:1;width:24px;border-radius:30px;}
+.gx-pov-nav{position:absolute;bottom:18px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(124,184,245,.35);background:rgba(255,255,255,.5);backdrop-filter:blur(8px);color:var(--blue-dark);cursor:pointer;z-index:9;opacity:.42;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(62,111,168,.14);transition:opacity .25s;}
+.gx-pov-nav:hover{opacity:1;background:rgba(255,255,255,.82);}
+.gx-pov-nav.left{left:14px;}
+.gx-pov-nav.right{right:14px;}
+/* despegues animations */
+.gx-r-launch{transition:transform 1.7s cubic-bezier(.22,.72,.2,1);}
+.gx-r-bob{animation:rbob 3.8s ease-in-out infinite;}
+@keyframes rbob{0%,100%{transform:translateY(2px) rotate(-1deg);}50%{transform:translateY(-6px) rotate(1deg);}}
+.gx-flame{animation:flame 1.15s ease-in-out infinite alternate;transform-box:view-box;}
+@keyframes flame{from{transform:scaleY(.85) scaleX(1.06);}to{transform:scaleY(1.15) scaleX(.94);}}
+.gx-flame-core{animation:flamecore .82s ease-in-out infinite alternate;transform-box:view-box;}
+@keyframes flamecore{from{transform:scaleY(.78) scaleX(1.05);}to{transform:scaleY(1.22) scaleX(.92);}}
+.gx-spark{animation:spark 1.5s ease-in infinite;transform-box:view-box;}
+.gx-halo{animation:halo 2.2s ease-in-out infinite;}
+.gx-bolt-liq{transform-box:fill-box;transform-origin:bottom;transition:transform 1.15s cubic-bezier(.22,.68,0,1.2);}
+.gx-ray .rnode{transition:transform .2s cubic-bezier(.3,1.4,.5,1);}
+.gx-ray:hover .rnode{animation:nodepop .55s cubic-bezier(.3,1.5,.5,1);}
+@keyframes nodepop{0%{transform:scale(1)}35%{transform:scale(1.24)}68%{transform:scale(.94)}100%{transform:scale(1)}}
+.gx-ray:hover .remb{animation:remspin .7s ease;}
+@keyframes remspin{to{transform:rotate(360deg)}}
+.gx-ray .rtrail{transition:stroke-width .25s ease,filter .25s ease;}
+.gx-ray:hover .rtrail{filter:brightness(1.12) saturate(1.25);}
+.gx-ray .rburst{transform-box:view-box;}
+.gx-ray:hover .rburst{animation:rburst .65s ease-out;}
+@keyframes remspin{to{transform:rotate(360deg)}}
+@keyframes nodepop{0%{transform:scale(1)}35%{transform:scale(1.24)}68%{transform:scale(.94)}100%{transform:scale(1)}}
+@keyframes rburst{0%{opacity:.75;transform:scale(.6)}100%{opacity:0;transform:scale(3)}}
+.gx-ray .rlabel{transition:transform .2s ease;}
+.gx-ray:hover .rlabel{transform:translateY(-3px);}
 
 .frase-grid { display: flex; flex-direction: column; gap: 8px; }
 .frase-option {
@@ -1139,58 +1282,9 @@ body {
       <div class="mission-grid single" id="mission-grid"></div>
     </div>
 
-    <!-- PODERES / RAMAS -->
-    <div class="section section-reveal">
-      <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><path d="M8 24 L8 14 L16 8 M8 18 L16 18" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="16" cy="8" r="2.5" fill="#2596BE"/><circle cx="16" cy="18" r="2.5" fill="#7CB8F5"/><circle cx="8" cy="24" r="2.5" fill="#3E6FA8"/></svg>
-        Poderes desbloqueados
-      </div>
-      <div class="ramas-wrapper">
-        <div class="grid-ramas">
-          <div class="rama-card" onclick="openModal('Science')">
-            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(-45 20 20)" stroke="#3E6FA8" stroke-width="1.5"/><ellipse cx="20" cy="20" rx="7" ry="17" transform="rotate(45 20 20)" stroke="#7CB8F5" stroke-width="1.5"/><path d="M17.6 12 L20.4 13 L22 20.8 L19 20.8 L18.2 28.6 L14.2 19.3 L17.2 19.3Z" fill="#FBB03B"/></svg></div>
-            <div class="rama-name">Science</div><div class="rama-level">Nivel 4 · Explorer</div>
-            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="72"></div></div>
-            <div class="rama-bar-legend"><span class="rama-bar-legend-left">540 XP</span><span class="rama-bar-legend-right">+210 para Niv.5</span></div>
-            <button class="rama-btn" onclick="event.stopPropagation();openModal('Science')">Ver poderes →</button>
-          </div>
-          <div class="rama-card" onclick="openModal('Technology')">
-            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><rect x="12" y="12" width="16" height="16" rx="3" stroke="#2596BE" stroke-width="1.5"/><path d="M20 6V12M20 28V34M6 20H12M28 20H34" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><circle cx="20" cy="20" r="2.5" fill="#FBB03B"/></svg></div>
-            <div class="rama-name">Technology</div><div class="rama-level">Nivel 6 · Builder</div>
-            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="89"></div></div>
-            <div class="rama-bar-legend"><span class="rama-bar-legend-left">820 XP</span><span class="rama-bar-legend-right">+100 para Niv.7</span></div>
-            <button class="rama-btn" onclick="event.stopPropagation();openModal('Technology')">Ver poderes →</button>
-          </div>
-          <div class="rama-card" onclick="openModal('Engineering')">
-            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="22" r="9" stroke="#3E6FA8" stroke-width="1.5"/><circle cx="20" cy="22" r="4" stroke="#2596BE" stroke-width="1.5"/><path d="M20 10V13M20 31V34M8 22H11M29 22H32" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square"/><path d="M17.6 17 L20.4 18 L21.8 22.8 L19.2 22.8 L18.5 27 L15.5 20.3 L18 20.3Z" fill="#FBB03B"/></svg></div>
-            <div class="rama-name">Engineering</div><div class="rama-level">Nivel 5 · Maker</div>
-            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="61"></div></div>
-            <div class="rama-bar-legend"><span class="rama-bar-legend-left">430 XP</span><span class="rama-bar-legend-right">+270 para Niv.6</span></div>
-            <button class="rama-btn" onclick="event.stopPropagation();openModal('Engineering')">Ver poderes →</button>
-          </div>
-          <div class="rama-card" onclick="openModal('Art')">
-            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M8 30 L16 14 L24 22 L32 10" stroke="#3E6FA8" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/><rect x="5" y="27" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="13" y="11" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/><rect x="21" y="19" width="6" height="6" rx="1" stroke="#2596BE" stroke-width="1.5"/><rect x="29" y="7" width="6" height="6" rx="1" stroke="#7CB8F5" stroke-width="1.5"/></svg></div>
-            <div class="rama-name">Art</div><div class="rama-level">Nivel 4 · Creator</div>
-            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="55"></div></div>
-            <div class="rama-bar-legend"><span class="rama-bar-legend-left">380 XP</span><span class="rama-bar-legend-right">+320 para Niv.5</span></div>
-            <button class="rama-btn" onclick="event.stopPropagation();openModal('Art')">Ver poderes →</button>
-          </div>
-          <div class="rama-card" onclick="openModal('Maths')">
-            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M8 34 L8 8 M8 34 L34 34" stroke="#7CB8F5" stroke-width="1.5" stroke-linecap="square"/><rect x="11" y="22" width="5" height="12" stroke="#3E6FA8" stroke-width="1.5"/><rect x="19" y="16" width="5" height="18" stroke="#2596BE" stroke-width="1.5"/><rect x="27" y="10" width="5" height="24" stroke="#3E6FA8" stroke-width="1.5"/><path d="M17 14 L20 15 L21 21 L18.5 21 L17.8 26 L15 19 L17.5 19Z" fill="#FBB03B"/></svg></div>
-            <div class="rama-name">Maths</div><div class="rama-level">Nivel 3 · Solver</div>
-            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="38"></div></div>
-            <div class="rama-bar-legend"><span class="rama-bar-legend-left">270 XP</span><span class="rama-bar-legend-right">+430 para Niv.4</span></div>
-            <button class="rama-btn" onclick="event.stopPropagation();openModal('Maths')">Ver poderes →</button>
-          </div>
-          <div class="rama-card" onclick="openModal('Transversals')">
-            <div class="rama-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M20 9 L31 27 L9 27Z" stroke="#3E6FA8" stroke-width="1.5" stroke-linejoin="miter"/><circle cx="20" cy="9" r="3" fill="#2596BE"/><circle cx="31" cy="27" r="3" fill="#7CB8F5"/><circle cx="9" cy="27" r="3" fill="#7CB8F5"/><circle cx="20" cy="20" r="2" fill="#FBB03B"/></svg></div>
-            <div class="rama-name">Transversals</div><div class="rama-level">Nivel 5 · Leader</div>
-            <div class="rama-bar-bg"><div class="rama-bar-fill" style="width:0%" data-target="78"></div></div>
-            <div class="rama-bar-legend"><span class="rama-bar-legend-left">400 XP</span><span class="rama-bar-legend-right">+110 para Niv.6</span></div>
-            <button class="rama-btn" onclick="event.stopPropagation();openModal('Transversals')">Ver poderes →</button>
-          </div>
-        </div>
-      </div>
+    <!-- GALAXIA DE PODERES -->
+    <div class="section section-reveal" id="galaxia-section">
+      <div id="galaxia-shell"></div>
     </div>
 
     <!-- ARCHIVO DE MISIONES -->
@@ -1412,6 +1506,31 @@ body {
     <div class="frase-modal-sub">Toca una frase para que aparezca en tu bocadillo. Se desbloquean más al subir de nivel.</div>
     <div class="frase-grid" id="frase-grid"></div>
   </div>
+</div>
+
+<!-- GALAXIA POV OVERLAY -->
+<div class="gx-pov" id="gx-pov">
+  <div class="gx-pov-bg">
+    <span class="gx-blob gx-b1"></span>
+    <span class="gx-blob gx-b2"></span>
+    <span class="gx-blob gx-b3"></span>
+    <div style="position:absolute;inset:-25%;background-repeat:repeat;opacity:.6;background-image:radial-gradient(2px 2px at 30px 40px,var(--blue-main),transparent),radial-gradient(2px 2px at 120px 90px,var(--cta),transparent),radial-gradient(1.5px 1.5px at 180px 30px,var(--blue-main),transparent),radial-gradient(2px 2px at 80px 160px,var(--accent),transparent);background-size:220px 220px;animation:pan1 90s linear infinite,tw 4s ease-in-out infinite;"></div>
+    <div style="position:absolute;inset:-25%;background-repeat:repeat;opacity:.4;background-image:radial-gradient(1.5px 1.5px at 60px 80px,var(--cta),transparent),radial-gradient(1.5px 1.5px at 160px 140px,var(--blue-main),transparent);background-size:300px 300px;animation:pan2 140s linear infinite;"></div>
+    <span style="position:absolute;top:18%;left:-10%;width:130px;height:2px;background:linear-gradient(90deg,transparent,var(--blue-dark));border-radius:2px;opacity:0;animation:shoot 9s ease-in infinite;"></span>
+  </div>
+  <div class="gx-pov-glow" id="gx-pov-glow"></div>
+  <div class="gx-pov-head" id="gx-pov-head"></div>
+  <div class="gx-pov-stage" id="gx-pov-stage">
+    <div class="gx-pov-track" id="gx-pov-track"></div>
+  </div>
+  <div class="gx-pov-dots" id="gx-pov-dots"></div>
+  <button class="gx-pov-nav left" onclick="IgniteProgress.navPov(-1)" aria-label="Poder anterior">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="gx-pov-nav right" onclick="IgniteProgress.navPov(1)" aria-label="Poder siguiente">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div style="position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;font-weight:800;color:var(--muted);z-index:8;pointer-events:none;">Desliza al lado para explorar <span style="display:inline-block;animation:ar 1.4s ease-in-out infinite;">→</span></div>
 </div>
 
 <!-- FLOATING SWITCHER -->
@@ -2906,10 +3025,21 @@ function closeBoltModal() { document.getElementById('bolt-modal').classList.remo
 
 function selectBolt(id) {
   selectedBolt = id;
+  window.selectedBolt = id; // expose for boltRadarEffect
   const b = bolts.find(x => x.id === id);
   const levelBolt = document.getElementById('level-bolt');
   if (levelBolt) levelBolt.innerHTML = boltSVGContent(b);
   document.querySelectorAll('.bolt-card').forEach(el => el.classList.toggle('bolt-selected', el.dataset.bolt === id));
+  // Sync Galaxia module
+  if (window.IgniteProgress && b) {
+    window.IgniteProgress.setBolt({
+      path: 'M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z',
+      viewBox: '7 2 16 31',
+      color: b.color,
+      fill: b.fill,
+      defs: b.defs || '',
+    });
+  }
   setTimeout(() => closeBoltModal(), 350);
 }
 
@@ -3377,7 +3507,883 @@ function randomBubble() {
 // ── INIT ─────────────────────────────────────────────────────
 renderMascotMain();
 
-// ── RAMA MODAL ────────────────────────────────────────────────
+// ── GALAXIA DE PODERES ─────────────────────────────────────────
+// Faithful port of portal-progreso.html — three sub-modules wrapped in IgniteProgress API
+window.IgniteProgress = (function(){
+'use strict';
+
+/* ── colour utils ─────────────────────────────────────────── */
+function hexc(h){h=h.trim().replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+function mixc(a,b,t){return[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];}
+function distc(a,b){return Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2]);}
+function rgb(c){return`rgb(${c[0]},${c[1]},${c[2]})`;}
+function parseRGB(s){const m=s.match(/\d+/g);return[+m[0],+m[1],+m[2]];}
+function tint(col,t){return rgb(mixc(parseRGB(col),[255,255,255],t));}
+function shade(col,t){return rgb(mixc(parseRGB(col),[22,30,46],t));}
+function rgba(col,a){const c=parseRGB(col);return`rgba(${c[0]},${c[1]},${c[2]},${a})`;}
+function ramaColors(){
+  const cs=getComputedStyle(document.body);
+  const an=['--blue-dark','--cta','--blue-main','--accent'].map(v=>hexc(cs.getPropertyValue(v)));
+  const u=[];an.forEach(a=>{if(!u.some(x=>distc(x,a)<40))u.push(a);});
+  if(u.length===1)u.push(mixc(u[0],hexc(cs.getPropertyValue('--text').trim()),.5));
+  const out=[],s=u.length-1;
+  for(let i=0;i<6;i++){const p=i/5*s,idx=Math.min(p|0,s-1);out.push(mixc(u[idx],u[idx+1]||u[idx],p-idx));}
+  return out.map(rgb);
+}
+
+/* ── shared data ──────────────────────────────────────────── */
+const ORDER=['Science','Technology','Engineering','Art','Maths','Transversals'];
+const CAP=7;
+let RAMAS={
+  Science:{lv:4,title:'Explorer',xp:540,skills:[
+    {n:'Física',lv:4,xp:160,desc:'Descubre cómo se mueven las cosas: fuerzas, energía y movimiento.'},
+    {n:'Química',lv:3,xp:130,desc:'Mezcla, reacciona y entiende de qué está hecho todo.'},
+    {n:'Biología',lv:4,xp:130,desc:'Explora los seres vivos, desde las células hasta los ecosistemas.'},
+    {n:'Método científico',lv:3,xp:120,desc:'Observa, plantea hipótesis y compruébalas con experimentos.'}]},
+  Technology:{lv:6,title:'Builder',xp:820,skills:[
+    {n:'Arduino & Hardware',lv:6,xp:110,desc:'Conecta sensores y placas para dar vida a tus inventos.'},
+    {n:'Python',lv:6,xp:100,desc:'Programa con uno de los lenguajes más usados del mundo.'},
+    {n:'IA & Datos',lv:5,xp:90,desc:'Enseña a las máquinas a aprender a partir de datos.'},
+    {n:'Machine Learning',lv:4,xp:70,desc:'Crea modelos que reconocen patrones y hacen predicciones.'},
+    {n:'Apps & Web',lv:4,xp:70,desc:'Diseña y construye aplicaciones y páginas web.'},
+    {n:'Bases de datos',lv:4,xp:60,desc:'Guarda y organiza la información de forma eficiente.'},
+    {n:'IoT',lv:4,xp:60,desc:'Conecta objetos cotidianos a internet.'},
+    {n:'Robótica software',lv:4,xp:60,desc:'Programa el cerebro que mueve a los robots.'},
+    {n:'Electrónica digital',lv:4,xp:60,desc:'Entiende circuitos, señales y lógica digital.'},
+    {n:'Ciberseguridad',lv:3,xp:50,desc:'Protege sistemas y datos frente a los ataques.'},
+    {n:'Redes',lv:3,xp:50,desc:'Conecta ordenadores para que hablen entre sí.'},
+    {n:'Cloud',lv:3,xp:40,desc:'Usa servidores en la nube para tus proyectos.'}]},
+  Engineering:{lv:5,title:'Maker',xp:430,skills:[
+    {n:'Diseño mecánico',lv:5,xp:150,desc:'Idea piezas y mecanismos que funcionan de verdad.'},
+    {n:'Prototipado',lv:4,xp:120,desc:'Construye versiones de prueba para mejorar tus ideas.'},
+    {n:'Estructuras',lv:4,xp:100,desc:'Diseña construcciones firmes y resistentes.'},
+    {n:'CAD',lv:3,xp:60,desc:'Dibuja tus diseños en 3D con el ordenador.'}]},
+  Art:{lv:4,title:'Creator',xp:380,skills:[
+    {n:'Modelado 3D',lv:4,xp:130,desc:'Esculpe objetos y personajes en tres dimensiones.'},
+    {n:'Diseño visual',lv:4,xp:110,desc:'Combina color, forma y composición con estilo.'},
+    {n:'Ilustración',lv:3,xp:90,desc:'Da vida a tus ideas dibujando.'},
+    {n:'Música',lv:2,xp:50,desc:'Crea tus propios ritmos y melodías.'}]},
+  Maths:{lv:3,title:'Solver',xp:270,skills:[
+    {n:'Geometría',lv:3,xp:90,desc:'Juega con figuras, ángulos y el espacio.'},
+    {n:'Álgebra',lv:3,xp:80,desc:'Resuelve enigmas usando letras y números.'},
+    {n:'Lógica',lv:2,xp:60,desc:'Razona paso a paso para resolver problemas.'},
+    {n:'Estadística',lv:2,xp:40,desc:'Recoge datos y descubre qué nos cuentan.'}]},
+  Transversals:{lv:5,title:'Leader',xp:400,skills:[
+    {n:'Trabajo en equipo',lv:5,xp:120,desc:'Colabora y suma fuerzas con los demás.'},
+    {n:'Comunicación',lv:4,xp:100,desc:'Expresa tus ideas con claridad y seguridad.'},
+    {n:'Liderazgo',lv:4,xp:80,desc:'Guía e inspira a tu grupo hacia una meta.'},
+    {n:'Gestión del tiempo',lv:3,xp:60,desc:'Organiza tus tareas y cumple los plazos.'},
+    {n:'Creatividad',lv:3,xp:40,desc:'Encuentra ideas nuevas y originales.'}]},
+};
+const PROG={Science:72,Technology:89,Engineering:61,Art:55,Maths:38,Transversals:78};
+const LV={Science:4,Technology:6,Engineering:5,Art:4,Maths:3,Transversals:5};
+
+let COLS=[],colorOf={};
+let _boltPath='M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z';
+let _boltVB='7 2 16 31';
+
+function recalcColors(){COLS=ramaColors();ORDER.forEach((r,i)=>colorOf[r]=COLS[i]);}
+
+/* ── icons ────────────────────────────────────────────────── */
+const MINI={
+  Science:'<path d="M9 3H15M10 3V9L5 19a1.5 1.5 0 001.4 2H17.6a1.5 1.5 0 001.4-2L14 9V3" stroke="#fff" stroke-width="1.9" fill="none" stroke-linejoin="round"/><path d="M7.5 15H16.5" stroke="#fff" stroke-width="1.9"/>',
+  Technology:'<rect x="7" y="7" width="10" height="10" rx="2" stroke="#fff" stroke-width="1.9" fill="none"/><path d="M10 4V7M14 4V7M10 17V20M14 17V20M4 10H7M4 14H7M17 10H20M17 14H20" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/>',
+  Engineering:'<circle cx="12" cy="12" r="3.2" stroke="#fff" stroke-width="1.9" fill="none"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3M6.4 6.4l2.1 2.1M15.5 15.5l2.1 2.1M17.6 6.4l-2.1 2.1M8.5 15.5l-2.1 2.1" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/>',
+  Art:'<path d="M12 4C7 4 4 8 4 12c0 4 3 6 6 6 1.5 0 1.5-2 3-2 2 0 2 2 4 1 3-1.5 3-8.5-1-11C14.5 4 13 4 12 4Z" stroke="#fff" stroke-width="1.9" fill="none"/><circle cx="8.5" cy="10.5" r="1.4" fill="#fff"/><circle cx="13" cy="8" r="1.4" fill="#fff"/><circle cx="16" cy="11" r="1.4" fill="#fff"/>',
+  Maths:'<path d="M5 18L17 18L5 8Z" stroke="#fff" stroke-width="1.9" fill="none" stroke-linejoin="round"/><path d="M9 6A9 9 0 0119 13" stroke="#fff" stroke-width="1.7" fill="none" stroke-dasharray="1 3" stroke-linecap="round"/>',
+  Transversals:'<circle cx="7" cy="8" r="2.4" stroke="#fff" stroke-width="1.9" fill="none"/><circle cx="17" cy="8" r="2.4" stroke="#fff" stroke-width="1.9" fill="none"/><circle cx="12" cy="17" r="2.4" stroke="#fff" stroke-width="1.9" fill="none"/><path d="M9.2 8.6L14.8 8.6M8.2 10L10.6 14.8M15.8 10L13.4 14.8" stroke="#fff" stroke-width="1.6"/>',
+};
+function emb(r,s){return`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none">${MINI[r]}</svg>`;}
+function embC(r,size,col){return`<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none">${MINI[r].replace(/#fff/g,col)}</svg>`;}
+function boltSVG(c,s){
+  // Always use current bolt fill/defs when the caller passes _boltFill or a signal color
+  const useCurrent=(c==='var(--accent)'||c===_boltColor||c===_boltFill);
+  const defsStr=(useCurrent||c===_boltFill)&&_boltDefs?`<defs>${_boltDefs}</defs>`:'';
+  const fill=useCurrent?_boltFill:c;
+  return`<svg width="${s}" height="${s}" viewBox="${_boltVB}">${defsStr}<path d="${_boltPath}" fill="${fill}"/></svg>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MODULE 1 — NIVELES (planets grid + POV coverflow)
+   ══════════════════════════════════════════════════════════ */
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+
+function planetSVG(r,i){
+  const d=RAMAS[r],col=colorOf[r],lv=d.lv;
+  const R=20+(lv-2)*4.6,halo=R+5+lv*1.8;
+  let moons='';[0,1].forEach(k=>{const[mx,my]=polar(60,60,R+13,k*180+i*30);moons+=`<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="3.4" fill="#fff"/><circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="2.4" fill="${tint(col,.2)}"/>`;});
+  const es=R*1.0,bx=(60+R*0.72).toFixed(1),by=(60+R*0.72).toFixed(1);
+  return`<svg class="planet-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="width:118px;height:118px;display:block;">
+    <circle cx="60" cy="60" r="${halo.toFixed(1)}" fill="${col}" opacity=".14"/>
+    <circle cx="60" cy="60" r="${(R+13).toFixed(1)}" fill="none" stroke="${tint(col,.55)}" stroke-width="1.1" stroke-dasharray="2 7"/>
+    <g style="animation:spin 22s linear infinite;transform-box:view-box;transform-origin:60px 60px;animation-delay:${(-i*1.3).toFixed(1)}s">${moons}</g>
+    <g style="animation:bob 4.4s ease-in-out infinite;transform-box:view-box;transform-origin:center;animation-delay:${(-i*0.5).toFixed(1)}s">
+      <circle cx="60" cy="60" r="${R.toFixed(1)}" fill="${shade(col,.16)}"/>
+      <circle cx="60" cy="60" r="${R.toFixed(1)}" fill="${col}"/>
+      <ellipse cx="${(60-R*0.32).toFixed(1)}" cy="${(60-R*0.34).toFixed(1)}" rx="${(R*0.42).toFixed(1)}" ry="${(R*0.26).toFixed(1)}" fill="#fff" opacity=".2"/>
+      <circle cx="60" cy="60" r="${R.toFixed(1)}" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2"/>
+      <g transform="translate(${(60-es/2).toFixed(1)},${(60-es/2).toFixed(1)})">${emb(r,es.toFixed(0))}</g>
+      <circle cx="${bx}" cy="${by}" r="13" fill="#fff" stroke="${col}" stroke-width="2.5"/>
+      <text x="${bx}" y="${(+by+4.5).toFixed(1)}" text-anchor="middle" font-family="Figtree" font-size="13" font-weight="900" fill="${col}">${lv}</text>
+    </g>
+  </svg>`;
+}
+
+function renderNiveles(){
+  const maxLv=Math.max(...ORDER.map(r=>RAMAS[r].lv));
+  const totalXP=ORDER.reduce((a,r)=>a+RAMAS[r].xp,0);
+  const totalSkills=ORDER.reduce((a,r)=>a+RAMAS[r].skills.length,0);
+  const strongest=ORDER.reduce((a,b)=>RAMAS[b].xp>RAMAS[a].xp?b:a);
+  const boltW=boltSVG(_boltFill||'#fff', 22);
+
+  document.getElementById('gx-hero-body').innerHTML=`
+    <div class="gx-hero-top">
+      <div><div class="gx-k">Ignite Nexus · Mi progreso</div><div class="gx-t">Mi Galaxia de Poderes</div></div>
+      <nav class="gx-tabs">
+        <button class="gx-tab on" data-v="niveles" onclick="IgniteProgress.showView('niveles')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.9"/><ellipse cx="12" cy="12" rx="11" ry="4" stroke="currentColor" stroke-width="1.9" transform="rotate(-20 12 12)"/></svg>Niveles
+        </button>
+        <button class="gx-tab" data-v="radar" onclick="IgniteProgress.showView('radar')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.4" stroke="currentColor" stroke-width="1.8"/><path d="M12 12L20 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Radar
+        </button>
+        <button class="gx-tab" data-v="despegues" onclick="IgniteProgress.showView('despegues')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 15c-2 1-3 5-3 5s4-1 5-3M14 4c4 2 6 8 4 13l-5 2-5-5 2-5c1-2 2-4 4-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Despegues
+        </button>
+      </nav>
+    </div>
+    <div class="gx-stats">
+      <div class="gx-stat">${boltW}<div><b>${totalXP.toLocaleString('es')}</b><span>XP total</span></div></div>
+      <div class="gx-stat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3L14.5 9L21 9.3L16 13.3L17.8 19.6L12 15.8L6.2 19.6L8 13.3L3 9.3L9.5 9Z" stroke="#fff" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg><div><b>${totalSkills}</b><span>poderes</span></div></div>
+      <div class="gx-stat"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M3 7l4 4 5-6 5 6 4-4-2 12H5z"/></svg><div><b>${strongest}</b><span>más fuerte</span></div></div>
+    </div>`;
+
+  document.getElementById('gx-grid').innerHTML=ORDER.map((r,i)=>{
+    const d=RAMAS[r],col=colorOf[r];
+    const crown=d.lv===maxLv?`<div class="gx-crown"><svg width="11" height="11" viewBox="0 0 24 24" fill="#5a3a00"><path d="M3 7l4 4 5-6 5 6 4-4-2 12H5z"/></svg>Top</div>`:'';
+    return`<div class="gx-pcard" onclick="IgniteProgress.openPov('${r}')">
+      ${crown}${planetSVG(r,i)}
+      <div class="gx-pc-name" style="color:${col}">${r}</div>
+      <div class="gx-pc-title">${d.title}</div>
+      <div class="gx-pc-xp" style="color:${col}">${boltSVG(col,13)}${d.xp} XP</div>
+      <div class="gx-power"><div class="gx-power-row"><span class="gx-power-lv" style="color:${col}">Nv ${d.lv}</span><span class="gx-power-bar"><i data-w="${(d.lv/CAP*100).toFixed(0)}" style="background:linear-gradient(90deg,${col},${shade(col,.25)})"></i></span></div></div>
+      <div class="gx-pc-foot" style="border-color:${rgba(col,.5)};color:${col}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" fill="${col}"/><path d="M8 11V8a4 4 0 018 0" stroke="${col}" stroke-width="2" fill="none"/></svg>Ver ${d.skills.length} poderes</div>
+    </div>`;
+  }).join('');
+
+  setTimeout(()=>document.querySelectorAll('#gx-grid .gx-power-bar i').forEach((b,j)=>setTimeout(()=>b.style.width=b.dataset.w+'%',j*100)),140);
+}
+
+/* ── POV coverflow ────────────────────────────────────────── */
+let _POV={n:0,cw:340,gap:30,cols:[],raf:null};
+
+function powerCard(r,s){
+  const col=colorOf[r];let pips='';
+  for(let k=1;k<=s.lv;k++)pips+=`<span class="gx-pip" style="background:${col}"></span>`;
+  pips+=`<span class="gx-pip gx-pip-next" style="background:${tint(col,.6)}"></span>`;
+  return`<div class="gx-pcd">
+    <div class="gx-pcd-ic" style="background:${col}">${emb(r,28)}</div>
+    <div class="gx-pcd-lvtxt" style="color:${col}">Nivel ${s.lv}</div>
+    <div class="gx-pcd-nm" style="color:${shade(col,.15)}">${s.n}</div>
+    <div class="gx-pcd-pips">${pips}</div>
+    <span class="gx-pcd-xp" style="background:${tint(col,.88)};color:${shade(col,.2)}">${boltSVG(col,13)} ${s.xp} XP</span>
+    <p class="gx-pcd-desc">${s.desc}</p>
+  </div>`;
+}
+
+function layoutPov(){
+  const stage=document.getElementById('gx-pov-stage'), track=document.getElementById('gx-pov-track');
+  _POV.cw=Math.min(Math.round(window.innerWidth*0.82),360);
+  _POV.gap=window.innerWidth<520?20:30;
+  [...track.children].forEach((c,i)=>{c.style.setProperty('--cw',_POV.cw+'px');c.style.marginRight=(i===track.children.length-1?0:_POV.gap)+'px';});
+  const pad=Math.max(0,(stage.clientWidth-_POV.cw)/2);
+  track.style.paddingLeft=pad+'px';track.style.paddingRight=pad+'px';
+}
+
+function renderPovFrame(now){
+  const stage=document.getElementById('gx-pov-stage'), track=document.getElementById('gx-pov-track'),
+        dots=document.getElementById('gx-pov-dots'), glow=document.getElementById('gx-pov-glow'),
+        head=document.getElementById('gx-pov-head');
+  if(!stage||!track){return;}
+  const cards=[...track.children];
+  if(cards.length){
+    const center=stage.scrollLeft+stage.clientWidth/2,unit=_POV.cw+_POV.gap;
+    let best=0,bd=1e9;
+    cards.forEach((c,i)=>{
+      const cc=c.offsetLeft+c.offsetWidth/2,dist=(cc-center)/unit,ad=Math.abs(dist);
+      const close=Math.max(0,1-ad);
+      const fl=Math.sin(now/900+i*1.3)*6.5*(0.45+close*0.55);
+      const sc=Math.max(.72,1-ad*0.16),rot=Math.max(-38,Math.min(38,-dist*19)),ty=ad*12-fl,bl=Math.min(ad*1.6,4);
+      if(ad<0.06){c.style.transform=`translateY(${ty.toFixed(1)}px)`;c.style.filter='none';}
+      else{c.style.transform=`rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)}) translateY(${ty.toFixed(1)}px)`;c.style.filter=bl>0.1?`blur(${bl.toFixed(1)}px)`:'none';}
+      c.style.opacity=Math.max(.28,1-ad*0.4).toFixed(3);
+      c.style.zIndex=String(200-Math.round(ad*10));
+      const col=_POV.cols[i],gv=(0.12+close*0.4).toFixed(2);
+      c.style.boxShadow=`0 22px 60px rgba(20,40,70,.18),0 0 ${(16+close*40).toFixed(0)}px ${rgba(col,gv)}`;
+      if(ad<bd){bd=ad;best=i;}
+    });
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===best));
+    const ct=head.querySelector('.ct');if(ct)ct.textContent=`Poder ${best+1} de ${_POV.n}`;
+    if(glow)glow.style.background=`radial-gradient(circle,${_POV.cols[best]||'#7cb8f5'},transparent 70%)`;
+  }
+  _POV.raf=requestAnimationFrame(renderPovFrame);
+}
+
+function openPov(r){
+  recalcColors();
+  const d=RAMAS[r],col=colorOf[r];
+  _POV.n=d.skills.length;_POV.cols=d.skills.map(()=>col);
+  const head=document.getElementById('gx-pov-head'), track=document.getElementById('gx-pov-track'),
+        dots=document.getElementById('gx-pov-dots'), glow=document.getElementById('gx-pov-glow'),
+        stage=document.getElementById('gx-pov-stage');
+  head.innerHTML=`<div class="ic" style="background:${col};width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${emb(r,24)}</div><div><div class="nm" style="font-size:18px;font-weight:900;letter-spacing:-.4px;color:${shade(col,.15)}">${r}</div><div class="ct" style="font-size:11.5px;font-weight:800;color:var(--muted);margin-top:2px">Poder 1 de ${_POV.n}</div></div><button class="gx-pov-x" onclick="IgniteProgress.closePov()">×</button>`;
+  track.innerHTML=d.skills.map(s=>powerCard(r,s)).join('');
+  dots.innerHTML=d.skills.map((_,i)=>`<i onclick="IgniteProgress.goToPov(${i})"></i>`).join('');
+  if(glow)glow.style.background=`radial-gradient(circle,${col},transparent 70%)`;
+  document.getElementById('gx-pov').classList.add('on');
+  document.body.classList.add('lock');
+  stage.scrollLeft=0;layoutPov();
+  cancelAnimationFrame(_POV.raf);_POV.raf=requestAnimationFrame(renderPovFrame);
+}
+
+function closePov(){
+  document.getElementById('gx-pov').classList.remove('on');
+  document.body.classList.remove('lock');
+  cancelAnimationFrame(_POV.raf);
+}
+function navPov(dir){
+  const stage=document.getElementById('gx-pov-stage');
+  stage.scrollBy({left:dir*(_POV.cw+_POV.gap),behavior:'smooth'});
+}
+function goToPov(i){
+  const stage=document.getElementById('gx-pov-stage');
+  stage.scrollTo({left:i*(_POV.cw+_POV.gap),behavior:'smooth'});
+}
+window.addEventListener('resize',()=>{if(document.getElementById('gx-pov')?.classList.contains('on'))layoutPov();});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('gx-pov')?.classList.contains('on'))return;
+  if(e.key==='Escape')closePov();
+  else if(e.key==='ArrowRight')navPov(1);
+  else if(e.key==='ArrowLeft')navPov(-1);
+});
+
+/* ══════════════════════════════════════════════════════════
+   MODULE 2 — RADAR (faithful port of portal-progreso.html)
+   ══════════════════════════════════════════════════════════ */
+function renderRadar(){
+  const W=760,H=480,Ox=86,Oy=240,L=600,SPREAD=24;
+  const RCAP=Math.max(8,Math.max(...ORDER.map(r=>RAMAS[r].lv))+2);
+  function dirOf(i){const deg=-SPREAD+i*(2*SPREAD/(ORDER.length-1)),rad=deg*Math.PI/180;return{dx:Math.cos(rad),dy:Math.sin(rad)};}
+  function fitLen(dx,dy){let t=L;if(dx>0)t=Math.min(t,(W-26-Ox)/dx);if(dy>0)t=Math.min(t,(H-26-Oy)/dy);if(dy<0)t=Math.min(t,(26-Oy)/dy);return t;}
+  const leader=ORDER.slice().sort((a,b)=>RAMAS[b].lv-RAMAS[a].lv)[0];
+  let defs='',grid='',guides='',lines='',core='';
+
+  for(let m=2;m<=RCAP;m+=2){
+    const rad=m/RCAP*L;
+    const sx=(Ox+Math.cos(-SPREAD*Math.PI/180)*rad).toFixed(1),sy=(Oy+Math.sin(-SPREAD*Math.PI/180)*rad).toFixed(1);
+    const ex=(Ox+Math.cos(SPREAD*Math.PI/180)*rad).toFixed(1),ey=(Oy+Math.sin(SPREAD*Math.PI/180)*rad).toFixed(1);
+    grid+=`<path d="M${sx} ${sy} A${rad.toFixed(1)} ${rad.toFixed(1)} 0 0 1 ${ex} ${ey}" fill="none" stroke="#7CB8F5" stroke-width="1" stroke-dasharray="2 7" opacity=".35"/>`;
+    grid+=`<text x="${(Ox+rad).toFixed(1)}" y="${Oy-6}" text-anchor="middle" font-family="Figtree" font-size="9" font-weight="800" fill="#9bb4cf">Nv ${m}</text>`;
+  }
+
+  const wsx=(Ox+Math.cos(-6*Math.PI/180)*L).toFixed(1),wsy=(Oy+Math.sin(-6*Math.PI/180)*L).toFixed(1);
+  const wex=(Ox+Math.cos(6*Math.PI/180)*L).toFixed(1),wey=(Oy+Math.sin(6*Math.PI/180)*L).toFixed(1);
+  const sweep=`<g opacity=".10"><path d="M${Ox} ${Oy} L${wsx} ${wsy} A${L} ${L} 0 0 1 ${wex} ${wey} Z" fill="var(--cta)"><animateTransform attributeName="transform" type="rotate" values="-${SPREAD} ${Ox} ${Oy};${SPREAD} ${Ox} ${Oy};-${SPREAD} ${Ox} ${Oy}" dur="7s" repeatCount="indefinite"/></path></g>`;
+
+  ORDER.forEach((r,i)=>{
+    const d=RAMAS[r],col=colorOf[r],dir=dirOf(i);
+    const gl=fitLen(dir.dx,dir.dy),nd=d.lv/RCAP*L,nr=9+d.lv*2.2,tw=2+d.lv*0.95;
+    const Nx=Ox+dir.dx*nd,Ny=Oy+dir.dy*nd;
+    const gex=(Ox+dir.dx*gl).toFixed(1),gey=(Oy+dir.dy*gl).toFixed(1);
+    const flow=(1.7+(1-d.lv/RCAP)*2.0).toFixed(2),wv=(2.2+(1-d.lv/RCAP)*1.6).toFixed(2);
+    const orig=`transform-box:view-box;transform-origin:${Nx.toFixed(1)}px ${Ny.toFixed(1)}px`;
+
+    guides+=`<line x1="${Ox}" y1="${Oy}" x2="${gex}" y2="${gey}" stroke="${tint(col,.6)}" stroke-width="1" stroke-dasharray="1 7" opacity=".5"/>`;
+    defs+=`<linearGradient id="radtg${i}" gradientUnits="userSpaceOnUse" x1="${Ox}" y1="${Oy}" x2="${Nx.toFixed(1)}" y2="${Ny.toFixed(1)}"><stop offset="0" stop-color="${col}" stop-opacity="0.04"/><stop offset="1" stop-color="${col}" stop-opacity="0.9"/></linearGradient>`;
+
+    let g=`<g class="ray" style="cursor:pointer;">`;
+    g+=`<line x1="${Ox}" y1="${Oy}" x2="${Nx.toFixed(1)}" y2="${Ny.toFixed(1)}" stroke="url(#radtg${i})" stroke-width="${(tw+5).toFixed(1)}" stroke-linecap="round" opacity=".4" style="filter:blur(4px)"/>`;
+    g+=`<line class="rtrail" style="stroke-width:${tw.toFixed(1)}px" x1="${Ox}" y1="${Oy}" x2="${Nx.toFixed(1)}" y2="${Ny.toFixed(1)}" stroke="url(#radtg${i})" stroke-linecap="round"/>`;
+    // Hidden bolt-specific overlay layer — shown only on bolt hover (canvas handles this)
+    g+=`<line class="rtrail-bolt" x1="${Ox}" y1="${Oy}" x2="${Nx.toFixed(1)}" y2="${Ny.toFixed(1)}" stroke="${_boltColor}" stroke-width="${(tw+1).toFixed(1)}" stroke-linecap="round" opacity="0" style="transition:opacity .3s;pointer-events:none"/>`;
+
+    for(let k=0;k<2;k++){const begin=(k*flow/2).toFixed(2);
+      g+=`<circle r="${(2.2+d.lv*0.18).toFixed(1)}" fill="#fff" stroke="${col}" stroke-width="1.4" opacity="0"><animateMotion dur="${flow}s" begin="${begin}s" repeatCount="indefinite" path="M0,0 L${(Nx-Ox).toFixed(1)},${(Ny-Oy).toFixed(1)}"/><animate attributeName="opacity" values="0;.95;.95;0" keyTimes="0;.15;.7;1" dur="${flow}s" begin="${begin}s" repeatCount="indefinite"/></circle>`;
+    }
+    for(let k=0;k<2;k++){const begin=(k*wv/2).toFixed(2);
+      g+=`<circle cx="${Nx.toFixed(1)}" cy="${Ny.toFixed(1)}" r="${nr}" fill="none" stroke="${col}" stroke-width="2"><animate attributeName="r" values="${nr};${(nr*2.6).toFixed(1)}" dur="${wv}s" begin="${begin}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0" dur="${wv}s" begin="${begin}s" repeatCount="indefinite"/></circle>`;
+    }
+    g+=`<circle cx="${Nx.toFixed(1)}" cy="${Ny.toFixed(1)}" r="${nr.toFixed(1)}" fill="none" stroke="${col}" stroke-width="2.5" opacity="0" style="${orig}" class="rburst"/>`;
+    g+=`<g class="rnode" style="${orig}">`;
+    g+=`<circle cx="${Nx.toFixed(1)}" cy="${Ny.toFixed(1)}" r="${(nr+4).toFixed(1)}" fill="${col}" opacity=".18" style="filter:blur(5px)"/>`;
+    g+=`<circle cx="${Nx.toFixed(1)}" cy="${Ny.toFixed(1)}" r="${nr.toFixed(1)}" fill="${shade(col,.12)}"/>`;
+    g+=`<circle cx="${Nx.toFixed(1)}" cy="${Ny.toFixed(1)}" r="${nr.toFixed(1)}" fill="${col}"/>`;
+    g+=`<circle cx="${Nx.toFixed(1)}" cy="${Ny.toFixed(1)}" r="${nr.toFixed(1)}" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2"/>`;
+    // Icon centered on node with spin-on-hover via remb class
+    g+=`<g class="remb" style="transform-box:view-box;transform-origin:${Nx.toFixed(1)}px ${Ny.toFixed(1)}px"><svg x="${(Nx-nr/2).toFixed(1)}" y="${(Ny-nr/2).toFixed(1)}" width="${nr.toFixed(0)}" height="${nr.toFixed(0)}" viewBox="0 0 24 24" fill="none">${MINI[r]}</svg></g>`;
+    const bx=(Nx+nr*0.74).toFixed(1),by=(Ny-nr*0.74).toFixed(1);
+    g+=`<circle cx="${bx}" cy="${by}" r="10" fill="#fff" stroke="${col}" stroke-width="2"/><text x="${bx}" y="${(+by+3.6).toFixed(1)}" text-anchor="middle" font-family="Figtree" font-size="10.5" font-weight="900" fill="${col}">${d.lv}</text>`;
+    if(r===leader)g+=`<g transform="translate(${Nx.toFixed(1)},${(Ny-nr-13).toFixed(1)})"><path d="M-8 4L-4-3L0 2L4-3L8 4Z" fill="var(--accent)" stroke="#fff" stroke-width="1"/></g>`;
+    g+='</g>';
+    g+=`<text class="rlabel" x="${Nx.toFixed(1)}" y="${(Ny+nr+15).toFixed(1)}" text-anchor="middle" font-family="Figtree" font-size="11" font-weight="900" fill="${col}">${r}</text>`;
+    g+=`<circle cx="${Nx.toFixed(1)}" cy="${Ny.toFixed(1)}" r="${(nr+16).toFixed(1)}" fill="transparent" pointer-events="all"/>`;
+    g+='</g>';
+    lines+=g;
+  });
+
+  // núcleo — chosen bolt + interactive hover/click ripple
+  const bW=18,bH=28,bx2=(Ox-bW/2).toFixed(1),by2=(Oy-bH/2).toFixed(1);
+  core+=`<circle cx="${Ox}" cy="${Oy}" r="40" fill="var(--accent)" opacity=".16" style="filter:blur(8px)"><animate attributeName="r" values="38;46;38" dur="3.4s" repeatCount="indefinite"/></circle>`;
+  core+=`<circle cx="${Ox}" cy="${Oy}" r="26" fill="${shade(colorOf['Science'],.1)}"/>`;
+  core+=`<circle cx="${Ox}" cy="${Oy}" r="26" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2"/>`;
+  // bolt shape
+  core+=`<g id="radar-bolt-g" style="cursor:pointer;transform-box:view-box;transform-origin:${Ox}px ${Oy}px" onclick="radarBoltClick()" onmouseenter="radarBoltHover(true)" onmouseleave="radarBoltHover(false)">`;
+  core+=`<svg x="${bx2}" y="${by2}" width="${bW}" height="${bH}" viewBox="${_boltVB}">${_boltDefs?`<defs>${_boltDefs}</defs>`:''}<path d="${_boltPath}" fill="${_boltFill}"/></svg>`;
+  core+=`</g>`;
+  // persistent pulse ring
+  core+=`<circle cx="${Ox}" cy="${Oy}" r="26" fill="none" stroke="var(--accent)" stroke-width="1.5"><animate attributeName="r" values="26;60" dur="3.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".5;0" dur="3.4s" repeatCount="indefinite"/></circle>`;
+  // click ripple rings (triggered by JS)
+  for(let k=0;k<4;k++){
+    core+=`<circle class="radar-bolt-ripple" cx="${Ox}" cy="${Oy}" r="26" fill="none" stroke="var(--accent)" stroke-width="${2-k*0.4}" opacity="0" style="transition:none"/>`;
+  }
+
+  document.getElementById('gx-scene-radar').innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${grid}${sweep}${guides}${lines}${core}</svg>`;
+
+  // Wire hover events via JS since inline SVG CSS pseudo-selectors are unreliable
+  document.querySelectorAll('#gx-scene-radar .ray').forEach(ray=>{
+    const emblem=ray.querySelector('.remb');
+    const trail=ray.querySelector('.rtrail');
+    const burst=ray.querySelector('.rburst');
+    const node=ray.querySelector('.rnode');
+    const label=ray.querySelector('.rlabel');
+    ray.addEventListener('mouseenter',()=>{
+      if(emblem){emblem.style.animation='remspin .7s ease';emblem.style.transformBox='view-box';}
+      if(trail){trail.style.filter='brightness(1.12) saturate(1.25)';}
+      if(burst){burst.style.animation='rburst .65s ease-out';}
+      if(node){node.style.animation='nodepop .55s cubic-bezier(.3,1.5,.5,1)';}
+      if(label){label.style.transform='translateY(-3px)';}
+    });
+    ray.addEventListener('mouseleave',()=>{
+      if(emblem){emblem.style.animation='';}
+      if(trail){trail.style.filter='';}
+      if(burst){burst.style.animation='';}
+      if(node){node.style.animation='';}
+      if(label){label.style.transform='';}
+    });
+  });
+}
+
+function renderDespegues(){
+  const W=470,Hh=380,ground=314,topY=80,range=ground-topY;
+  const soon=ORDER.slice().sort((a,b)=>PROG[b]-PROG[a])[0];
+  function colX(i){return 52+i*(W-104)/5;}
+
+  function rocketSVG(x,p,r,isL,i){
+    const noseY=ground-p/100*range,col=colorOf[r];
+    const light=tint(col,.42),dark=shade(col,.25);
+    const[cr,cg,cb]=parseRGB(col);
+    const headR=13,headCY=noseY+headR,bw=22,bodyTop=headCY+3,bodyH=26,bodyBot=bodyTop+bodyH,noz=bodyBot+5;
+    const off=(ground-noseY).toFixed(1),haloR=(15+p*0.16).toFixed(1),haloA=(0.14+p/100*0.40).toFixed(2);
+    const bobDur=(3.6+i*0.22).toFixed(2),bobDelay=(-i*0.7).toFixed(2);
+    const fL=12+(p/100)*26,fw=5+(p/100)*3.4,fw2=fw*0.5;
+    let g=`<g class="gx-r-launch" data-off="${off}" style="transform:translateY(${off}px)">`;
+    g+=`<g class="gx-r-bob" style="transform-origin:${x}px ${bodyBot}px;animation-duration:${bobDur}s;animation-delay:${bobDelay}s">`;
+    g+=`<circle class="gx-halo" cx="${x}" cy="${(noseY+24).toFixed(1)}" r="${haloR}" fill="rgba(${cr},${cg},${cb},${haloA})" style="filter:blur(9px)"/>`;
+    g+=`<line x1="${x}" y1="${(noz+3).toFixed(1)}" x2="${x}" y2="${ground}" stroke="${col}" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" opacity=".32"/>`;
+    g+=`<g class="gx-flame" style="transform-origin:${x}px ${noz}px">`
+      +`<path d="M${(x-fw).toFixed(1)} ${noz} C${(x-fw).toFixed(1)} ${(noz+fL*0.42).toFixed(1)} ${(x-fw2).toFixed(1)} ${(noz+fL*0.74).toFixed(1)} ${x} ${(noz+fL).toFixed(1)} C${(x+fw2).toFixed(1)} ${(noz+fL*0.74).toFixed(1)} ${(x+fw).toFixed(1)} ${(noz+fL*0.42).toFixed(1)} ${(x+fw).toFixed(1)} ${noz} Z" fill="#F97316"/>`
+      +`<path d="M${(x-fw*0.66).toFixed(1)} ${noz} C${(x-fw*0.66).toFixed(1)} ${(noz+fL*0.38).toFixed(1)} ${(x-fw2*0.6).toFixed(1)} ${(noz+fL*0.62).toFixed(1)} ${x} ${(noz+fL*0.82).toFixed(1)} C${(x+fw2*0.6).toFixed(1)} ${(noz+fL*0.62).toFixed(1)} ${(x+fw*0.66).toFixed(1)} ${(noz+fL*0.38).toFixed(1)} ${(x+fw*0.66).toFixed(1)} ${noz} Z" fill="#FBB03B"/>`
+      +`<g class="gx-flame-core" style="transform-origin:${x}px ${noz}px"><path d="M${(x-fw*0.34).toFixed(1)} ${noz} C${(x-fw*0.34).toFixed(1)} ${(noz+fL*0.28).toFixed(1)} ${x} ${(noz+fL*0.44).toFixed(1)} ${x} ${(noz+fL*0.56).toFixed(1)} C${x} ${(noz+fL*0.44).toFixed(1)} ${(x+fw*0.34).toFixed(1)} ${(noz+fL*0.28).toFixed(1)} ${(x+fw*0.34).toFixed(1)} ${noz} Z" fill="#FFF3C6"/></g></g>`;
+    g+=`<circle class="gx-spark" cx="${(x-2.5).toFixed(1)}" cy="${(noz+fL*0.7).toFixed(1)}" r="${(1+p/100*0.7).toFixed(1)}" fill="#FBB03B" style="animation-delay:${(-i*0.3).toFixed(2)}s"/>`;
+    g+=`<path d="M${x-bw/2+2} ${bodyBot-15} Q${x-bw/2-11} ${bodyBot-2} ${x-bw/2-6} ${bodyBot+6} Q${x-bw/2-2} ${bodyBot+2} ${x-bw/2+2} ${bodyBot} Z" fill="${dark}"/>`;
+    g+=`<path d="M${x+bw/2-2} ${bodyBot-15} Q${x+bw/2+11} ${bodyBot-2} ${x+bw/2+6} ${bodyBot+6} Q${x+bw/2+2} ${bodyBot+2} ${x+bw/2-2} ${bodyBot} Z" fill="${dark}"/>`;
+    g+=`<path d="M${x-6} ${bodyBot} L${x+6} ${bodyBot} L${x+8} ${noz} L${x-8} ${noz} Z" fill="${dark}"/>`;
+    g+=`<rect x="${x-bw/2}" y="${bodyTop}" width="${bw}" height="${bodyH}" rx="9" fill="${col}"/>`;
+    g+=`<rect x="${x-bw/2+3.5}" y="${bodyTop+4}" width="5" height="${bodyH-9}" rx="2.5" fill="${light}" opacity=".55"/>`;
+    g+=`<rect x="${x-bw/2}" y="${bodyBot-9}" width="${bw}" height="5" fill="${dark}" opacity=".5"/>`;
+    g+=`<circle cx="${x}" cy="${headCY}" r="${headR}" fill="#fff"/>`;
+    g+=`<circle cx="${x}" cy="${headCY}" r="${headR}" fill="none" stroke="${col}" stroke-width="3"/>`;
+    g+=`<g transform="translate(${x-9},${(headCY-9).toFixed(1)})">${embC(r,18,col)}</g>`;
+    g+=`<circle cx="${x}" cy="${(noseY-2).toFixed(1)}" r="2.2" fill="${col}"/>`;
+    if(isL)g+=`<g transform="translate(${x+15},${(noseY-26).toFixed(1)})"><rect x="0" y="0" width="62" height="20" rx="10" fill="#2F3A4A"/><text x="31" y="14" text-anchor="middle" font-family="Figtree" font-size="10" font-weight="900" fill="#fff">¡a punto!</text></g>`;
+    g+='</g></g>';
+    return g;
+  }
+
+  function boltMeter(x,by,p,r,idx){
+    const bH=36,bW=bH*16/31,bx=x-bW/2,col=colorOf[r],light=tint(col,.62);
+    return`<svg x="${bx.toFixed(1)}" y="${by}" width="${bW.toFixed(1)}" height="${bH}" viewBox="${_boltVB}" overflow="visible">`
+      +`<defs><clipPath id="gxbc${idx}"><path d="${_boltPath}"/></clipPath></defs>`
+      +`<path d="${_boltPath}" fill="${light}"/>`
+      +`<g clip-path="url(#gxbc${idx})"><rect class="gx-bolt-liq" x="6" y="2" width="18" height="31.6" fill="${col}" style="transform:scaleY(0)" data-s="${(p/100).toFixed(3)}"/></g>`
+      +`<path d="${_boltPath}" fill="none" stroke="${col}" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
+  }
+
+  let s=`<svg viewBox="0 0 ${W} ${Hh}" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<defs><linearGradient id="gxsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7F1FF"/><stop offset="1" stop-color="#FBFDFF"/></linearGradient></defs>`;
+  s+=`<rect width="${W}" height="${Hh}" fill="url(#gxsky)"/>`;
+  [25,50,75].forEach(t=>{const y=(ground-t/100*range).toFixed(1);s+=`<line x1="36" y1="${y}" x2="${W-16}" y2="${y}" stroke="#7CB8F5" stroke-width="1" stroke-dasharray="2 6" opacity=".3"/><text x="30" y="${(+y+3).toFixed(1)}" text-anchor="end" font-family="Figtree" font-size="8.5" font-weight="800" fill="#9bb4cf">${t}%</text>`;});
+  s+=`<line x1="36" y1="${topY}" x2="${W-16}" y2="${topY}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity=".5"/>`;
+  ORDER.forEach((r,i)=>{const x=colX(i);
+    s+=`<line x1="${x}" y1="46" x2="${x}" y2="${ground}" stroke="${colorOf[r]}" stroke-width="1" stroke-dasharray="1 8" stroke-linecap="round" opacity=".2"/>`;
+    s+=boltMeter(x,5,PROG[r],r,i);
+    s+=`<g transform="translate(${x-19},48)"><rect width="38" height="15" rx="7.5" fill="#fff" stroke="${colorOf[r]}" stroke-width="1.4"/><text x="19" y="10.8" text-anchor="middle" font-family="Figtree" font-size="8.5" font-weight="900" fill="${colorOf[r]}">Niv ${LV[r]+1}</text></g>`;
+  });
+  s+=`<path d="M0 ${ground} Q${W/2} ${ground-16} ${W} ${ground} L${W} ${Hh} L0 ${Hh} Z" fill="#DCEBFB"/>`;
+  s+=`<path d="M0 ${ground+16} Q${W/2} ${ground-2} ${W} ${ground+16} L${W} ${Hh} L0 ${Hh} Z" fill="#C6DDF5"/>`;
+  ORDER.forEach((r,i)=>{ s+=rocketSVG(colX(i),PROG[r],r,r===soon,i); });
+  ORDER.forEach((r,i)=>{const x=colX(i);
+    s+=`<text x="${x}" y="${ground+20}" text-anchor="middle" font-family="Figtree" font-size="9.5" font-weight="900" fill="${colorOf[r]}">${r}</text>`;
+    s+=`<text x="${x}" y="${ground+32}" text-anchor="middle" font-family="Figtree" font-size="8.5" font-weight="800" fill="#9bb4cf">Niv ${LV[r]} · ${PROG[r]}%</text>`;
+  });
+  s+='</svg>';
+  document.getElementById('gx-scene').innerHTML=s;
+}
+
+function launchDespegues(){
+  document.querySelectorAll('#gx-scene .gx-r-launch').forEach((g,i)=>{
+    g.style.transform=`translateY(${g.dataset.off}px)`;void g.offsetWidth;
+    setTimeout(()=>g.style.transform='translateY(0)',150+i*140);
+  });
+  document.querySelectorAll('#gx-scene .gx-bolt-liq').forEach((el,i)=>{
+    el.style.transform='scaleY(0)';void el.offsetWidth;
+    setTimeout(()=>el.style.transform=`scaleY(${el.dataset.s})`,350+i*140);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   SHELL + VIEW SWITCHER
+   ══════════════════════════════════════════════════════════ */
+function buildShell(){
+  document.getElementById('galaxia-shell').innerHTML=`
+    <div class="gx-hero"><div id="gx-hero-body"></div></div>
+    <div id="gx-view-niveles" class="gx-view on">
+      <div class="gx-grid" id="gx-grid"></div>
+    </div>
+    <div id="gx-view-radar" class="gx-view">
+      <div class="gx-card">
+        <div class="gx-radar-stage">
+          <div class="gx-radar-bg"><span class="rb rb1"></span><span class="rb rb2"></span><span class="rb rb3"></span></div>
+          <div id="gx-scene-radar"></div>
+        </div>
+      </div>
+    </div>
+    <div id="gx-view-despegues" class="gx-view">
+      <button class="gx-replay" id="gx-replay" onclick="IgniteProgress.launch()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 112.3 5.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M4 19v-5h5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Lanzar
+      </button>
+      <div class="gx-card"><div id="gx-scene"></div></div>
+      <div class="gx-legend" id="gx-legend"></div>
+    </div>`;
+}
+
+let _currentView='niveles';
+
+function showView(v){
+  _currentView=v;
+  ['niveles','radar','despegues'].forEach(n=>{
+    document.getElementById('gx-view-'+n)?.classList.toggle('on',n===v);
+  });
+  document.querySelectorAll('.gx-tab').forEach(t=>t.classList.toggle('on',t.dataset.v===v));
+  if(v!=='niveles')closePov();
+  if(v==='radar')renderRadar();
+  if(v==='despegues'){renderDespegues();requestAnimationFrame(launchDespegues);}
+}
+
+function updateLegend(){
+  const leg=document.getElementById('gx-legend');
+  if(!leg)return;
+  leg.innerHTML=ORDER.map(r=>`<div class="gx-leg-i"><span class="gx-leg-dot" style="background:${colorOf[r]}"></span><span class="gx-leg-n">${r}</span><span class="gx-leg-p" style="color:${colorOf[r]}">${PROG[r]}%</span></div>`).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   PUBLIC API
+   ══════════════════════════════════════════════════════════ */
+function render(){
+  recalcColors();
+  renderNiveles();
+  // Restore the view that was active before re-render (renderNiveles resets tabs to 'niveles')
+  if(_currentView!=='niveles') showView(_currentView);
+  updateLegend();
+  if(document.getElementById('gx-view-radar')?.classList.contains('on'))renderRadar();
+  if(document.getElementById('gx-view-despegues')?.classList.contains('on')){renderDespegues();requestAnimationFrame(launchDespegues);}
+}
+
+let _boltColor='#FBB03B';
+let _boltFill='#FBB03B';
+let _boltDefs='';
+
+function setBolt({path,viewBox,color,fill,defs}){
+  if(path)_boltPath=path;
+  if(viewBox)_boltVB=viewBox;
+  if(color)_boltColor=color;
+  if(fill)_boltFill=fill;
+  if(defs!==undefined)_boltDefs=defs;
+  // Update radar nucleus in-place if radar is visible
+  _updateRadarBolt();
+  // Re-render hero stats (XP bolt colour) and despegues meters
+  renderNiveles();
+  if(document.getElementById('gx-view-despegues')?.classList.contains('on')){renderDespegues();requestAnimationFrame(launchDespegues);}
+}
+
+function _updateRadarBolt(){
+  // Re-render radar fully so bolt colour and effects update immediately if visible,
+  // or are ready for next time the radar tab opens.
+  renderRadar();
+}
+
+function init(){
+  buildShell();
+  recalcColors();
+  renderNiveles();
+  updateLegend();
+}
+
+init();
+
+// ── RADAR BOLT INTERACTIVITY (exposed to window) ──────────────
+window.radarBoltHover = function(on){
+  const g=document.getElementById('radar-bolt-g');
+  if(!g)return;
+  g.style.transform=on?'scale(1.25)':'scale(1)';
+  g.style.transition='transform .2s cubic-bezier(.3,1.4,.5,1)';
+
+  // Orbiting circles — appended to gx-radar-stage so renderRadar() doesn't wipe it
+  const stage=document.querySelector('.gx-radar-stage');
+  if(stage){
+    let orb=document.getElementById('radar-orb-canvas');
+    if(on){
+      if(!orb){
+        orb=document.createElement('canvas');
+        orb.id='radar-orb-canvas';
+        orb.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;border-radius:16px;';
+        stage.appendChild(orb);
+      }
+      const rect=stage.getBoundingClientRect();
+      orb.width=(rect.width||760)*devicePixelRatio;
+      orb.height=(rect.height||480)*devicePixelRatio;
+      orb.style.width=(rect.width||760)+'px';
+      orb.style.height=(rect.height||480)+'px';
+      const ctx=orb.getContext('2d');
+      ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+      const W=rect.width||760, H=rect.height||480;
+      const Ox=86/760*W, Oy=240/480*H;
+
+      window._radarOrbiting=false; // stop any previous loop
+      cancelAnimationFrame(window._radarOrbRAF);
+
+      window._radarOrbiting=true;
+      let orbFrame=0;
+      const orbAnim=()=>{
+        if(!window._radarOrbiting){ctx.clearRect(0,0,W,H);return;}
+        ctx.clearRect(0,0,W,H);
+        orbFrame++;
+        const col=window.IgniteProgress?.getBoltColor()||'#FBB03B';
+        for(let p=0;p<5;p++){
+          const angle=orbFrame*0.18+p*(Math.PI*2/5);
+          const rx=44+Math.sin(orbFrame*0.05+p)*8;
+          const ry=26+Math.cos(orbFrame*0.05+p)*5;
+          const px=Ox+Math.cos(angle)*rx, py=Oy+Math.sin(angle)*ry;
+          const size=3+Math.sin(angle)*1.2;
+          ctx.beginPath();
+          ctx.arc(Ox+Math.cos(angle-0.28)*rx,Oy+Math.sin(angle-0.28)*ry,size*0.5,0,Math.PI*2);
+          ctx.fillStyle=col;ctx.globalAlpha=0.28;ctx.fill();
+          ctx.beginPath();ctx.arc(px,py,size,0,Math.PI*2);
+          ctx.fillStyle=col;ctx.globalAlpha=0.82+Math.sin(orbFrame*0.12+p)*0.18;ctx.fill();
+        }
+        ctx.globalAlpha=1;
+        window._radarOrbRAF=requestAnimationFrame(orbAnim);
+      };
+      window._radarOrbRAF=requestAnimationFrame(orbAnim);
+    } else {
+      window._radarOrbiting=false;
+      cancelAnimationFrame(window._radarOrbRAF);
+      if(orb){orb.getContext('2d').clearRect(0,0,orb.width,orb.height);}
+    }
+  }
+
+  boltRadarEffect(on?'hover':'out');
+};
+
+window.radarBoltClick = function(){
+  boltRadarEffect('click');
+};
+
+let _boltFxRAF=null;
+
+function boltRadarEffect(trigger){
+  const scene=document.getElementById('gx-scene-radar');
+  if(!scene)return;
+
+  cancelAnimationFrame(_boltFxRAF);
+
+  const trails=scene.querySelectorAll('.rtrail');
+  const boltOverlays=scene.querySelectorAll('.rtrail-bolt');
+  // Read bolt from window (set by selectBolt → window.selectedBolt)
+  const bolt=window.selectedBolt||'sparkle';
+  // Get colour from IgniteProgress internal state
+  const col=window.IgniteProgress?.getBoltColor()||
+    (window.bolts&&window.bolts.find(x=>x.id===bolt)?.color)||'#FBB03B';
+
+  if(trigger==='out'){
+    trails.forEach(t=>{t.style.filter='';t.style.transition='filter .35s';});
+    boltOverlays.forEach(t=>{t.style.opacity='0';});
+    _clearRadarCanvas();
+    return;
+  }
+
+  const cv=_getRadarCanvas(scene);
+  const W=cv.width/devicePixelRatio, H=cv.height/devicePixelRatio;
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
+  // Read nucleus position from actual SVG element bounds relative to scene
+  const svgEl=scene.querySelector('svg');
+  const sceneRect=scene.getBoundingClientRect();
+
+  // Nucleus is at SVG viewBox coords (86, 240) in a 760×480 viewBox
+  // Scale to canvas coords
+  const vbW=760, vbH=480;
+  const scaleX=W/vbW, scaleY=H/vbH;
+  const Ox=86*scaleX, Oy=240*scaleY;
+
+  // Build trail point pairs from the actual rtrail SVG elements
+  const trailPts=[...trails].map(t=>{
+    const x1=parseFloat(t.getAttribute('x1'))*scaleX;
+    const y1=parseFloat(t.getAttribute('y1'))*scaleY;
+    const x2=parseFloat(t.getAttribute('x2'))*scaleX;
+    const y2=parseFloat(t.getAttribute('y2'))*scaleY;
+    return {x1,y1,x2,y2};
+  });
+
+  const isContinuous=(trigger==='hover');
+  let frame=0;
+  const maxFrames=isContinuous?9999:90;
+
+  function drawFrame(){
+    ctx.clearRect(0,0,W,H);
+    frame++;
+    if(!isContinuous&&frame>maxFrames){
+      _clearRadarCanvas();
+      trails.forEach(t=>{t.style.filter='';});
+      boltOverlays.forEach(t=>t.style.opacity='0');
+      return;
+    }
+
+    switch(bolt){
+      case 'ferri': {
+        // Speed lines racing outward from nucleus along each trail
+        boltOverlays.forEach((t,i)=>{
+          t.style.opacity='0.7';
+          t.style.stroke='#FF2800';
+          t.style.strokeDasharray='10 5';
+          t.style.strokeDashoffset=(-frame*5)+'';
+          t.style.transition='none';
+        });
+        trailPts.forEach((p,i)=>{
+          const prog=((frame*0.025+i*0.18)%1);
+          const len=40;
+          const dx=p.x2-p.x1, dy=p.y2-p.y1, d=Math.sqrt(dx*dx+dy*dy)||1;
+          const ex=p.x1+dx*prog, ey=p.y1+dy*prog;
+          const grd=ctx.createLinearGradient(ex-dx/d*len,ey-dy/d*len,ex,ey);
+          grd.addColorStop(0,'rgba(255,40,0,0)');
+          grd.addColorStop(0.6,'rgba(200,169,81,0.8)');
+          grd.addColorStop(1,'rgba(255,40,0,0.95)');
+          ctx.beginPath();ctx.moveTo(ex-dx/d*len,ey-dy/d*len);ctx.lineTo(ex,ey);
+          ctx.strokeStyle=grd;ctx.lineWidth=3;ctx.globalAlpha=0.85;ctx.stroke();
+        });
+        ctx.globalAlpha=1;
+        trails.forEach(t=>{t.style.filter='brightness(1.15)';t.style.transition='filter .1s';});
+        break;
+      }
+      case 'teslo': {
+        boltOverlays.forEach(t=>{t.style.opacity='0';});
+        const flicker=frame%4<2;
+        trails.forEach(t=>{t.style.filter=flicker?'brightness(2) hue-rotate(-5deg)':'brightness(0.85)';t.style.transition='none';});
+        trailPts.forEach((p,i)=>{
+          if(frame%3!==i%3)return;
+          const dx=(p.x2-p.x1), dy=(p.y2-p.y1), segs=8;
+          const len=Math.sqrt(dx*dx+dy*dy)||1;
+          const perpX=-dy/len*9, perpY=dx/len*9;
+          ctx.beginPath();ctx.moveTo(p.x1,p.y1);
+          for(let s=1;s<=segs;s++){
+            const t2=s/segs, jitter=(s%2===0?1:-1)*(0.5+Math.random()*0.5);
+            ctx.lineTo(p.x1+dx*t2+perpX*jitter, p.y1+dy*t2+perpY*jitter);
+          }
+          ctx.strokeStyle=col;ctx.lineWidth=2;ctx.globalAlpha=0.5+Math.random()*0.45;ctx.stroke();
+          // White core
+          ctx.beginPath();ctx.moveTo(p.x1,p.y1);
+          for(let s=1;s<=segs;s++){
+            const t2=s/segs, j=(s%2===0?1:-1)*(0.3+Math.random()*0.3);
+            ctx.lineTo(p.x1+dx*t2+perpX*j, p.y1+dy*t2+perpY*j);
+          }
+          ctx.strokeStyle='#fff';ctx.lineWidth=0.9;ctx.globalAlpha=0.4;ctx.stroke();
+        });
+        ctx.globalAlpha=1;
+        break;
+      }
+      case 'galaxi': {
+        boltOverlays.forEach(t=>t.style.opacity='0');
+        trails.forEach(t=>{t.style.filter='brightness(1.15)';t.style.transition='filter .3s';});
+        trailPts.forEach((p,i)=>{
+          for(let k=0;k<3;k++){
+            const prog=((frame*0.008+i*0.18+k*0.34)%1);
+            const x=p.x1+(p.x2-p.x1)*prog, y=p.y1+(p.y2-p.y1)*prog;
+            ctx.beginPath();ctx.arc(x,y,4*(1-prog*0.5),0,Math.PI*2);
+            ctx.fillStyle=col;ctx.globalAlpha=(1-prog)*0.8;ctx.fill();
+          }
+        });
+        ctx.globalAlpha=1;
+        break;
+      }
+      case 'goog': {
+        const gc=['#4285F4','#34A853','#FBBC05','#EA4335'];
+        boltOverlays.forEach(t=>t.style.opacity='0');
+        trailPts.forEach((p,i)=>{
+          const offset=((frame*0.012+i*0.2)%1);
+          for(let k=0;k<4;k++){
+            const t1=(offset+k*0.25)%1, t2=(offset+k*0.25+0.22)%1;
+            const s1=Math.min(t1,t2), s2=Math.max(t1,t2);
+            ctx.beginPath();
+            ctx.moveTo(p.x1+(p.x2-p.x1)*s1,p.y1+(p.y2-p.y1)*s1);
+            ctx.lineTo(p.x1+(p.x2-p.x1)*s2,p.y1+(p.y2-p.y1)*s2);
+            ctx.strokeStyle=gc[k];ctx.lineWidth=3.5;ctx.globalAlpha=0.75;ctx.stroke();
+          }
+        });
+        ctx.globalAlpha=1;
+        break;
+      }
+      case 'spotif': {
+        trailPts.forEach((p,i)=>{
+          const amp=Math.abs(Math.sin(frame*0.09+i*0.9));
+          const ov=boltOverlays[i];
+          if(ov){ov.style.opacity=(0.4+amp*0.55)+'';ov.style.strokeWidth=(3+amp*6)+'px';ov.style.strokeDasharray=`${9+amp*5} 5`;ov.style.transition='none';}
+        });
+        trails.forEach((t,i)=>{const amp=Math.abs(Math.sin(frame*0.09+i*0.9));t.style.filter=`brightness(${1+amp*0.6})`;t.style.transition='none';});
+        break;
+      }
+      case 'nextra': {
+        boltOverlays.forEach(t=>t.style.opacity='0');
+        trails.forEach(t=>{t.style.filter='brightness(1.2)';t.style.transition='filter .15s';});
+        trailPts.forEach((p,i)=>{
+          const prog=((frame*0.022+i*0.17)%1);
+          const tail=Math.max(0,prog-0.28);
+          const x1=p.x1+(p.x2-p.x1)*tail, y1=p.y1+(p.y2-p.y1)*tail;
+          const x2=p.x1+(p.x2-p.x1)*prog, y2=p.y1+(p.y2-p.y1)*prog;
+          const grd=ctx.createLinearGradient(x1,y1,x2,y2);
+          grd.addColorStop(0,'rgba(255,255,255,0)');
+          grd.addColorStop(1,'rgba(255,255,255,0.95)');
+          ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+          ctx.strokeStyle=grd;ctx.lineWidth=5;ctx.globalAlpha=0.75;ctx.stroke();
+        });
+        ctx.globalAlpha=1;
+        break;
+      }
+      case 'amazo': {
+        boltOverlays.forEach(t=>t.style.opacity='0');
+        trails.forEach(t=>{t.style.filter='brightness(1.15)';t.style.transition='filter .2s';});
+        trailPts.forEach((p,i)=>{
+          for(let k=0;k<2;k++){
+            const prog=((frame*0.014+i*0.2+k*0.5)%1);
+            const dx=p.x2-p.x1, dy=p.y2-p.y1, len=Math.sqrt(dx*dx+dy*dy)||1;
+            const perpX=-dy/len, perpY=dx/len;
+            const boff=Math.sin(prog*Math.PI)*18;
+            const x=p.x1+dx*prog+perpX*boff, y=p.y1+dy*prog+perpY*boff;
+            ctx.beginPath();ctx.arc(x,y,4.5*(1-prog*0.5),0,Math.PI*2);
+            ctx.fillStyle=col;ctx.globalAlpha=(1-prog)*0.8;ctx.fill();
+          }
+        });
+        ctx.globalAlpha=1;
+        break;
+      }
+      case 'netti': {
+        const vgrd=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.7);
+        vgrd.addColorStop(0,'rgba(229,9,20,0)');
+        vgrd.addColorStop(1,`rgba(229,9,20,${(0.18+Math.sin(frame*0.07)*0.1).toFixed(2)})`);
+        ctx.fillStyle=vgrd;ctx.fillRect(0,0,W,H);
+        const sy=((frame*2.8)%(H+10))-5;
+        const sg=ctx.createLinearGradient(0,sy-3,0,sy+3);
+        sg.addColorStop(0,'rgba(229,9,20,0)');sg.addColorStop(.5,'rgba(255,40,40,0.65)');sg.addColorStop(1,'rgba(229,9,20,0)');
+        ctx.fillStyle=sg;ctx.fillRect(0,sy-3,W,6);
+        boltOverlays.forEach((t,i)=>{
+          t.style.opacity=(0.35+Math.abs(Math.sin(frame*0.06+i*0.5))*0.45)+'';
+          t.style.strokeDasharray='6 3';t.style.transition='none';
+        });
+        trails.forEach(t=>{t.style.filter='brightness(1.35) saturate(1.6)';t.style.transition='none';});
+        break;
+      }
+      case 'apfel': {
+        // Minimal shimmer sweep
+        boltOverlays.forEach(t=>t.style.opacity='0');
+        const sweep=((frame*1.8)%90)/90;
+        trailPts.forEach((p,i)=>{
+          const x=p.x1+(p.x2-p.x1)*sweep, y=p.y1+(p.y2-p.y1)*sweep;
+          ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);
+          ctx.fillStyle='#fff';ctx.globalAlpha=0.6*(1-sweep);ctx.fill();
+        });
+        ctx.globalAlpha=1;
+        trails.forEach(t=>{t.style.filter='brightness(1.1)';t.style.transition='filter .3s';});
+        break;
+      }
+      default: { // sparkle, etc.
+        boltOverlays.forEach(t=>t.style.opacity='0');
+        trails.forEach(t=>{t.style.filter='brightness(1.15)';t.style.transition='filter .2s';});
+      }
+    }
+
+    // ── Ripple rings from nucleus — always, every bolt ──────
+    for(let ring=0;ring<4;ring++){
+      const t=((frame*1.4+ring*20)%70)/70;
+      ctx.beginPath();ctx.arc(Ox,Oy,t*Math.max(W,H)*0.6,0,Math.PI*2);
+      ctx.strokeStyle=col;ctx.lineWidth=2;ctx.globalAlpha=(1-t)*0.45;ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+
+    _boltFxRAF=requestAnimationFrame(drawFrame);
+  }
+  _boltFxRAF=requestAnimationFrame(drawFrame);
+}
+
+
+function _getRadarCanvas(scene){
+  let cv=document.getElementById('radar-fx-canvas');
+  if(!cv){
+    cv=document.createElement('canvas');
+    cv.id='radar-fx-canvas';
+    cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;border-radius:16px;';
+    scene.appendChild(cv);
+  }
+  const rect=scene.getBoundingClientRect();
+  cv.width=(rect.width||760)*devicePixelRatio;
+  cv.height=(rect.height||480)*devicePixelRatio;
+  cv.style.width=(rect.width||760)+'px';
+  cv.style.height=(rect.height||480)+'px';
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  return cv;
+}
+
+function _clearRadarCanvas(){
+  const cv=document.getElementById('radar-fx-canvas');
+  if(cv){const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);}
+}
+
+
+return{render,showView,openPov,closePov,goToPov,navPov,launch:launchDespegues,setBolt,getBoltColor:()=>_boltColor};
+})();
+
+// ── RE-RENDER on palette change ────────────────────────────────
+(function(){
+  const _origSP=window.setPalette;
+  if(typeof _origSP==='function'){
+    window.setPalette=function(name){
+      _origSP(name);
+      setTimeout(()=>window.IgniteProgress&&window.IgniteProgress.render(),60);
+    };
+  }
+})();
+
+// ── RAMA MODAL (kept for compatibility) ───────────────────────
 const ramaData={
   Science:{desc:'Exploración del mundo natural y método científico.',color:'#3E6FA8',xp:540,level:'Explorer · Nivel 4',skills:[{n:'Metodología científica',xp:130,lv:'Niv. 3',d:'Diseña experimentos con hipótesis y variables.'},{n:'Biología aplicada',xp:110,lv:'Niv. 3',d:'Comprende seres vivos y ecosistemas.'},{n:'Física básica',xp:150,lv:'Niv. 4',d:'Entiende fuerzas, movimiento y energía.'},{n:'Química experimental',xp:80,lv:'Niv. 2',d:'Realiza reacciones y observa cambios.'},{n:'Astronomía',xp:70,lv:'Niv. 2',d:'Conoce el sistema solar.'}]},
   Technology:{desc:'Uso creativo de herramientas digitales y tecnológicas.',color:'#2596BE',xp:820,level:'Builder · Nivel 6',skills:[{n:'Programación en bloques',xp:180,lv:'Niv. 5',d:'Scratch, MakeCode y entornos visuales.'},{n:'Python básico',xp:200,lv:'Niv. 6',d:'Variables, bucles, funciones y listas.'},{n:'Arduino & Hardware',xp:220,lv:'Niv. 6',d:'Microcontroladores y sensores.'},{n:'Inteligencia Artificial',xp:130,lv:'Niv. 4',d:'Modelos de ML básicos.'},{n:'Seguridad digital',xp:90,lv:'Niv. 3',d:'Privacidad y ciberseguridad.'}]},
