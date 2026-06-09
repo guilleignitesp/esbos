@@ -930,13 +930,16 @@ body {
 .gx-fs-close {
   position:absolute; top:12px; right:12px; z-index:20;
   width:36px; height:36px; border:none; background:none;
-  color:rgba(255,255,255,.6); font-size:22px; font-weight:300;
+  color:rgba(255,255,255,.9); font-size:22px; font-weight:400;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
-  transition:color .15s;
+  transition:color .15s; text-shadow:0 1px 4px rgba(0,0,0,.4);
 }
 .gx-fs-close:hover { color:#fff; }
-/* Despegues: move X to match sky */
-.gx-fs-overlay.despegues-mode .gx-fs-close { color:rgba(62,111,168,.7); }
+/* Despegues: dark X on light sky background */
+.gx-fs-overlay.despegues-mode .gx-fs-close {
+  color:rgba(62,111,168,.85);
+  text-shadow:none;
+}
 .gx-fs-overlay.despegues-mode .gx-fs-close:hover { color:var(--blue-dark); }
 /* Chart fills the full overlay */
 .gx-fs-body {
@@ -959,7 +962,11 @@ body {
 .gx-fs-body .gx-fs-chart #gx-fs-scene svg {
   width:100%; height:100%; display:block; flex:1;
 }
-/* Launch button — overlaid top-left */
+/* Rotated fullscreen (portrait mobile → simulate landscape) */
+.gx-fs-overlay[data-rotated] {
+  overflow:hidden;
+}
+/* When rotated, re-render despegues on the correct size */
 #gx-fs-launch {
   position:absolute; top:14px; left:14px; z-index:20;
 }
@@ -3586,13 +3593,48 @@ let _gxFsMode=null;
 
 async function _lockLandscape(){
   try{
+    // Try the native API first (works in PWA / Android Chrome)
     if(screen.orientation&&screen.orientation.lock){
       await screen.orientation.lock('landscape');
+      return;
     }
-  }catch(e){/* not supported or already landscape — ignore */}
+  }catch(e){}
+  // Fallback: CSS rotation (works everywhere, like YouTube)
+  // Only apply on mobile portrait screens
+  _applyFsRotation();
 }
+
+function _applyFsRotation(){
+  const overlay=document.getElementById('gx-fs-overlay');
+  if(!overlay)return;
+  // Check if we're on a portrait mobile screen
+  const isPortrait=window.innerHeight>window.innerWidth;
+  const isMobile=window.innerWidth<=900;
+  if(isPortrait&&isMobile){
+    const W=window.innerHeight, H=window.innerWidth;
+    overlay.style.cssText+=`;
+      width:${W}px!important;
+      height:${H}px!important;
+      transform:rotate(90deg);
+      transform-origin:${H/2}px ${H/2}px;
+      position:fixed;
+      top:0;left:0;
+    `;
+    overlay.dataset.rotated='1';
+  }
+}
+
 function _unlockOrientation(){
   try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}
+  // Remove CSS rotation
+  const overlay=document.getElementById('gx-fs-overlay');
+  if(overlay&&overlay.dataset.rotated){
+    overlay.style.width='';
+    overlay.style.height='';
+    overlay.style.transform='';
+    overlay.style.transformOrigin='';
+    delete overlay.dataset.rotated;
+  }
 }
 
 function gxFullscreen(mode){
@@ -3601,8 +3643,9 @@ function gxFullscreen(mode){
   const body=document.getElementById('gx-fs-body');
   const launchBtn=document.getElementById('gx-fs-launch');
 
-  // Lock landscape on mobile
-  _lockLandscape();
+  // Lock landscape on mobile — try native API, fallback to CSS rotation
+  // Apply after one rAF so overlay is in the DOM
+  requestAnimationFrame(()=>_lockLandscape());
 
   overlay.classList.remove('despegues-mode');
   overlay.classList.add('open');
@@ -3655,20 +3698,19 @@ function _renderFsDespegues(){
   const orig=document.getElementById('gx-scene');
   const fs=document.getElementById('gx-fs-scene');
   if(!fs)return;
-  // Rename to gx-scene so renderDespegues targets it
   if(orig)orig.setAttribute('id','gx-scene-bak');
   fs.setAttribute('id','gx-scene');
-  // Wait one rAF so the fullscreen layout is painted and getBoundingClientRect() returns real size
+  // Two rAFs: first lets rotation apply, second measures correct rotated size
   requestAnimationFrame(()=>{
-    IgniteProgress.renderDespegues();
-    // Launch AFTER render, while id is still gx-scene
     requestAnimationFrame(()=>{
-      IgniteProgress.launchDespegues();
-      // Restore id only after launch has queued its timeouts
-      setTimeout(()=>{
-        fs.setAttribute('id','gx-fs-scene');
-        if(orig)orig.setAttribute('id','gx-scene');
-      }, 50);
+      IgniteProgress.renderDespegues();
+      requestAnimationFrame(()=>{
+        IgniteProgress.launchDespegues();
+        setTimeout(()=>{
+          fs.setAttribute('id','gx-fs-scene');
+          if(orig)orig.setAttribute('id','gx-scene');
+        }, 50);
+      });
     });
   });
 }
@@ -4015,7 +4057,7 @@ function renderRadar(){
   core+=`<circle cx="${Ox}" cy="${Oy}" r="26" fill="${shade(colorOf['Science'],.1)}"/>`;
   core+=`<circle cx="${Ox}" cy="${Oy}" r="26" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2"/>`;
   // bolt shape
-  core+=`<g id="radar-bolt-g" style="cursor:pointer;transform-box:view-box;transform-origin:${Ox}px ${Oy}px" onclick="radarBoltClick()" onmouseenter="radarBoltHover(true)" onmouseleave="radarBoltHover(false)">`;
+  core+=`<g id="radar-bolt-g" style="cursor:pointer;transform-box:view-box;transform-origin:${Ox}px ${Oy}px" onclick="radarBoltClick()" onmouseenter="radarBoltHover(true)" onmouseleave="radarBoltHover(false)" ontouchstart="radarBoltHover(true)" ontouchend="radarBoltHover(false)" ontouchcancel="radarBoltHover(false)">`;
   core+=`<svg x="${bx2}" y="${by2}" width="${bW}" height="${bH}" viewBox="${_boltVB}">${_boltDefs?`<defs>${_boltDefs}</defs>`:''}<path d="${_boltPath}" fill="${_boltFill}"/></svg>`;
   core+=`</g>`;
   // persistent pulse ring
