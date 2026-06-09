@@ -880,14 +880,14 @@ body {
 .gx-grid{display:grid;gap:12px;grid-template-columns:1fr;}
 @media(min-width:520px){.gx-grid{grid-template-columns:1fr 1fr;}}
 @media(min-width:820px){.gx-grid{grid-template-columns:1fr 1fr 1fr;}}
-.gx-pcard{position:relative;background:var(--card-a);border-radius:20px;border:1px solid rgba(124,184,245,.2);box-shadow:0 4px 16px rgba(62,111,168,.1);padding:14px 12px 12px;cursor:pointer;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;}
-.gx-pcard:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(62,111,168,.18);}
+.gx-pcard{position:relative;border-radius:20px;border:1.5px solid;box-shadow:0 4px 16px rgba(62,111,168,.08);padding:14px 12px 12px;cursor:pointer;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;}
+.gx-pcard:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(62,111,168,.15);}
 .gx-crown{position:absolute;top:9px;right:9px;display:flex;align-items:center;gap:3px;background:var(--accent);color:#5a3a00;font-size:9.5px;font-weight:900;padding:3px 8px 3px 6px;border-radius:30px;text-transform:uppercase;}
 .gx-planet{width:108px;height:108px;display:block;}
 .gx-orbit-rot{animation:spin 22s linear infinite;transform-box:view-box;transform-origin:60px 60px;}
 .gx-bob{animation:bob 4.4s ease-in-out infinite;transform-box:view-box;transform-origin:center;}
 .gx-pc-name{font-size:16px;font-weight:900;letter-spacing:-.3px;margin-top:5px;}
-.gx-pc-title{font-size:11px;font-weight:800;color:var(--muted);margin-top:2px;}
+.gx-pc-title{font-size:11px;font-weight:800;margin-top:2px;opacity:.7;}
 .gx-pc-xp{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:900;margin-top:7px;}
 .gx-power{width:100%;margin-top:9px;}
 .gx-power-row{display:flex;align-items:center;gap:7px;}
@@ -910,6 +910,70 @@ body {
 #gx-scene-radar{position:relative;z-index:1;}
 .gx-replay{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:30px;padding:8px 15px;font-family:'Figtree',sans-serif;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 3px 10px rgba(251,176,59,.35);margin-bottom:10px;transition:transform .15s;}
 .gx-replay:hover{transform:scale(1.05);}
+/* Fullscreen button — absolute bottom-right inside the card */
+/* Ampliar button — ghost, no background, bottom-right of card */
+.gx-fullscreen-btn {
+  position:absolute; bottom:8px; right:8px; z-index:10;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:28px; height:28px; background:none; border:none;
+  cursor:pointer; color:var(--blue-dark); opacity:.55;
+  transition:opacity .15s;
+}
+.gx-fullscreen-btn:hover { opacity:1; }
+/* Fullscreen overlay */
+.gx-fs-overlay {
+  display:none; position:fixed; inset:0; z-index:250;
+  background:#0d1520; flex-direction:column;
+}
+.gx-fs-overlay.open { display:flex; animation:viewin .25s ease; }
+/* X close — ghost, no background */
+.gx-fs-close {
+  position:absolute; top:12px; right:12px; z-index:20;
+  width:36px; height:36px; border:none; background:none;
+  color:rgba(255,255,255,.6); font-size:22px; font-weight:300;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:color .15s;
+}
+.gx-fs-close:hover { color:#fff; }
+/* Despegues: move X to match sky */
+.gx-fs-overlay.despegues-mode .gx-fs-close { color:rgba(62,111,168,.7); }
+.gx-fs-overlay.despegues-mode .gx-fs-close:hover { color:var(--blue-dark); }
+/* Chart fills the full overlay */
+.gx-fs-body {
+  flex:1; display:flex; flex-direction:column; min-height:0;
+  position:relative; overflow:hidden;
+}
+.gx-fs-body .gx-radar-stage { flex:1; min-height:0; border-radius:0; overflow:hidden; }
+.gx-fs-body .gx-radar-stage .gx-radar-bg { border-radius:0; }
+.gx-fs-body #gx-fs-scene-radar { height:100%; position:relative; z-index:1; }
+.gx-fs-body #gx-fs-scene svg,
+.gx-fs-body #gx-fs-scene-radar svg { width:100%; height:100%; display:block; }
+/* Despegues fullscreen: sky gradient fills every pixel */
+.gx-fs-body .gx-fs-chart {
+  flex:1; display:flex; min-height:0; overflow:hidden;
+  background:linear-gradient(180deg,#E7F1FF 0%,#FBFDFF 100%);
+}
+.gx-fs-body .gx-fs-chart #gx-fs-scene {
+  flex:1; display:flex; min-height:0; overflow:hidden;
+}
+.gx-fs-body .gx-fs-chart #gx-fs-scene svg {
+  width:100%; height:100%; display:block; flex:1;
+}
+/* Launch button — overlaid top-left */
+#gx-fs-launch {
+  position:absolute; top:14px; left:14px; z-index:20;
+}
+#gx-view-despegues .gx-card {
+  background: linear-gradient(180deg, #E7F1FF 0%, #FBFDFF 100%);
+  overflow: visible;
+}
+#gx-view-despegues .gx-card svg,
+#gx-fs-scene svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
 .gx-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:5px 10px;margin-top:10px;padding:0 4px;}
 .gx-leg-i{display:flex;align-items:center;gap:5px;}
 .gx-leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
@@ -1505,6 +1569,16 @@ body {
     </div>
     <div class="frase-modal-sub">Toca una frase para que aparezca en tu bocadillo. Se desbloquean más al subir de nivel.</div>
     <div class="frase-grid" id="frase-grid"></div>
+  </div>
+</div>
+
+<!-- GALAXIA FULLSCREEN OVERLAY -->
+<div class="gx-fs-overlay" id="gx-fs-overlay">
+  <div class="gx-fs-body" id="gx-fs-body">
+    <button class="gx-fs-close" onclick="gxCloseFullscreen()">✕</button>
+    <button class="gx-replay" id="gx-fs-launch" style="display:none;position:absolute;top:14px;left:14px;z-index:20;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 112.3 5.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M4 19v-5h5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Lanzar
+    </button>
   </div>
 </div>
 
@@ -3507,7 +3581,107 @@ function randomBubble() {
 // ── INIT ─────────────────────────────────────────────────────
 renderMascotMain();
 
-// ── GALAXIA DE PODERES ─────────────────────────────────────────
+// ── FULLSCREEN RADAR / DESPEGUES ──────────────────────────────
+let _gxFsMode=null;
+
+async function _lockLandscape(){
+  try{
+    if(screen.orientation&&screen.orientation.lock){
+      await screen.orientation.lock('landscape');
+    }
+  }catch(e){/* not supported or already landscape — ignore */}
+}
+function _unlockOrientation(){
+  try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}
+}
+
+function gxFullscreen(mode){
+  _gxFsMode=mode;
+  const overlay=document.getElementById('gx-fs-overlay');
+  const body=document.getElementById('gx-fs-body');
+  const launchBtn=document.getElementById('gx-fs-launch');
+
+  // Lock landscape on mobile
+  _lockLandscape();
+
+  overlay.classList.remove('despegues-mode');
+  overlay.classList.add('open');
+  document.body.classList.add('lock');
+
+  // Remove any previous chart (keep the close/launch buttons)
+  body.querySelectorAll('.gx-fs-chart').forEach(el=>el.remove());
+
+  if(mode==='radar'){
+    launchBtn.style.display='none';
+    const chartDiv=document.createElement('div');
+    chartDiv.className='gx-fs-chart';
+    chartDiv.style.cssText='flex:1;display:flex;flex-direction:column;min-height:0;';
+    chartDiv.innerHTML=`
+      <div class="gx-radar-stage" style="flex:1;min-height:0;border-radius:0;overflow:hidden;">
+        <div class="gx-radar-bg" style="border-radius:0;"><span class="rb rb1"></span><span class="rb rb2"></span><span class="rb rb3"></span></div>
+        <div id="gx-fs-scene-radar" style="position:relative;z-index:1;height:100%;"></div>
+      </div>`;
+    body.appendChild(chartDiv);
+    _renderFsRadar();
+  } else {
+    launchBtn.style.display='inline-flex';
+    overlay.classList.add('despegues-mode');
+    // Match SVG sky so no black bars
+    document.getElementById('gx-fs-overlay').style.background='linear-gradient(180deg,#E7F1FF 0%,#FBFDFF 100%)';
+    const chartDiv=document.createElement('div');
+    chartDiv.className='gx-fs-chart';
+    chartDiv.style.cssText='flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#E7F1FF 0%,#FBFDFF 100%);';
+    chartDiv.innerHTML=`<div id="gx-fs-scene" style="width:100%;height:100%;display:flex;align-items:stretch;"></div>`;
+    body.appendChild(chartDiv);
+    _renderFsDespegues();
+    launchBtn.onclick=_renderFsDespegues;
+  }
+}
+
+function _renderFsRadar(){
+  const orig=document.getElementById('gx-scene-radar');
+  const fs=document.getElementById('gx-fs-scene-radar');
+  if(!fs)return;
+  if(orig)orig.setAttribute('id','gx-scene-radar-bak');
+  fs.setAttribute('id','gx-scene-radar');
+  IgniteProgress.renderRadar();
+  // After renderRadar, the bolt nucleus onclick handlers use window.radarBoltHover/Click
+  // which already work globally — no extra wiring needed
+  fs.setAttribute('id','gx-fs-scene-radar');
+  if(orig)orig.setAttribute('id','gx-scene-radar');
+}
+
+function _renderFsDespegues(){
+  const orig=document.getElementById('gx-scene');
+  const fs=document.getElementById('gx-fs-scene');
+  if(!fs)return;
+  // Rename to gx-scene so renderDespegues targets it
+  if(orig)orig.setAttribute('id','gx-scene-bak');
+  fs.setAttribute('id','gx-scene');
+  // Wait one rAF so the fullscreen layout is painted and getBoundingClientRect() returns real size
+  requestAnimationFrame(()=>{
+    IgniteProgress.renderDespegues();
+    // Launch AFTER render, while id is still gx-scene
+    requestAnimationFrame(()=>{
+      IgniteProgress.launchDespegues();
+      // Restore id only after launch has queued its timeouts
+      setTimeout(()=>{
+        fs.setAttribute('id','gx-fs-scene');
+        if(orig)orig.setAttribute('id','gx-scene');
+      }, 50);
+    });
+  });
+}
+
+function gxCloseFullscreen(){
+  const overlay=document.getElementById('gx-fs-overlay');
+  overlay.classList.remove('open','despegues-mode');
+  overlay.style.background='';
+  document.body.classList.remove('lock');
+  _unlockOrientation();
+  _gxFsMode=null;
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&_gxFsMode)gxCloseFullscreen();});
 // Faithful port of portal-progreso.html — three sub-modules wrapped in IgniteProgress API
 window.IgniteProgress = (function(){
 'use strict';
@@ -3659,14 +3833,18 @@ function renderNiveles(){
 
   document.getElementById('gx-grid').innerHTML=ORDER.map((r,i)=>{
     const d=RAMAS[r],col=colorOf[r];
+    // Card bg: very light tint of the rama colour, adapts to palette
+    const bgLight=tint(col,.88);
+    const bgMid=tint(col,.78);
+    const border=tint(col,.6);
     const crown=d.lv===maxLv?`<div class="gx-crown"><svg width="11" height="11" viewBox="0 0 24 24" fill="#5a3a00"><path d="M3 7l4 4 5-6 5 6 4-4-2 12H5z"/></svg>Top</div>`:'';
-    return`<div class="gx-pcard" onclick="IgniteProgress.openPov('${r}')">
+    return`<div class="gx-pcard" style="background:linear-gradient(160deg,${bgLight} 0%,${bgMid} 100%);border-color:${border};" onclick="IgniteProgress.openPov('${r}')">
       ${crown}${planetSVG(r,i)}
-      <div class="gx-pc-name" style="color:${col}">${r}</div>
-      <div class="gx-pc-title">${d.title}</div>
-      <div class="gx-pc-xp" style="color:${col}">${boltSVG(col,13)}${d.xp} XP</div>
-      <div class="gx-power"><div class="gx-power-row"><span class="gx-power-lv" style="color:${col}">Nv ${d.lv}</span><span class="gx-power-bar"><i data-w="${(d.lv/CAP*100).toFixed(0)}" style="background:linear-gradient(90deg,${col},${shade(col,.25)})"></i></span></div></div>
-      <div class="gx-pc-foot" style="border-color:${rgba(col,.5)};color:${col}">
+      <div class="gx-pc-name" style="color:${shade(col,.1)}">${r}</div>
+      <div class="gx-pc-title" style="color:${shade(col,.2)}">${d.title}</div>
+      <div class="gx-pc-xp" style="color:${shade(col,.1)}">${boltSVG(col,13)}${d.xp} XP</div>
+      <div class="gx-power"><div class="gx-power-row"><span class="gx-power-lv" style="color:${shade(col,.15)}">Nv ${d.lv}</span><span class="gx-power-bar" style="background:${tint(col,.65)};"><i data-w="${(d.lv/CAP*100).toFixed(0)}" style="background:linear-gradient(90deg,${col},${shade(col,.2)})"></i></span></div></div>
+      <div class="gx-pc-foot" style="border-color:${rgba(col,.45)};color:${shade(col,.1)};background:${rgba(col,.12)};">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" fill="${col}"/><path d="M8 11V8a4 4 0 018 0" stroke="${col}" stroke-width="2" fill="none"/></svg>Ver ${d.skills.length} poderes</div>
     </div>`;
   }).join('');
@@ -3874,44 +4052,55 @@ function renderRadar(){
 }
 
 function renderDespegues(){
-  const W=470,Hh=380,ground=314,topY=80,range=ground-topY;
+  const container=document.getElementById('gx-scene')||document.getElementById('gx-fs-scene');
+  const containerW=container?container.getBoundingClientRect().width:470;
+  const W=Math.max(320, Math.min(containerW||470, 900));
+  const scale=W/470; // shared by rocketSVG and boltMeter
+  const Hh=Math.round(W*0.81);
+  const ground=Math.round(Hh*0.826);
+  const topY=Math.round(Hh*0.21);
+  const range=ground-topY;
   const soon=ORDER.slice().sort((a,b)=>PROG[b]-PROG[a])[0];
-  function colX(i){return 52+i*(W-104)/5;}
+  function colX(i){return Math.round(W*0.11+i*(W*0.78)/5);}
 
   function rocketSVG(x,p,r,isL,i){
     const noseY=ground-p/100*range,col=colorOf[r];
     const light=tint(col,.42),dark=shade(col,.25);
     const[cr,cg,cb]=parseRGB(col);
-    const headR=13,headCY=noseY+headR,bw=22,bodyTop=headCY+3,bodyH=26,bodyBot=bodyTop+bodyH,noz=bodyBot+5;
-    const off=(ground-noseY).toFixed(1),haloR=(15+p*0.16).toFixed(1),haloA=(0.14+p/100*0.40).toFixed(2);
+    const headR=Math.round(13*scale),headCY=noseY+headR,bw=Math.round(22*scale),bodyTop=headCY+3,bodyH=Math.round(26*scale),bodyBot=bodyTop+bodyH,noz=bodyBot+Math.round(5*scale);
+    const off=(ground-noseY).toFixed(1),haloR=(15*scale+p*0.16).toFixed(1),haloA=(0.14+p/100*0.40).toFixed(2);
     const bobDur=(3.6+i*0.22).toFixed(2),bobDelay=(-i*0.7).toFixed(2);
-    const fL=12+(p/100)*26,fw=5+(p/100)*3.4,fw2=fw*0.5;
+    const fL=(12+(p/100)*26)*scale,fw=(5+(p/100)*3.4)*scale,fw2=fw*0.5;
+    const fin=Math.round(15*scale),arm=Math.round(11*scale);
+    const nz=Math.round(6*scale),nz2=Math.round(8*scale);
     let g=`<g class="gx-r-launch" data-off="${off}" style="transform:translateY(${off}px)">`;
     g+=`<g class="gx-r-bob" style="transform-origin:${x}px ${bodyBot}px;animation-duration:${bobDur}s;animation-delay:${bobDelay}s">`;
-    g+=`<circle class="gx-halo" cx="${x}" cy="${(noseY+24).toFixed(1)}" r="${haloR}" fill="rgba(${cr},${cg},${cb},${haloA})" style="filter:blur(9px)"/>`;
-    g+=`<line x1="${x}" y1="${(noz+3).toFixed(1)}" x2="${x}" y2="${ground}" stroke="${col}" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" opacity=".32"/>`;
+    g+=`<circle class="gx-halo" cx="${x}" cy="${(noseY+24*scale).toFixed(1)}" r="${haloR}" fill="rgba(${cr},${cg},${cb},${haloA})" style="filter:blur(${Math.round(9*scale)}px)"/>`;
+    g+=`<line x1="${x}" y1="${(noz+3*scale).toFixed(1)}" x2="${x}" y2="${ground}" stroke="${col}" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" opacity=".32"/>`;
     g+=`<g class="gx-flame" style="transform-origin:${x}px ${noz}px">`
       +`<path d="M${(x-fw).toFixed(1)} ${noz} C${(x-fw).toFixed(1)} ${(noz+fL*0.42).toFixed(1)} ${(x-fw2).toFixed(1)} ${(noz+fL*0.74).toFixed(1)} ${x} ${(noz+fL).toFixed(1)} C${(x+fw2).toFixed(1)} ${(noz+fL*0.74).toFixed(1)} ${(x+fw).toFixed(1)} ${(noz+fL*0.42).toFixed(1)} ${(x+fw).toFixed(1)} ${noz} Z" fill="#F97316"/>`
       +`<path d="M${(x-fw*0.66).toFixed(1)} ${noz} C${(x-fw*0.66).toFixed(1)} ${(noz+fL*0.38).toFixed(1)} ${(x-fw2*0.6).toFixed(1)} ${(noz+fL*0.62).toFixed(1)} ${x} ${(noz+fL*0.82).toFixed(1)} C${(x+fw2*0.6).toFixed(1)} ${(noz+fL*0.62).toFixed(1)} ${(x+fw*0.66).toFixed(1)} ${(noz+fL*0.38).toFixed(1)} ${(x+fw*0.66).toFixed(1)} ${noz} Z" fill="#FBB03B"/>`
       +`<g class="gx-flame-core" style="transform-origin:${x}px ${noz}px"><path d="M${(x-fw*0.34).toFixed(1)} ${noz} C${(x-fw*0.34).toFixed(1)} ${(noz+fL*0.28).toFixed(1)} ${x} ${(noz+fL*0.44).toFixed(1)} ${x} ${(noz+fL*0.56).toFixed(1)} C${x} ${(noz+fL*0.44).toFixed(1)} ${(x+fw*0.34).toFixed(1)} ${(noz+fL*0.28).toFixed(1)} ${(x+fw*0.34).toFixed(1)} ${noz} Z" fill="#FFF3C6"/></g></g>`;
-    g+=`<circle class="gx-spark" cx="${(x-2.5).toFixed(1)}" cy="${(noz+fL*0.7).toFixed(1)}" r="${(1+p/100*0.7).toFixed(1)}" fill="#FBB03B" style="animation-delay:${(-i*0.3).toFixed(2)}s"/>`;
-    g+=`<path d="M${x-bw/2+2} ${bodyBot-15} Q${x-bw/2-11} ${bodyBot-2} ${x-bw/2-6} ${bodyBot+6} Q${x-bw/2-2} ${bodyBot+2} ${x-bw/2+2} ${bodyBot} Z" fill="${dark}"/>`;
-    g+=`<path d="M${x+bw/2-2} ${bodyBot-15} Q${x+bw/2+11} ${bodyBot-2} ${x+bw/2+6} ${bodyBot+6} Q${x+bw/2+2} ${bodyBot+2} ${x+bw/2-2} ${bodyBot} Z" fill="${dark}"/>`;
-    g+=`<path d="M${x-6} ${bodyBot} L${x+6} ${bodyBot} L${x+8} ${noz} L${x-8} ${noz} Z" fill="${dark}"/>`;
-    g+=`<rect x="${x-bw/2}" y="${bodyTop}" width="${bw}" height="${bodyH}" rx="9" fill="${col}"/>`;
-    g+=`<rect x="${x-bw/2+3.5}" y="${bodyTop+4}" width="5" height="${bodyH-9}" rx="2.5" fill="${light}" opacity=".55"/>`;
-    g+=`<rect x="${x-bw/2}" y="${bodyBot-9}" width="${bw}" height="5" fill="${dark}" opacity=".5"/>`;
+    g+=`<circle class="gx-spark" cx="${(x-2.5*scale).toFixed(1)}" cy="${(noz+fL*0.7).toFixed(1)}" r="${(1+p/100*0.7).toFixed(1)}" fill="#FBB03B" style="animation-delay:${(-i*0.3).toFixed(2)}s"/>`;
+    g+=`<path d="M${x-bw/2+2} ${bodyBot-fin} Q${x-bw/2-arm} ${bodyBot-2} ${x-bw/2-nz} ${bodyBot+nz} Q${x-bw/2-2} ${bodyBot+2} ${x-bw/2+2} ${bodyBot} Z" fill="${dark}"/>`;
+    g+=`<path d="M${x+bw/2-2} ${bodyBot-fin} Q${x+bw/2+arm} ${bodyBot-2} ${x+bw/2+nz} ${bodyBot+nz} Q${x+bw/2+2} ${bodyBot+2} ${x+bw/2-2} ${bodyBot} Z" fill="${dark}"/>`;
+    g+=`<path d="M${x-nz} ${bodyBot} L${x+nz} ${bodyBot} L${x+nz2} ${noz} L${x-nz2} ${noz} Z" fill="${dark}"/>`;
+    g+=`<rect x="${x-bw/2}" y="${bodyTop}" width="${bw}" height="${bodyH}" rx="${Math.round(9*scale)}" fill="${col}"/>`;
+    g+=`<rect x="${x-bw/2+3.5*scale}" y="${bodyTop+4*scale}" width="${Math.round(5*scale)}" height="${bodyH-9*scale}" rx="${Math.round(2.5*scale)}" fill="${light}" opacity=".55"/>`;
+    g+=`<rect x="${x-bw/2}" y="${bodyBot-9*scale}" width="${bw}" height="${Math.round(5*scale)}" fill="${dark}" opacity=".5"/>`;
     g+=`<circle cx="${x}" cy="${headCY}" r="${headR}" fill="#fff"/>`;
-    g+=`<circle cx="${x}" cy="${headCY}" r="${headR}" fill="none" stroke="${col}" stroke-width="3"/>`;
-    g+=`<g transform="translate(${x-9},${(headCY-9).toFixed(1)})">${embC(r,18,col)}</g>`;
-    g+=`<circle cx="${x}" cy="${(noseY-2).toFixed(1)}" r="2.2" fill="${col}"/>`;
-    if(isL)g+=`<g transform="translate(${x+15},${(noseY-26).toFixed(1)})"><rect x="0" y="0" width="62" height="20" rx="10" fill="#2F3A4A"/><text x="31" y="14" text-anchor="middle" font-family="Figtree" font-size="10" font-weight="900" fill="#fff">¡a punto!</text></g>`;
+    g+=`<circle cx="${x}" cy="${headCY}" r="${headR}" fill="none" stroke="${col}" stroke-width="${(3*scale).toFixed(1)}"/>`;
+    const iconS=Math.round(18*scale);
+    g+=`<g transform="translate(${(x-iconS/2).toFixed(1)},${(headCY-iconS/2).toFixed(1)})">${embC(r,iconS,col)}</g>`;
+    g+=`<circle cx="${x}" cy="${(noseY-2).toFixed(1)}" r="${(2.2*scale).toFixed(1)}" fill="${col}"/>`;
+    if(isL){const lw=Math.round(62*scale),lh=Math.round(20*scale),lfs=Math.max(8,Math.round(10*scale));
+      g+=`<g transform="translate(${(x+15*scale).toFixed(1)},${(noseY-26*scale).toFixed(1)})"><rect x="0" y="0" width="${lw}" height="${lh}" rx="${Math.round(10*scale)}" fill="#2F3A4A"/><text x="${lw/2}" y="${lh*0.72}" text-anchor="middle" font-family="Figtree" font-size="${lfs}" font-weight="900" fill="#fff">¡a punto!</text></g>`;}
     g+='</g></g>';
     return g;
   }
 
   function boltMeter(x,by,p,r,idx){
-    const bH=36,bW=bH*16/31,bx=x-bW/2,col=colorOf[r],light=tint(col,.62);
+    const bH=Math.round(36*scale),bW=bH*16/31,bx=x-bW/2,col=colorOf[r],light=tint(col,.62);
     return`<svg x="${bx.toFixed(1)}" y="${by}" width="${bW.toFixed(1)}" height="${bH}" viewBox="${_boltVB}" overflow="visible">`
       +`<defs><clipPath id="gxbc${idx}"><path d="${_boltPath}"/></clipPath></defs>`
       +`<path d="${_boltPath}" fill="${light}"/>`
@@ -3919,33 +4108,41 @@ function renderDespegues(){
       +`<path d="${_boltPath}" fill="none" stroke="${col}" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
   }
 
-  let s=`<svg viewBox="0 0 ${W} ${Hh}" xmlns="http://www.w3.org/2000/svg">`;
+  const fs=Math.max(7,Math.round(8.5*scale)), fs2=Math.max(8,Math.round(9.5*scale));
+  const lx=Math.round(36*scale), rx=W-Math.round(16*scale);
+  const bmW=Math.round(38*scale), bmH=Math.round(15*scale);
+  let s=`<svg viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">`;
   s+=`<defs><linearGradient id="gxsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7F1FF"/><stop offset="1" stop-color="#FBFDFF"/></linearGradient></defs>`;
   s+=`<rect width="${W}" height="${Hh}" fill="url(#gxsky)"/>`;
-  [25,50,75].forEach(t=>{const y=(ground-t/100*range).toFixed(1);s+=`<line x1="36" y1="${y}" x2="${W-16}" y2="${y}" stroke="#7CB8F5" stroke-width="1" stroke-dasharray="2 6" opacity=".3"/><text x="30" y="${(+y+3).toFixed(1)}" text-anchor="end" font-family="Figtree" font-size="8.5" font-weight="800" fill="#9bb4cf">${t}%</text>`;});
-  s+=`<line x1="36" y1="${topY}" x2="${W-16}" y2="${topY}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity=".5"/>`;
+  [25,50,75].forEach(t=>{const y=(ground-t/100*range).toFixed(1);s+=`<line x1="${lx}" y1="${y}" x2="${rx}" y2="${y}" stroke="#7CB8F5" stroke-width="1" stroke-dasharray="2 6" opacity=".3"/><text x="${lx-4}" y="${(+y+3).toFixed(1)}" text-anchor="end" font-family="Figtree" font-size="${fs}" font-weight="800" fill="#9bb4cf">${t}%</text>`;});
+  s+=`<line x1="${lx}" y1="${topY}" x2="${rx}" y2="${topY}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round" opacity=".5"/>`;
+  const bmY=Math.round(5*scale), bmLblY=Math.round(48*scale);
   ORDER.forEach((r,i)=>{const x=colX(i);
-    s+=`<line x1="${x}" y1="46" x2="${x}" y2="${ground}" stroke="${colorOf[r]}" stroke-width="1" stroke-dasharray="1 8" stroke-linecap="round" opacity=".2"/>`;
-    s+=boltMeter(x,5,PROG[r],r,i);
-    s+=`<g transform="translate(${x-19},48)"><rect width="38" height="15" rx="7.5" fill="#fff" stroke="${colorOf[r]}" stroke-width="1.4"/><text x="19" y="10.8" text-anchor="middle" font-family="Figtree" font-size="8.5" font-weight="900" fill="${colorOf[r]}">Niv ${LV[r]+1}</text></g>`;
+    s+=`<line x1="${x}" y1="${Math.round(46*scale)}" x2="${x}" y2="${ground}" stroke="${colorOf[r]}" stroke-width="1" stroke-dasharray="1 8" stroke-linecap="round" opacity=".2"/>`;
+    s+=boltMeter(x,bmY,PROG[r],r,i);
+    s+=`<g transform="translate(${(x-bmW/2).toFixed(1)},${bmLblY})"><rect width="${bmW}" height="${bmH}" rx="${Math.round(7.5*scale)}" fill="#fff" stroke="${colorOf[r]}" stroke-width="1.4"/><text x="${bmW/2}" y="${bmH*0.73}" text-anchor="middle" font-family="Figtree" font-size="${fs}" font-weight="900" fill="${colorOf[r]}">Niv ${LV[r]+1}</text></g>`;
   });
-  s+=`<path d="M0 ${ground} Q${W/2} ${ground-16} ${W} ${ground} L${W} ${Hh} L0 ${Hh} Z" fill="#DCEBFB"/>`;
-  s+=`<path d="M0 ${ground+16} Q${W/2} ${ground-2} ${W} ${ground+16} L${W} ${Hh} L0 ${Hh} Z" fill="#C6DDF5"/>`;
+  const gl=Math.round(16*scale);
+  s+=`<path d="M0 ${ground} Q${W/2} ${ground-gl} ${W} ${ground} L${W} ${Hh} L0 ${Hh} Z" fill="#DCEBFB"/>`;
+  s+=`<path d="M0 ${ground+gl} Q${W/2} ${ground-2} ${W} ${ground+gl} L${W} ${Hh} L0 ${Hh} Z" fill="#C6DDF5"/>`;
   ORDER.forEach((r,i)=>{ s+=rocketSVG(colX(i),PROG[r],r,r===soon,i); });
   ORDER.forEach((r,i)=>{const x=colX(i);
-    s+=`<text x="${x}" y="${ground+20}" text-anchor="middle" font-family="Figtree" font-size="9.5" font-weight="900" fill="${colorOf[r]}">${r}</text>`;
-    s+=`<text x="${x}" y="${ground+32}" text-anchor="middle" font-family="Figtree" font-size="8.5" font-weight="800" fill="#9bb4cf">Niv ${LV[r]} · ${PROG[r]}%</text>`;
+    s+=`<text x="${x}" y="${ground+Math.round(20*scale)}" text-anchor="middle" font-family="Figtree" font-size="${fs2}" font-weight="900" fill="${colorOf[r]}">${r}</text>`;
+    s+=`<text x="${x}" y="${ground+Math.round(32*scale)}" text-anchor="middle" font-family="Figtree" font-size="${fs}" font-weight="800" fill="#9bb4cf">Niv ${LV[r]} · ${PROG[r]}%</text>`;
   });
   s+='</svg>';
   document.getElementById('gx-scene').innerHTML=s;
 }
 
 function launchDespegues(){
-  document.querySelectorAll('#gx-scene .gx-r-launch').forEach((g,i)=>{
+  // Target whichever container currently holds the rockets
+  const scene=document.getElementById('gx-scene')||document.getElementById('gx-fs-scene');
+  if(!scene)return;
+  scene.querySelectorAll('.gx-r-launch').forEach((g,i)=>{
     g.style.transform=`translateY(${g.dataset.off}px)`;void g.offsetWidth;
     setTimeout(()=>g.style.transform='translateY(0)',150+i*140);
   });
-  document.querySelectorAll('#gx-scene .gx-bolt-liq').forEach((el,i)=>{
+  scene.querySelectorAll('.gx-bolt-liq').forEach((el,i)=>{
     el.style.transform='scaleY(0)';void el.offsetWidth;
     setTimeout(()=>el.style.transform=`scaleY(${el.dataset.s})`,350+i*140);
   });
@@ -3961,7 +4158,10 @@ function buildShell(){
       <div class="gx-grid" id="gx-grid"></div>
     </div>
     <div id="gx-view-radar" class="gx-view">
-      <div class="gx-card">
+      <div class="gx-card" style="position:relative;">
+        <button class="gx-fullscreen-btn" onclick="gxFullscreen('radar')" title="Ampliar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M3 9V3H9"/><path d="M15 3H21V9"/><path d="M21 15V21H15"/><path d="M9 21H3V15"/></svg>
+        </button>
         <div class="gx-radar-stage">
           <div class="gx-radar-bg"><span class="rb rb1"></span><span class="rb rb2"></span><span class="rb rb3"></span></div>
           <div id="gx-scene-radar"></div>
@@ -3972,7 +4172,12 @@ function buildShell(){
       <button class="gx-replay" id="gx-replay" onclick="IgniteProgress.launch()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 112.3 5.6" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M4 19v-5h5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Lanzar
       </button>
-      <div class="gx-card"><div id="gx-scene"></div></div>
+      <div class="gx-card" style="position:relative;">
+        <button class="gx-fullscreen-btn" onclick="gxFullscreen('despegues')" title="Ampliar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"><path d="M3 9V3H9"/><path d="M15 3H21V9"/><path d="M21 15V21H15"/><path d="M9 21H3V15"/></svg>
+        </button>
+        <div id="gx-scene"></div>
+      </div>
       <div class="gx-legend" id="gx-legend"></div>
     </div>`;
 }
@@ -4042,21 +4247,31 @@ function init(){
 init();
 
 // ── RADAR BOLT INTERACTIVITY (exposed to window) ──────────────
+// Returns the active radar scene container (fullscreen or normal)
+function _activeRadarScene(){
+  return document.getElementById('gx-fs-scene-radar') ||
+         document.getElementById('gx-scene-radar');
+}
+// Returns the active radar stage (parent with gx-radar-stage class)
+function _activeRadarStage(){
+  const s=_activeRadarScene();
+  return s ? s.closest('.gx-radar-stage')||s.parentElement : null;
+}
+
 window.radarBoltHover = function(on){
   const g=document.getElementById('radar-bolt-g');
   if(!g)return;
   g.style.transform=on?'scale(1.25)':'scale(1)';
   g.style.transition='transform .2s cubic-bezier(.3,1.4,.5,1)';
 
-  // Orbiting circles — appended to gx-radar-stage so renderRadar() doesn't wipe it
-  const stage=document.querySelector('.gx-radar-stage');
+  const stage=_activeRadarStage();
   if(stage){
-    let orb=document.getElementById('radar-orb-canvas');
+    let orb=stage.querySelector('#radar-orb-canvas');
     if(on){
       if(!orb){
         orb=document.createElement('canvas');
         orb.id='radar-orb-canvas';
-        orb.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;border-radius:16px;';
+        orb.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;border-radius:inherit;';
         stage.appendChild(orb);
       }
       const rect=stage.getBoundingClientRect();
@@ -4068,10 +4283,8 @@ window.radarBoltHover = function(on){
       ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
       const W=rect.width||760, H=rect.height||480;
       const Ox=86/760*W, Oy=240/480*H;
-
-      window._radarOrbiting=false; // stop any previous loop
+      window._radarOrbiting=false;
       cancelAnimationFrame(window._radarOrbRAF);
-
       window._radarOrbiting=true;
       let orbFrame=0;
       const orbAnim=()=>{
@@ -4112,7 +4325,7 @@ window.radarBoltClick = function(){
 let _boltFxRAF=null;
 
 function boltRadarEffect(trigger){
-  const scene=document.getElementById('gx-scene-radar');
+  const scene=_activeRadarScene();
   if(!scene)return;
 
   cancelAnimationFrame(_boltFxRAF);
@@ -4346,11 +4559,11 @@ function boltRadarEffect(trigger){
 
 
 function _getRadarCanvas(scene){
-  let cv=document.getElementById('radar-fx-canvas');
+  let cv=scene.querySelector('#radar-fx-canvas');
   if(!cv){
     cv=document.createElement('canvas');
     cv.id='radar-fx-canvas';
-    cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;border-radius:16px;';
+    cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;border-radius:inherit;';
     scene.appendChild(cv);
   }
   const rect=scene.getBoundingClientRect();
@@ -4364,12 +4577,14 @@ function _getRadarCanvas(scene){
 }
 
 function _clearRadarCanvas(){
-  const cv=document.getElementById('radar-fx-canvas');
+  const scene=_activeRadarScene();
+  if(!scene)return;
+  const cv=scene.querySelector('#radar-fx-canvas');
   if(cv){const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);}
 }
 
 
-return{render,showView,openPov,closePov,goToPov,navPov,launch:launchDespegues,setBolt,getBoltColor:()=>_boltColor};
+return{render,showView,openPov,closePov,goToPov,navPov,launch:launchDespegues,setBolt,getBoltColor:()=>_boltColor,renderRadar,renderDespegues,launchDespegues};
 })();
 
 // ── RE-RENDER on palette change ────────────────────────────────
