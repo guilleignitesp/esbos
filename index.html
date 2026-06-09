@@ -4291,8 +4291,13 @@ init();
 // ── RADAR BOLT INTERACTIVITY (exposed to window) ──────────────
 // Returns the active radar scene container (fullscreen or normal)
 function _activeRadarScene(){
-  return document.getElementById('gx-fs-scene-radar') ||
-         document.getElementById('gx-scene-radar');
+  // Only return the fullscreen scene if the overlay is actually open/visible
+  const fsOverlay=document.getElementById('gx-fs-overlay');
+  if(fsOverlay&&fsOverlay.classList.contains('open')){
+    const fs=document.getElementById('gx-fs-scene-radar');
+    if(fs)return fs;
+  }
+  return document.getElementById('gx-scene-radar');
 }
 // Returns the active radar stage (parent with gx-radar-stage class)
 function _activeRadarStage(){
@@ -4316,15 +4321,25 @@ window.radarBoltHover = function(on){
         orb.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;border-radius:inherit;';
         stage.appendChild(orb);
       }
-      const rect=stage.getBoundingClientRect();
-      orb.width=(rect.width||760)*devicePixelRatio;
-      orb.height=(rect.height||480)*devicePixelRatio;
-      orb.style.width=(rect.width||760)+'px';
-      orb.style.height=(rect.height||480)+'px';
+      const stageRect=stage.getBoundingClientRect();
+      // Get the actual rendered SVG bounds (may be smaller than stage due to aspect ratio)
+      const svgEl=stage.querySelector('svg');
+      const svgRect=svgEl?svgEl.getBoundingClientRect():stageRect;
+      // Canvas covers the full stage
+      orb.width=stageRect.width*devicePixelRatio;
+      orb.height=stageRect.height*devicePixelRatio;
+      orb.style.width=stageRect.width+'px';
+      orb.style.height=stageRect.height+'px';
       const ctx=orb.getContext('2d');
       ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-      const W=rect.width||760, H=rect.height||480;
-      const Ox=86/760*W, Oy=240/480*H;
+      const W=stageRect.width, H=stageRect.height;
+      // Nucleus in canvas coords: SVG offset within stage + viewBox scaling
+      const svgOffX=svgRect.left-stageRect.left;
+      const svgOffY=svgRect.top-stageRect.top;
+      const svgScaleX=svgRect.width/760;
+      const svgScaleY=svgRect.height/480;
+      const Ox=svgOffX+86*svgScaleX;
+      const Oy=svgOffY+240*svgScaleY;
       window._radarOrbiting=false;
       cancelAnimationFrame(window._radarOrbRAF);
       window._radarOrbiting=true;
@@ -4392,22 +4407,23 @@ function boltRadarEffect(trigger){
   const ctx=cv.getContext('2d');
   ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
 
-  // Read nucleus position from actual SVG element bounds relative to scene
+  // Find actual SVG rendered position within the canvas container
   const svgEl=scene.querySelector('svg');
   const sceneRect=scene.getBoundingClientRect();
+  const svgRect=svgEl?svgEl.getBoundingClientRect():sceneRect;
+  const svgOffX=svgRect.left-sceneRect.left;
+  const svgOffY=svgRect.top-sceneRect.top;
+  const svgScaleX=svgRect.width/760;
+  const svgScaleY=svgRect.height/480;
+  const Ox=svgOffX+86*svgScaleX;
+  const Oy=svgOffY+240*svgScaleY;
 
-  // Nucleus is at SVG viewBox coords (86, 240) in a 760×480 viewBox
-  // Scale to canvas coords
-  const vbW=760, vbH=480;
-  const scaleX=W/vbW, scaleY=H/vbH;
-  const Ox=86*scaleX, Oy=240*scaleY;
-
-  // Build trail point pairs from the actual rtrail SVG elements
+  // Build trail point pairs from rtrail SVG attributes scaled to canvas coords
   const trailPts=[...trails].map(t=>{
-    const x1=parseFloat(t.getAttribute('x1'))*scaleX;
-    const y1=parseFloat(t.getAttribute('y1'))*scaleY;
-    const x2=parseFloat(t.getAttribute('x2'))*scaleX;
-    const y2=parseFloat(t.getAttribute('y2'))*scaleY;
+    const x1=svgOffX+parseFloat(t.getAttribute('x1'))*svgScaleX;
+    const y1=svgOffY+parseFloat(t.getAttribute('y1'))*svgScaleY;
+    const x2=svgOffX+parseFloat(t.getAttribute('x2'))*svgScaleX;
+    const y2=svgOffY+parseFloat(t.getAttribute('y2'))*svgScaleY;
     return {x1,y1,x2,y2};
   });
 
