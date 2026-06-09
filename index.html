@@ -4067,7 +4067,7 @@ function renderRadar(){
     core+=`<circle class="radar-bolt-ripple" cx="${Ox}" cy="${Oy}" r="26" fill="none" stroke="var(--accent)" stroke-width="${2-k*0.4}" opacity="0" style="transition:none"/>`;
   }
 
-  document.getElementById('gx-scene-radar').innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${grid}${sweep}${guides}${lines}${core}</svg>`;
+  document.getElementById('gx-scene-radar').innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${grid}${sweep}${guides}${lines}${core}</svg>`;
 
   // Wire hover events via JS since inline SVG CSS pseudo-selectors are unreliable
   document.querySelectorAll('#gx-scene-radar .ray').forEach(ray=>{
@@ -4321,13 +4321,9 @@ window.radarBoltHover = function(on){
         orb.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;border-radius:inherit;';
         stage.appendChild(orb);
       }
-      // The SVG has viewBox="0 0 760 480" with preserveAspectRatio="xMidYMid meet"
-      // It letterboxes inside the stage. We must measure the actual rendered SVG position
-      // relative to the stage to find the true pixel coords of viewBox origin.
-      const svgEl2=stage.querySelector('svg');
+      // SVG has preserveAspectRatio="none" — fills stage exactly, no letterboxing.
+      // Nucleus at viewBox (86, 240) → canvas (86/760*cW, 240/480*cH). Pure math.
       const stageRect=stage.getBoundingClientRect();
-      const svgR2=svgEl2?svgEl2.getBoundingClientRect():stageRect;
-      // Canvas covers the full stage
       const cW=stageRect.width||760, cH=stageRect.height||480;
       orb.width=cW*devicePixelRatio;
       orb.height=cH*devicePixelRatio;
@@ -4335,25 +4331,15 @@ window.radarBoltHover = function(on){
       orb.style.height=cH+'px';
       const ctx=orb.getContext('2d');
       ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-      // SVG offset within stage (letterbox bars)
-      const svgLeft=svgR2.left-stageRect.left;
-      const svgTop=svgR2.top-stageRect.top;
-      const svgW2=svgR2.width, svgH2=svgR2.height;
-      // Scale from viewBox coords to canvas coords
-      const scX=svgW2/760, scY=svgH2/480;
-      const Ox=svgLeft+86*scX;
-      const Oy=svgTop+240*scY;
+      const Ox=86/760*cW, Oy=240/480*cH;
       window._radarOrbiting=false;
       cancelAnimationFrame(window._radarOrbRAF);
       window._radarOrbiting=true;
       let orbFrame=0;
       const orbAnim=()=>{
         if(!window._radarOrbiting){ctx.clearRect(0,0,cW,cH);return;}
-        // Recalculate each frame to handle zoom/resize
-        const stR=stage.getBoundingClientRect();
-        const svR=svgEl2?svgEl2.getBoundingClientRect():stR;
-        const ox=svR.left-stR.left+(svR.width/760)*86;
-        const oy=svR.top-stR.top+(svR.height/480)*240;
+        // Pure viewBox math — works at any zoom level
+        const ox=86/760*cW, oy=240/480*cH;
         ctx.clearRect(0,0,cW,cH);
         orbFrame++;
         const col=window.IgniteProgress?.getBoltColor()||'#FBB03B';
@@ -4415,28 +4401,18 @@ function boltRadarEffect(trigger){
   const ctx=cv.getContext('2d');
   ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
 
-  // The SVG letterboxes inside scene with preserveAspectRatio="xMidYMid meet".
-  // Measure the actual rendered SVG rect relative to the scene container.
-  const svgEl=scene.querySelector('svg');
-  const sceneRect=scene.getBoundingClientRect();
-  const svgRect=svgEl?svgEl.getBoundingClientRect():sceneRect;
-  const svgLeft=svgRect.left-sceneRect.left;
-  const svgTop=svgRect.top-sceneRect.top;
-  const svgScaleX=svgRect.width/760;
-  const svgScaleY=svgRect.height/480;
-  // Nucleus in canvas coords
-  const Ox=svgLeft+86*svgScaleX;
-  const Oy=svgTop+240*svgScaleY;
+  // SVG has preserveAspectRatio="none" — fills container exactly, no letterboxing.
+  // Nucleus at viewBox (86,240) maps directly to canvas (86/760*W, 240/480*H).
+  const svgScaleX=W/760, svgScaleY=H/480;
+  const Ox=86*svgScaleX, Oy=240*svgScaleY;
 
-  // Trail points: SVG viewBox coords → canvas coords (including letterbox offset)
-  const trailPts=[...trails].map(t=>{
-    return {
-      x1:svgLeft+parseFloat(t.getAttribute('x1'))*svgScaleX,
-      y1:svgTop+parseFloat(t.getAttribute('y1'))*svgScaleY,
-      x2:svgLeft+parseFloat(t.getAttribute('x2'))*svgScaleX,
-      y2:svgTop+parseFloat(t.getAttribute('y2'))*svgScaleY,
-    };
-  });
+  // Trail points: SVG viewBox coords → canvas coords (no letterbox offset, preserveAspectRatio=none)
+  const trailPts=[...trails].map(t=>({
+    x1:parseFloat(t.getAttribute('x1'))*svgScaleX,
+    y1:parseFloat(t.getAttribute('y1'))*svgScaleY,
+    x2:parseFloat(t.getAttribute('x2'))*svgScaleX,
+    y2:parseFloat(t.getAttribute('y2'))*svgScaleY,
+  }));
 
   const isContinuous=(trigger==='hover');
   let frame=0;
