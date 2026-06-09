@@ -4322,31 +4322,26 @@ window.radarBoltHover = function(on){
         stage.appendChild(orb);
       }
       const stageRect=stage.getBoundingClientRect();
-      orb.width=stageRect.width*devicePixelRatio;
-      orb.height=stageRect.height*devicePixelRatio;
-      orb.style.width=stageRect.width+'px';
-      orb.style.height=stageRect.height+'px';
+      const cW=stageRect.width||760, cH=stageRect.height||480;
+      orb.width=cW*devicePixelRatio;
+      orb.height=cH*devicePixelRatio;
+      orb.style.width=cW+'px';
+      orb.style.height=cH+'px';
       const ctx=orb.getContext('2d');
       ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-      const W=stageRect.width, H=stageRect.height;
-      // Use SVG clientWidth for scale — reliable in both normal and fullscreen
-      const svgEl2=stage.querySelector('svg');
-      const svgW2=svgEl2?(svgEl2.clientWidth||svgEl2.getBoundingClientRect().width||W):W;
-      const svgH2=svgEl2?(svgEl2.clientHeight||svgEl2.getBoundingClientRect().height||H):H;
-      const sx2=svgW2/760, sy2=svgH2/480;
-      // Offset within stage (letterbox)
-      const svgR2=svgEl2?svgEl2.getBoundingClientRect():stageRect;
-      const offX2=Math.max(0,svgR2.left-stageRect.left);
-      const offY2=Math.max(0,svgR2.top-stageRect.top);
-      const Ox=offX2+86*sx2;
-      const Oy=offY2+240*sy2;
+      // SVG viewBox is always 760×480, nucleus at (86,240).
+      // Canvas covers the stage. SVG fills the stage with width:100%;height:100%.
+      // So nucleus in canvas coords = viewBox fraction × canvas size. No DOM offsets needed.
+      const Ox=86/760*cW;
+      const Oy=240/480*cH;
+      function getOxy(){ return {Ox:86/760*cW, Oy:240/480*cH}; }
       window._radarOrbiting=false;
       cancelAnimationFrame(window._radarOrbRAF);
       window._radarOrbiting=true;
       let orbFrame=0;
       const orbAnim=()=>{
-        if(!window._radarOrbiting){ctx.clearRect(0,0,W,H);return;}
-        ctx.clearRect(0,0,W,H);
+        if(!window._radarOrbiting){ctx.clearRect(0,0,cW,cH);return;}
+        ctx.clearRect(0,0,cW,cH);
         orbFrame++;
         const col=window.IgniteProgress?.getBoltColor()||'#FBB03B';
         for(let p=0;p<5;p++){
@@ -4407,38 +4402,21 @@ function boltRadarEffect(trigger){
   const ctx=cv.getContext('2d');
   ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
 
-  // The SVG has viewBox="0 0 760 480" and width:100%;height:auto
-  // So the rendered SVG height = W * (480/760)
-  // Canvas is sized to the scene container which may be taller than the SVG
-  // Find where the SVG sits inside the canvas by comparing rects
-  const svgEl=scene.querySelector('svg');
-  let svgScaleX, svgScaleY, svgOffX, svgOffY;
-  if(svgEl){
-    // Use the SVG's own clientWidth/clientHeight — works in both normal and fullscreen
-    const svgW=svgEl.clientWidth||svgEl.getBoundingClientRect().width||W;
-    const svgH=svgEl.clientHeight||svgEl.getBoundingClientRect().height||H;
-    svgScaleX=svgW/760;
-    svgScaleY=svgH/480;
-    // Offset: SVG may not start at top-left of canvas (letterbox)
-    const sceneR=scene.getBoundingClientRect();
-    const svgR=svgEl.getBoundingClientRect();
-    // Use relative offset, clamped to 0 (in fullscreen both have same viewport origin)
-    svgOffX=Math.max(0, svgR.left-sceneR.left);
-    svgOffY=Math.max(0, svgR.top-sceneR.top);
-  } else {
-    svgScaleX=W/760; svgScaleY=H/480; svgOffX=0; svgOffY=0;
-  }
-  // Nucleus at SVG viewBox (86, 240)
-  const Ox=svgOffX+86*svgScaleX;
-  const Oy=svgOffY+240*svgScaleY;
+  // Pure viewBox math: SVG viewBox is 760×480, canvas matches SVG rendered size.
+  // Nucleus at viewBox (86,240) → canvas (86/760*W, 240/480*H). No DOM offset needed.
+  const Ox=86/760*W;
+  const Oy=240/480*H;
+  const svgScaleX=W/760;
+  const svgScaleY=H/480;
 
-  // Build trail point pairs from rtrail SVG attributes scaled to canvas coords
+  // Trail points: SVG attribute coords scaled to canvas
   const trailPts=[...trails].map(t=>{
-    const x1=svgOffX+parseFloat(t.getAttribute('x1'))*svgScaleX;
-    const y1=svgOffY+parseFloat(t.getAttribute('y1'))*svgScaleY;
-    const x2=svgOffX+parseFloat(t.getAttribute('x2'))*svgScaleX;
-    const y2=svgOffY+parseFloat(t.getAttribute('y2'))*svgScaleY;
-    return {x1,y1,x2,y2};
+    return {
+      x1:parseFloat(t.getAttribute('x1'))*svgScaleX,
+      y1:parseFloat(t.getAttribute('y1'))*svgScaleY,
+      x2:parseFloat(t.getAttribute('x2'))*svgScaleX,
+      y2:parseFloat(t.getAttribute('y2'))*svgScaleY,
+    };
   });
 
   const isContinuous=(trigger==='hover');
@@ -4638,11 +4616,10 @@ function _getRadarCanvas(scene){
     cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;border-radius:inherit;';
     scene.appendChild(cv);
   }
-  // Size to the actual rendered SVG, not the container — avoids letterbox mismatch
-  const svgEl=scene.querySelector('svg');
-  const ref=svgEl||scene;
-  const W=ref.clientWidth||ref.getBoundingClientRect().width||760;
-  const H=ref.clientHeight||ref.getBoundingClientRect().height||480;
+  // Size canvas to the scene container. The SVG fills it with width:100%;height:100%
+  // so scene size === SVG rendered size. ViewBox math then works with no offsets.
+  const W=scene.clientWidth||scene.getBoundingClientRect().width||760;
+  const H=scene.clientHeight||scene.getBoundingClientRect().height||480;
   cv.width=W*devicePixelRatio;
   cv.height=H*devicePixelRatio;
   cv.style.width=W+'px';
