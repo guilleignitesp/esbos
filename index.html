@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IGNITE NEXUS — Portal del Alumno</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>IGNITE NEXUS · Portal Alumno &amp; Familia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
 <style>
+
 /* ═══════════════════════════════════════════════════
    PALETA TEMÁTICA — switchable via data-theme
    ═══════════════════════════════════════════════════ */
@@ -1053,12 +1056,16 @@ body {
 }
 .switcher-btn.active { background: var(--blue-dark); color: #fff; box-shadow: 0 2px 10px rgba(62,111,168,.3); }
 .switcher-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.app { padding-bottom: 96px; }
+.app { }
+/* Switcher pill space — only needed for student pages, not family (family has its own closing section) */
+#page-home, #page-projects { padding-bottom: 96px; }
+#page-family { padding-bottom: 0; }
 
 /* ═══ PROJECTS PAGE ════════════════════════════════ */
 .page { display: none; }
 .page.active { display: block; }
 .projects-page-header { display: flex; align-items: center; gap: 12px; padding: 18px 20px 14px; position: sticky; top: 0; background: var(--warm); z-index: 10; max-width: 1400px; margin: 0 auto; }
+@media (min-width: 900px) { .projects-page-header { padding: 18px 40px 14px; } }
 .back-btn { background: var(--card-a); border: 1.5px solid rgba(124,184,245,.6); border-radius: 12px; padding: 7px 14px; font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 700; color: var(--blue-dark); cursor: pointer; transition: background .2s; }
 .back-btn:hover { background: var(--card-b); }
 .projects-page-title { font-size: 18px; font-weight: 900; color: var(--text); }
@@ -1073,14 +1080,325 @@ body {
 .family-empty-title { font-size: 21px; font-weight: 900; color: var(--blue-dark); margin-bottom: 10px; margin-top: 20px; }
 .family-empty-sub { font-size: 14px; color: #8aa4be; font-weight: 500; max-width: 240px; line-height: 1.65; }
 
+/* ─── Section padding — responsive ─── */
+.section { padding: 0 20px 28px; }
 @media (min-width: 900px) {
 .section { padding: 0 40px 28px; }
 .grid-actitud { grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 14px; }
 .archive-grid { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 20px; align-items: start; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   FAMILIA PORTAL CSS — aislado bajo .fam-root
+   Las vars familiares se definen en .fam-root, nunca en :root
+   ═══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   PORTAL FAMILIA — CSS completamente aislado bajo .fam-root
+   Las variables familiares se definen en .fam-root, nunca en :root
+   Jamás usan vars del alumno: --warm, --card-a, --card-b, --accent, etc.
+   ══════════════════════════════════════════════════════════════ */
+#page-family { display:none; background:var(--f-cream,#FBF3DC); position:relative; z-index:1; }
+
+.fam-root {
+  /* Tokens propios de familia — inmunes a body[data-theme] del alumno */
+  --f-yellow:#FBEFCB; --f-yellow-2:#FAEFC6; --f-oat:#EEE6D2;
+  --f-blue-soft:#EAF1FA; --f-blue:#7CB8F5; --f-blue-deep:#3E6FA8;
+  --f-cta:#2596BE; --f-amber:#FBB03B; --f-ink:#2F3A4A; --f-cream:#FBF3DC;
+  font-family:'Figtree',system-ui,sans-serif;
+  color:var(--f-ink);
+  background:var(--f-cream);
+  position:relative;
+  z-index:1;
+  /* Prevent any body[data-theme] CSS vars leaking into family content */
+  --warm:initial; --card-a:initial; --card-b:initial; --accent:initial;
+  --blue-main:initial; --blue-dark:initial; --muted:initial;
+}
+
+
+/* ─── f-scene: family section base (replaces student .scene which is position:absolute/opacity:0) ── */
+.fam-root .f-scene { position:relative; z-index:1; padding:clamp(82px,13vh,150px) 0 clamp(70px,11vh,130px); display:block !important; opacity:1 !important; }
+.fam-root .f-scene .wave path { transition:transform 1s cubic-bezier(.2,.7,.2,1),opacity 1s ease; transform:translateY(34%); opacity:0; }
+.fam-root .f-scene.f-in .wave path { transform:translateY(0); opacity:1; }
+.fam-root .f-scene.f-in .s-motif { opacity:1; }
+.fam-root .f-scene.f-in .m-ring  { transform:scale(1) rotate(0); }
+.fam-root .f-scene.f-in .m-arcs  { transform:scale(1) rotate(0); }
+.fam-root .f-scene.f-in .m-disc  { transform:scale(1); }
+.fam-root .f-scene.f-in .m-dot   { transform:scale(1); }
+.fam-root .f-scene.f-in .m-spark { transform:scale(1) rotate(0); }
+.fam-root .f-scene.f-in .f-scene-head .f-reveal,
+.fam-root .f-scene.f-in .f-scene-head .f-reveal-pop { opacity:1; transform:none; filter:blur(0); }
+
+/* ─── Scenes ─────────────────────────────────────── */
+.fam-root .f-scene { position:relative; z-index:1; padding:clamp(82px,13vh,150px) 0 clamp(70px,11vh,130px); }
+.fam-root .f-scene-inner { position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 24px; }
+@media(max-width:600px){ .fam-root .f-scene-inner { padding:0 20px; } }
+.fam-root .f-scene.sc-hero { background:linear-gradient(172deg,#FBF3DC 0%,#F6ECCC 58%,#F2E6C2 100%); }
+.fam-root .f-scene.sc-yellow { background:linear-gradient(180deg,var(--f-yellow) 0%,#F8E7B4 100%); }
+.fam-root .f-scene.sc-blue { background:linear-gradient(180deg,var(--f-blue-soft) 0%,#DBE8F6 100%); }
+.fam-root .f-scene.sc-oat { background:linear-gradient(180deg,var(--f-oat) 0%,#E4D9C0 100%); }
+.fam-root .f-scene.sc-yellow-2 { background:linear-gradient(180deg,var(--f-yellow-2) 0%,#F6E8B6 100%); }
+.fam-root .f-scene.sc-close { background:linear-gradient(165deg,#DDEAF8 0%,#C8DFF6 70%,#BAD3F0 100%); }
+/* No gap after family's last section */
+.fam-root .f-scene:last-of-type { margin-bottom:0; }
+
+/* ─── Wave ───────────────────────────────────────── */
+.fam-root .wave { position:absolute; left:0; top:0; width:100%; height:64px; transform:translateY(-100%); overflow:hidden; pointer-events:none; z-index:2; }
+.fam-root .wave svg { display:block; width:100%; height:100%; }
+.fam-root .wave path { transition:transform 1s cubic-bezier(.2,.7,.2,1),opacity 1s ease; transform:translateY(34%); opacity:0; }
+.fam-root .f-scene.f-in .wave path { transform:translateY(0); opacity:1; }
+@media(max-width:600px){ .fam-root .wave { height:44px; } }
+
+/* ─── Background motifs ──────────────────────────── */
+.fam-root .f-scene-bg { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+.fam-root .s-motif { position:absolute; opacity:0; transition:opacity 1s ease,transform 1.15s cubic-bezier(.2,.7,.2,1); transition-delay:var(--d,0s); will-change:transform,opacity; }
+.fam-root .f-scene.f-in .s-motif { opacity:1; }
+.fam-root .s-motif svg { display:block; width:100%; height:100%; overflow:visible; }
+.fam-root .m-ring  { transform:scale(.45) rotate(-35deg); }
+.fam-root .f-scene.f-in .m-ring  { transform:scale(1) rotate(0); }
+.fam-root .m-arcs  { transform:scale(.5) rotate(-72deg); }
+.fam-root .f-scene.f-in .m-arcs  { transform:scale(1) rotate(0); }
+.fam-root .m-disc  { transform:scale(.2); }
+.fam-root .f-scene.f-in .m-disc  { transform:scale(1); }
+.fam-root .m-dot   { transform:scale(0); }
+.fam-root .f-scene.f-in .m-dot   { transform:scale(1); }
+.fam-root .m-spark { transform:scale(.4) rotate(-25deg); }
+.fam-root .f-scene.f-in .m-spark { transform:scale(1) rotate(0); }
+.fam-root .s-spin { transform-origin:50% 50%; transform-box:fill-box; animation:fmspin 46s linear infinite; }
+.fam-root .s-spin.rev { animation-duration:36s; animation-direction:reverse; }
+.fam-root .s-breathe { transform-origin:50% 50%; transform-box:fill-box; animation:fmbreathe 9s ease-in-out infinite; }
+@keyframes fmspin   { to{ transform:rotate(360deg); } }
+@keyframes fmbreathe{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+
+/* ─── Wind-reveal for section headers ───────────────*/
+.fam-root .f-scene-head .f-reveal,
+.fam-root .f-scene-head .f-reveal-pop {
+  opacity:0; transform:translateY(22px) translateX(-14px) rotate(-1.2deg);
+  filter:blur(7px);
+  transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1),filter .8s ease;
+  transition-delay:var(--d,0s);
+}
+.fam-root .f-scene.f-in .scene-head .f-reveal,
+.fam-root .f-scene.f-in .scene-head .f-reveal-pop { opacity:1; transform:none; filter:blur(0); }
+
+/* ─── Typography ─────────────────────────────────── */
+.fam-root .f-serif  { font-family:'Fraunces',Georgia,serif; font-optical-sizing:auto; }
+.fam-root .f-eyebrow { font-size:11.5px; font-weight:800; letter-spacing:2.6px; text-transform:uppercase; color:var(--f-blue-deep); display:inline-flex; align-items:center; gap:11px; }
+.fam-root .f-eyebrow svg { width:15px; height:15px; flex-shrink:0; }
+.fam-root .f-scene-num { font-family:'Fraunces',serif; font-weight:300; font-size:clamp(54px,15vw,118px); line-height:.8; color:transparent; -webkit-text-stroke:1.3px rgba(62,111,168,.28); letter-spacing:-2px; display:block; margin-bottom:18px; }
+.fam-root .f-display { font-family:'Fraunces',serif; font-weight:500; font-size:clamp(33px,8vw,64px); line-height:1.04; letter-spacing:-1.3px; color:var(--f-ink); }
+.fam-root .f-display em { font-style:italic; font-weight:400; }
+.fam-root .f-display .f-hot { color:var(--f-cta); }
+.fam-root .f-lede { font-size:clamp(15.5px,2.3vw,18.5px); line-height:1.62; color:#56616f; max-width:48ch; }
+.fam-root .f-reveal { opacity:0; transform:translateY(28px); transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1); transition-delay:var(--d,0s); }
+.fam-root .f-reveal.f-in { opacity:1; transform:none; }
+.fam-root .f-reveal-pop { opacity:0; transform:translateY(30px) scale(.97); transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .85s cubic-bezier(.2,.7,.2,1); transition-delay:var(--d,0s); }
+.fam-root .f-reveal-pop.f-in { opacity:1; transform:none; }
+.fam-root .f-tw-caret { display:inline-block; width:.5ch; margin-left:.04em; background:var(--f-amber); color:transparent; border-radius:2px; animation:fCaretBlink .8s steps(1) infinite; }
+.fam-root .f-tw-done .f-tw-caret { display:none; }
+@keyframes fCaretBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ─── Hero ───────────────────────────────────────── */
+.fam-root .f-scene.sc-hero { min-height:100svh; display:flex; flex-direction:column; justify-content:center; padding:120px 0 80px; overflow:hidden; }
+.fam-root .f-hero-blob { position:absolute; border-radius:50%; filter:blur(10px); z-index:0; pointer-events:none; will-change:transform; }
+.fam-root .f-hero-blob.h1 { width:min(54vw,380px); height:min(54vw,380px); background:radial-gradient(circle at 35% 30%,#FCE79B,#F7D973); right:-6%; top:10%; opacity:.78; }
+.fam-root .f-hero-blob.h2 { width:min(30vw,200px); height:min(30vw,200px); background:radial-gradient(circle at 40% 35%,#AFD0F6,#7CB8F5); right:22%; bottom:12%; opacity:.4; }
+.fam-root .f-spark { position:absolute; z-index:1; color:var(--f-amber); pointer-events:none; animation:fTwinkle 4s ease-in-out infinite; }
+.fam-root .f-spark svg { display:block; }
+@keyframes fTwinkle { 0%,100%{opacity:.85;transform:scale(1) rotate(0)} 50%{opacity:.4;transform:scale(.78) rotate(12deg)} }
+.fam-root .hero-in { position:relative; z-index:2; }
+.fam-root .f-hero-head { display:flex; align-items:center; gap:26px; margin-bottom:34px; }
+.fam-root .f-hero-id { flex:1; min-width:0; }
+.fam-root .f-hero-name { font-family:'Fraunces',serif; font-weight:600; font-size:clamp(25px,5vw,40px); letter-spacing:-.7px; line-height:1.05; margin-top:13px; }
+.fam-root .f-hero-where { font-size:14px; color:#7d745f; font-weight:600; margin-top:11px; letter-spacing:.2px; }
+.fam-root .f-hero-where .f-dot { color:#c3b285; margin:0 9px; }
+.fam-root .f-hero-seal { flex-shrink:0; width:clamp(98px,21vw,140px); height:clamp(98px,21vw,140px); }
+.fam-root .f-hero-seal svg { width:100%; height:100%; display:block; }
+.fam-root .f-seal-rot { transform-origin:60px 60px; transform-box:view-box; animation:fSealSpin 26s linear infinite; }
+@keyframes fSealSpin { to{transform:rotate(360deg);} }
+@media(max-width:560px){ .fam-root .f-hero-head{flex-direction:column;align-items:flex-start;gap:20px;} .fam-root .f-hero-seal{width:90px;height:90px;} }
+.fam-root .f-scroll-cue { display:inline-flex; align-items:center; gap:10px; margin-top:44px; font-size:11.5px; font-weight:800; letter-spacing:1.8px; text-transform:uppercase; color:var(--f-blue-deep); opacity:.7; }
+.fam-root .f-scroll-cue svg { animation:fBobDown 1.6s ease-in-out infinite; }
+@keyframes fBobDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+.fam-root .f-scene-head { margin-bottom:clamp(34px,6vw,58px); }
+.fam-root .f-scene-head .f-display { margin-top:16px; }
+.fam-root .f-scene-head .f-lede { margin-top:18px; }
+
+/* ─── 01 Active projects ─────────────────────────── */
+.fam-root .f-proj-grid { display:grid; gap:24px; }
+@media(min-width:820px){ .fam-root .f-proj-grid { grid-template-columns:1fr 1fr; gap:30px; } }
+.fam-root .f-proj { background:#FCF8EF; border:1px solid rgba(47,58,74,.10); border-radius:22px; overflow:hidden; transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s; }
+.fam-root .f-proj:hover { transform:translateY(-7px); box-shadow:0 34px 64px -36px rgba(47,58,74,.4); }
+.fam-root .f-proj-frame { position:relative; aspect-ratio:16/10; display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid rgba(47,58,74,.07); background:linear-gradient(158deg,#F4ECD5,#EDE2C6); }
+.fam-root .f-proj:nth-child(2) .f-proj-frame { background:linear-gradient(158deg,#E7EFFA,#D9E6F5); }
+.fam-root .f-proj-art { width:44%; max-width:155px; transition:transform .55s cubic-bezier(.2,.7,.2,1); }
+.fam-root .f-proj:hover .f-proj-art { transform:scale(1.05) translateY(-2px); }
+.fam-root .f-fc { position:absolute; width:15px; height:15px; border:1.5px solid rgba(47,58,74,.22); }
+.fam-root .f-fc-tl { top:15px;left:15px;border-right:0;border-bottom:0; }
+.fam-root .f-fc-tr { top:15px;right:15px;border-left:0;border-bottom:0; }
+.fam-root .f-fc-bl { bottom:15px;left:15px;border-right:0;border-top:0; }
+.fam-root .f-fc-br { bottom:15px;right:15px;border-left:0;border-top:0; }
+.fam-root .f-proj-body { padding:24px 26px 28px; }
+.fam-root .f-proj-kicker { display:inline-flex; align-items:center; gap:9px; font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:#9a854f; }
+.fam-root .f-proj:nth-child(2) .f-proj-kicker { color:#5d7da6; }
+.fam-root .f-proj-kicker svg { width:11px; height:15px; }
+.fam-root .f-proj-title { font-family:'Fraunces',serif; font-weight:600; font-size:25px; letter-spacing:-.5px; line-height:1.12; margin:13px 0 11px; }
+.fam-root .f-proj-desc { font-size:14.5px; color:#5a6470; line-height:1.62; }
+.fam-root .f-skl-label { display:block; font-size:11px; font-weight:800; letter-spacing:.9px; text-transform:uppercase; color:#a08f63; margin:22px 0 12px; }
+.fam-root .f-proj:nth-child(2) .f-skl-label { color:#6d8aab; }
+.fam-root .f-skl-list { display:flex; flex-wrap:wrap; gap:8px; }
+.fam-root .f-skl { font-size:12.5px; font-weight:600; color:#3a4350; border:1px solid rgba(47,58,74,.16); border-radius:999px; padding:6px 14px; background:rgba(255,255,255,.55); }
+
+/* ─── 02 Territories ─────────────────────────────── */
+.fam-root .f-terr { border-top:1.5px solid rgba(62,111,168,.2); }
+.fam-root .f-terr-row { border-bottom:1.5px solid rgba(62,111,168,.2); }
+.fam-root .f-terr-head { display:flex; align-items:flex-start; gap:18px; padding:24px 6px; cursor:pointer; width:100%; background:none; border:0; font-family:inherit; color:inherit; text-align:left; transition:padding .3s; }
+.fam-root .f-terr-row:hover .f-terr-head { padding-left:14px; }
+.fam-root .f-terr-badge { flex-shrink:0; width:42px; height:42px; border-radius:13px; border:1.6px solid; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600; font-size:20px; margin-top:6px; transition:background .3s,color .3s; }
+.fam-root .f-terr-badge.tx { font-size:24px; line-height:0; }
+.fam-root .f-terr-row:hover .f-terr-badge { background:var(--fac); color:#fff!important; }
+.fam-root .f-terr-main { flex:1; min-width:0; }
+.fam-root .f-terr-kind { display:block; font-size:10px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--fac); margin-bottom:10px; }
+.fam-root .f-terr-name { display:block; width:fit-content; font-family:'Fraunces',serif; font-weight:500; font-size:clamp(23px,5vw,36px); letter-spacing:-.8px; line-height:1.12; transition:color .25s,transform .4s cubic-bezier(.2,.7,.2,1); }
+.fam-root .f-terr-row:hover .f-terr-name { color:var(--fac); transform:translateX(6px); }
+.fam-root .f-terr-desc { display:block; font-size:13.5px; color:#5d7da6; line-height:1.55; margin-top:18px; max-width:52ch; }
+.fam-root .f-terr-meta { display:flex; align-items:center; flex-wrap:wrap; gap:9px 14px; margin-top:14px; }
+.fam-root .f-terr-word { font-size:11px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; color:var(--fac); white-space:nowrap; }
+.fam-root .f-terr-bar { flex:1; min-width:90px; max-width:200px; height:5px; border-radius:999px; background:rgba(62,111,168,.14); overflow:hidden; }
+.fam-root .f-terr-bar i { display:block; height:100%; border-radius:999px; width:0; background:var(--fac); transition:width 1s cubic-bezier(.2,.7,.2,1) var(--d,0s); }
+.fam-root .f-terr-count { font-size:11.5px; font-weight:700; color:#9aa9bd; white-space:nowrap; }
+.fam-root .f-terr-plus { flex-shrink:0; width:34px; height:34px; border-radius:50%; border:1.6px solid rgba(62,111,168,.3); display:flex; align-items:center; justify-content:center; color:var(--f-blue-deep); transition:transform .3s,background .3s,color .3s,border-color .3s; margin-top:6px; }
+.fam-root .f-terr-row:hover .f-terr-plus { background:var(--f-blue-deep); color:#fff; border-color:var(--f-blue-deep); }
+.fam-root .f-terr-row[aria-expanded="true"] .f-terr-plus { transform:rotate(45deg); }
+.fam-root .f-terr-skills { display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s cubic-bezier(.2,.7,.2,1); }
+.fam-root .f-terr-row[aria-expanded="true"] .f-terr-skills { grid-template-rows:1fr; }
+.fam-root .f-terr-skills-in { overflow:hidden; }
+.fam-root .f-terr-skills-pad { padding:4px 6px 28px 60px; }
+@media(max-width:560px){ .fam-root .f-terr-skills-pad{padding-left:6px;} .fam-root .f-terr-head{gap:13px;} }
+.fam-root .f-meter { display:inline-flex; gap:3px; flex-shrink:0; }
+.fam-root .f-meter i { width:13px; height:6px; border-radius:3px; background:rgba(62,111,168,.18); }
+.fam-root .f-meter i.on { background:var(--f-blue-deep); }
+.fam-root .f-sk-row { display:flex; align-items:center; gap:11px; padding:11px 0; border-top:1px solid rgba(62,111,168,.12); flex-wrap:wrap; }
+.fam-root .f-sk-row:first-child { border-top:0; }
+.fam-root .f-sk-name { font-weight:700; font-size:14px; flex-shrink:0; }
+.fam-root .f-sk-lv { font-size:11px; font-weight:800; letter-spacing:.3px; white-space:nowrap; flex-shrink:0; }
+.fam-root .f-sk-desc { font-size:13px; color:#5d7da6; flex:1; min-width:160px; }
+@media(max-width:480px){ .fam-root .f-sk-desc { flex-basis:100%; min-width:0; } }
+
+/* ─── 03 Horizontal scroll ───────────────────────── */
+.fam-root .f-horiz-pin { position:relative; }
+.fam-root .f-horiz-sticky { position:sticky; top:0; height:100svh; display:flex; flex-direction:column; justify-content:center; gap:30px; overflow:hidden; }
+.fam-root .f-horiz-track { display:flex; gap:22px; align-items:stretch; will-change:transform; }
+.fam-root .f-hcard { position:relative; flex:0 0 auto; width:clamp(280px,82vw,430px); background:#FBF6EB; border:1px solid rgba(120,95,40,.16); border-radius:24px; padding:34px 32px; display:flex; flex-direction:column; min-height:min(62vh,520px); overflow:hidden; }
+.fam-root .f-hcard-wm { position:absolute; right:20px; top:-2px; font-family:'Fraunces',serif; font-weight:300; font-size:128px; line-height:1; color:rgba(120,95,40,.07); pointer-events:none; }
+.fam-root .f-hcard-cat { font-size:11px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:#8a7234; position:relative; }
+.fam-root .f-hcard-title { font-family:'Fraunces',serif; font-weight:600; font-size:clamp(24px,4vw,30px); letter-spacing:-.5px; line-height:1.1; margin:14px 0 8px; position:relative; }
+.fam-root .f-hcard-date { font-size:12.5px; font-weight:700; color:#a08a5e; }
+.fam-root .f-hcard-desc { font-size:14.5px; color:#56616c; line-height:1.62; margin-top:14px; }
+.fam-root .f-hcard-tags { margin-top:auto; padding-top:22px; }
+.fam-root .f-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.fam-root .f-tag { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:#3a4350; border:1px solid rgba(47,58,74,.14); border-radius:999px; padding:5px 12px; background:rgba(255,255,255,.5); }
+.fam-root .f-hcard-cta { background:#2F3A4A; border-color:#2F3A4A; color:#fff; justify-content:center; }
+.fam-root .f-hcard-cta .f-hcard-cat { color:#9fb4cf; }
+.fam-root .f-hcard-cta .f-hcard-title { color:#fff; }
+.fam-root .f-hcard-cta .f-editorial-btn { margin-top:22px; background:var(--f-amber); color:#2F3A4A; align-self:flex-start; }
+.fam-root .f-hcard-cta .f-editorial-btn:hover { background:#fff; }
+.fam-root .f-horiz-foot { display:flex; align-items:center; gap:16px; max-width:1080px; width:100%; margin:0 auto; padding:0 24px; }
+.fam-root .f-horiz-count { font-family:'Fraunces',serif; font-weight:400; font-size:22px; color:#7a6433; }
+.fam-root .f-horiz-total { font-size:12px; font-weight:800; letter-spacing:.5px; color:#a08a5e; }
+.fam-root .f-horiz-progress { flex:1; height:3px; border-radius:999px; background:rgba(120,95,40,.18); overflow:hidden; }
+.fam-root .f-horiz-progress i { display:block; height:100%; width:100%; transform:scaleX(0); transform-origin:left; background:#7a6433; transition:transform .1s linear; }
+.fam-root .f-horiz-hint { font-size:10.5px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:#a08a5e; display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
+.fam-root .f-horiz-pin.no-pin { height:auto!important; }
+.fam-root .f-horiz-pin.no-pin .f-horiz-sticky { position:static; height:auto; }
+.fam-root .f-horiz-pin.no-pin .f-horiz-track { flex-wrap:wrap; transform:none!important; }
+.fam-root .f-horiz-pin.no-pin .f-hcard { width:100%; min-height:0; }
+.fam-root .f-horiz-pin.no-pin .f-horiz-foot { display:none; }
+
+/* ─── 04 Moments ─────────────────────────────────── */
+.fam-root .f-notes { display:grid; gap:16px; }
+@media(min-width:760px){ .fam-root .f-notes, .fam-root .f-more-log.show { grid-template-columns:1fr 1fr; gap:18px; } }
+.fam-root .f-note { position:relative; overflow:hidden; background:#FCF6E6; border:1px solid rgba(120,95,40,.18); border-radius:18px; padding:24px 26px 24px 30px; transition:transform .38s cubic-bezier(.2,.7,.2,1),box-shadow .38s,background .3s; }
+.fam-root .f-note::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--f-amber); }
+.fam-root .f-note.f-info { background:#EDF3FB; border-color:rgba(62,111,168,.18); }
+.fam-root .f-note.f-info::before { background:var(--f-blue); }
+.fam-root .f-note:hover { transform:translateY(-5px); box-shadow:0 26px 50px -32px rgba(120,90,20,.4); }
+.fam-root .f-note.f-info:hover { box-shadow:0 26px 50px -32px rgba(62,111,168,.4); }
+.fam-root .f-note-top { display:flex; align-items:center; gap:12px; padding-bottom:15px; margin-bottom:16px; border-bottom:1px solid rgba(120,95,40,.14); }
+.fam-root .f-note-mark { width:26px; height:26px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--f-amber); }
+.fam-root .f-note.f-info .f-note-mark { color:var(--f-blue-deep); }
+.fam-root .f-note-mark svg { width:20px; height:20px; }
+.fam-root .f-note-date { font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:#a08a5e; }
+.fam-root .f-note-cat { margin-left:auto; font-size:10.5px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:#c3b285; }
+.fam-root .f-note-title { font-family:'Fraunces',serif; font-weight:600; font-size:19px; letter-spacing:-.3px; line-height:1.2; }
+.fam-root .f-note-text { font-size:14px; color:#5a6470; line-height:1.62; margin-top:9px; }
+.fam-root .f-note.f-info .f-note-top { border-bottom-color:rgba(62,111,168,.16); }
+.fam-root .f-note.f-info .f-note-date { color:#5d7da6; }
+.fam-root .f-note.f-info .f-note-cat { color:#9fb1c8; }
+.fam-root .f-more-log { display:none; }
+.fam-root .f-more-log.show { display:grid; margin-top:18px; }
+.fam-root .f-editorial-btn { display:inline-flex; align-items:center; gap:12px; margin-top:32px; background:var(--f-ink); color:#fff; border:none; border-radius:999px; padding:15px 26px; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; cursor:pointer; transition:transform .25s,gap .25s,background .25s; }
+.fam-root .f-editorial-btn svg { transition:transform .25s; }
+.fam-root .f-editorial-btn:hover { transform:translateY(-2px); gap:17px; background:var(--f-cta); }
+
+/* ─── Closing ────────────────────────────────────── */
+.fam-root .f-close-in { max-width:880px; margin:0 auto; text-align:center; }
+.fam-root .f-close-mark { display:inline-flex; color:var(--f-amber); margin-bottom:22px; }
+.fam-root .f-close-quote { font-family:'Fraunces',serif; font-weight:500; font-size:clamp(27px,5.6vw,48px); line-height:1.12; letter-spacing:-1px; color:var(--f-ink); }
+.fam-root .f-close-quote em { font-style:italic; color:var(--f-cta); }
+.fam-root .f-close-sign { font-size:14px; font-weight:800; color:var(--f-blue-deep); margin-top:26px; }
+.fam-root .f-close-sub { font-size:13.5px; color:#5d7da6; margin-top:6px; }
+.fam-root .f-foot { margin-top:46px; padding-top:26px; border-top:1.5px solid rgba(62,111,168,.18); display:flex; flex-direction:column; align-items:center; gap:13px; }
+.fam-root .f-foot-note { font-size:12px; color:#5d7da6; }
+.fam-root .f-foot-note b { color:var(--f-blue-deep); }
+
+/* ─── All-projects overlay (family) ──────────────── */
+.f-allproj { position:fixed; inset:0; z-index:400; background:linear-gradient(180deg,#EEE6D2,#E4D9C0); overflow-y:auto; display:none; }
+.f-allproj.open { display:block; animation:fApIn .4s cubic-bezier(.2,.7,.2,1); }
+@keyframes fApIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:none;} }
+.f-allproj .f-allproj-bar { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:16px; padding:18px 24px; background:rgba(238,230,210,.82); backdrop-filter:blur(14px); border-bottom:1px solid rgba(120,95,40,.18); }
+.f-allproj .f-ap-back { display:inline-flex; align-items:center; gap:9px; background:#2F3A4A; color:#fff; border:none; border-radius:999px; padding:11px 20px; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:.3px; cursor:pointer; transition:transform .2s,gap .2s,background .2s; }
+.f-allproj .f-ap-back:hover { transform:translateX(-2px); gap:12px; background:#2596BE; }
+.f-allproj .f-ap-title { font-family:'Fraunces',serif; font-weight:600; font-size:19px; letter-spacing:-.4px; }
+.f-allproj .f-allproj-body { max-width:1080px; margin:0 auto; padding:clamp(28px,5vw,52px) 24px 70px; }
+.f-allproj .f-allproj-head { font-family:'Fraunces',serif; font-weight:500; font-size:clamp(28px,6vw,46px); letter-spacing:-1px; line-height:1.05; margin-bottom:8px; }
+.f-allproj .f-allproj-sub { font-size:15px; color:#6a5d44; margin-bottom:30px; }
+.f-allproj .f-ap-grid { display:grid; gap:18px; grid-template-columns:1fr; }
+@media(min-width:640px){ .f-allproj .f-ap-grid { grid-template-columns:1fr 1fr; } }
+@media(min-width:980px){ .f-allproj .f-ap-grid { grid-template-columns:1fr 1fr 1fr; } }
+.f-allproj .f-piece { background:#FBF6EB; border:1px solid rgba(120,95,40,.16); border-radius:20px; padding:24px 26px; transition:transform .35s,box-shadow .35s,background .3s; }
+.f-allproj .f-piece:hover { transform:translateY(-5px); background:#fff; box-shadow:0 26px 50px -30px rgba(120,90,20,.4); }
+.f-allproj .f-piece-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.f-allproj .f-piece-idx { font-family:'Fraunces',serif; font-style:italic; font-weight:400; font-size:15px; color:#b89a52; }
+.f-allproj .f-piece-cat { font-size:11px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#8a7234; }
+.f-allproj .f-piece-title { font-family:'Fraunces',serif; font-weight:600; font-size:22px; letter-spacing:-.5px; line-height:1.12; margin:16px 0 7px; }
+.f-allproj .f-piece-date { font-size:12px; font-weight:700; color:#a08a5e; }
+.f-allproj .f-piece-desc { font-size:14px; color:#56616c; margin-top:11px; line-height:1.6; }
+.f-allproj .f-disclosure { display:inline-flex; align-items:center; gap:8px; background:none; border:0; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:800; letter-spacing:.3px; color:#2596BE; padding:6px 0; margin-top:8px; text-transform:uppercase; }
+.f-allproj .f-disclosure svg { transition:transform .3s; }
+.f-allproj .f-disclosure[aria-expanded="true"] svg { transform:rotate(180deg); }
+.f-allproj .f-piece-skills { display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s cubic-bezier(.2,.7,.2,1); }
+.f-allproj .f-piece-skills.open { grid-template-rows:1fr; }
+.f-allproj .f-piece-skills-in { overflow:hidden; }
+.f-allproj .f-piece-skills-pad { padding-top:12px; }
+
+/* ─── Reduced motion ─────────────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  .fam-root .f-reveal, .fam-root .f-reveal-pop { opacity:1; transform:none; transition:none; }
+  .fam-root .wave path { opacity:1; transform:none; transition:none; }
+  .fam-root .f-terr-bar i { transition:none; }
+  .fam-root .f-spark, .fam-root .f-scroll-cue svg,
+  .fam-root .f-seal-rot, .fam-root .s-spin, .fam-root .s-breathe { animation:none; }
+  .fam-root .s-motif { opacity:1; transform:none; transition:none; }
+  .fam-root .f-scene-head .f-reveal,
+  .fam-root .f-scene-head .f-reveal-pop { opacity:1; transform:none; filter:none; transition:none; }
+  .fam-root .f-tw-caret { display:none; }
+}
 </style>
 </head>
 <body data-theme="amarillo">
+
+
 
 <!-- ══ TOPBAR ══════════════════════════════════════ -->
 <div class="topbar-wrapper" id="topbar-wrapper">
@@ -1178,6 +1496,7 @@ body {
 <div class="app">
 
 <!-- ══ PAGE HOME ═══════════════════════════════════ -->
+
 <div id="page-home" class="page active">
 
   <!-- HERO -->
@@ -1449,6 +1768,7 @@ body {
 </div><!-- /page-home -->
 
 <!-- PAGE PROYECTOS -->
+
 <div id="page-projects" class="page">
   <div class="projects-page-header">
     <button class="back-btn" onclick="showPage('home')">← Volver a inicio</button>
@@ -1463,6 +1783,167 @@ body {
     </div>
   </div>
 </div>
+
+
+<!-- ══════════════════════════════════════════════
+     PORTAL FAMILIA — page-family
+     Completamente aislado del tema del alumno.
+     CSS bajo .fam-root | JS en IIFE propio
+     ══════════════════════════════════════════════ -->
+<div id="page-family" style="display:none">
+<div class="fam-root">
+
+  <!-- HERO -->
+  <section class="f-scene sc-hero">
+    <span class="f-hero-blob h1" data-fpar="0.16"></span>
+    <span class="f-hero-blob h2" data-fpar="0.3"></span>
+    <span class="f-spark" style="left:8%;top:20%" data-fpar="-0.25"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2 C12.6 8.2 15.8 11.4 22 12 C15.8 12.6 12.6 15.8 12 22 C11.4 15.8 8.2 12.6 2 12 C8.2 11.4 11.4 8.2 12 2 Z" fill="currentColor"/></svg></span>
+    <span class="f-spark" style="left:15%;bottom:22%;animation-delay:1.3s" data-fpar="-0.15"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2 C12.6 8.2 15.8 11.4 22 12 C15.8 12.6 12.6 15.8 12 22 C11.4 15.8 8.2 12.6 2 12 C8.2 11.4 11.4 8.2 12 2 Z" fill="currentColor"/></svg></span>
+    <div class="f-scene-inner hero-in">
+      <div class="f-hero-head f-reveal">
+        <div class="f-hero-id">
+          <span class="f-eyebrow"><svg viewBox="0 0 24 24"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg>Espacio de la familia</span>
+          <div class="f-hero-name f-serif" id="fam-student-name">Álvaro López</div>
+          <div class="f-hero-where">CEIP San Pablo, Madrid<span class="f-dot">·</span>Makers 5A<span class="f-dot">·</span>Robótica Avanzada</div>
+        </div>
+        <div class="f-hero-seal">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="57" fill="none" stroke="rgba(47,58,74,.16)" stroke-width="1"/>
+            <circle cx="60" cy="60" r="41" fill="none" stroke="rgba(47,58,74,.12)" stroke-width="1"/>
+            <defs><path id="fSealPath" d="M60,11 a49,49 0 1,1 -0.01,0"/></defs>
+            <g class="f-seal-rot"><text font-family="Figtree" font-size="8" font-weight="800" letter-spacing="2.4" fill="rgba(47,58,74,.5)"><textPath href="#fSealPath" startOffset="0">IGNITE NEXUS · EL CURSO DE ÁLVARO · 2024–25 · </textPath></text></g>
+            <g transform="translate(48,48)"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="#FBB03B"/></g>
+          </svg>
+        </div>
+      </div>
+      <h1 class="f-display f-serif f-reveal" style="--d:.08s">Mira todo lo<br>que ha <span class="f-hot f-js-type" data-type="creado.">creado.</span></h1>
+      <p class="f-lede f-reveal" style="--d:.16s;margin-top:22px">Un recorrido por los proyectos, las ideas y los pequeños grandes momentos de Álvaro en Ignite Nexus.</p>
+      <div class="f-scroll-cue f-reveal" style="--d:.24s">Desliza <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </section>
+
+  <!-- 01 EN CURSO -->
+  <section class="f-scene sc-yellow">
+    <div class="wave" aria-hidden="true"><svg viewBox="0 0 1440 64" preserveAspectRatio="none"><path d="M0,64 C420,4 1020,4 1440,64 L1440,64 L0,64 Z" fill="#FBEFCB"/></svg></div>
+    <div class="f-scene-inner">
+      <div class="f-scene-head">
+        <span class="f-scene-num f-reveal">01</span>
+        <span class="f-eyebrow f-reveal" style="--d:.05s"><svg viewBox="0 0 24 24"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg>Ahora mismo</span>
+        <h2 class="f-display f-serif f-reveal" style="--d:.1s">Está en mitad de algo <em class="f-js-type" data-type="grande.">grande.</em></h2>
+        <p class="f-lede f-reveal" style="--d:.16s">Esto es lo que tiene entre manos esta temporada — y todo lo que practica por el camino.</p>
+      </div>
+      <div class="f-proj-grid" id="famNowGrid"></div>
+    </div>
+  </section>
+
+  <!-- 02 ÁREAS -->
+  <section class="f-scene sc-blue">
+    <div class="wave" aria-hidden="true"><svg viewBox="0 0 1440 64" preserveAspectRatio="none"><path d="M0,64 C420,4 1020,4 1440,64 L1440,64 L0,64 Z" fill="#EAF1FA"/></svg></div>
+    <div class="f-scene-inner">
+      <div class="f-scene-head">
+        <span class="f-scene-num f-reveal" style="-webkit-text-stroke-color:rgba(37,150,190,.32)">02</span>
+        <span class="f-eyebrow f-reveal" style="--d:.05s"><svg viewBox="0 0 24 24"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg>Lo que explora</span>
+        <h2 class="f-display f-serif f-reveal" style="--d:.1s">Seis territorios.<br>Una mente <em class="f-js-type" data-type="inquieta.">inquieta.</em></h2>
+        <p class="f-lede f-reveal" style="--d:.16s">Cada proyecto entrena varias habilidades, agrupadas en las competencias <strong>STEAM</strong> y las <strong>habilidades transversales</strong>. La barra refleja el progreso: sube rápido al principio y cuesta más a medida que avanza. Toca un área para ver qué habilidades ha desarrollado.</p>
+      </div>
+      <div class="f-terr" id="famAreasGrid"></div>
+    </div>
+  </section>
+
+  <!-- 03 COLECCIÓN (scroll horizontal) -->
+  <section class="f-scene sc-oat" id="fam-collection">
+    <div class="wave" aria-hidden="true"><svg viewBox="0 0 1440 64" preserveAspectRatio="none"><path d="M0,64 C420,4 1020,4 1440,64 L1440,64 L0,64 Z" fill="#EEE6D2"/></svg></div>
+    <div class="f-scene-inner">
+      <div class="f-scene-head">
+        <span class="f-scene-num f-reveal" style="-webkit-text-stroke-color:rgba(120,95,40,.3)">03</span>
+        <span class="f-eyebrow f-reveal" style="--d:.05s;color:#7a6433"><svg viewBox="0 0 24 24"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg>Su colección</span>
+        <h2 class="f-display f-serif f-reveal" style="--d:.1s">Cosas que ha hecho con sus manos <em class="f-js-type" data-type="(y su cabeza).">(y su cabeza).</em></h2>
+        <p class="f-lede f-reveal" style="--d:.16s;color:#6a5d44">Sigue bajando: la colección avanza de lado. Estos son los cuatro últimos.</p>
+      </div>
+    </div>
+    <div class="f-horiz-pin" id="famHorizPin">
+      <div class="f-horiz-sticky">
+        <div class="f-horiz-track" id="famHorizTrack"></div>
+        <div class="f-horiz-foot">
+          <span class="f-horiz-count" id="famHorizCount">01</span>
+          <span class="f-horiz-total">/ 04</span>
+          <div class="f-horiz-progress"><i id="famHorizBar"></i></div>
+          <span class="f-horiz-hint">Baja para avanzar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 MOMENTOS -->
+  <section class="f-scene sc-yellow-2">
+    <div class="wave" aria-hidden="true"><svg viewBox="0 0 1440 64" preserveAspectRatio="none"><path d="M0,64 C420,4 1020,4 1440,64 L1440,64 L0,64 Z" fill="#FAEFC6"/></svg></div>
+    <div class="f-scene-inner">
+      <div class="f-scene-head">
+        <span class="f-scene-num f-reveal">04</span>
+        <span class="f-eyebrow f-reveal" style="--d:.05s"><svg viewBox="0 0 24 24"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg>En el aula</span>
+        <h2 class="f-display f-serif f-reveal" style="--d:.1s">Momentos que merecen un <em class="f-js-type" data-type="marco.">marco.</em></h2>
+        <p class="f-lede f-reveal" style="--d:.16s">Pequeñas notas que el profesorado recoge clase a clase: logros, gestos y algún recordatorio amable.</p>
+      </div>
+      <div class="f-notes" id="famLogGrid"></div>
+      <div class="f-more-log" id="famMoreLogGrid"></div>
+      <button class="f-editorial-btn" id="famLogBtnEl">
+        <span id="famLogBtnLabelEl">Ver más momentos</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="f-scene sc-close">
+    <div class="wave" aria-hidden="true"><svg viewBox="0 0 1440 64" preserveAspectRatio="none"><path d="M0,64 C420,4 1020,4 1440,64 L1440,64 L0,64 Z" fill="#DDEAF8"/></svg></div>
+    <div class="f-scene-inner f-close-in">
+      <span class="f-close-mark f-reveal"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg></span>
+      <p class="f-close-quote f-reveal" style="--d:.05s">Gracias por acompañar a Álvaro. Cada proyecto suma a la <em>persona</em> que está construyendo.</p>
+      <p class="f-close-sign f-reveal" style="--d:.12s">El equipo de Ignite Nexus</p>
+      <p class="f-close-sub f-reveal" style="--d:.18s">¿Quieres comentar su progreso? Habla con el profesorado en la próxima sesión.</p>
+      <div class="f-foot f-reveal" style="--d:.24s">
+        <svg viewBox="0 0 48 48" height="26" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(24,24)"><path d="M-16-16 L-10-16 M-16-16 L-16-10" stroke="#2596BE" stroke-width="1.5" fill="none"/><path d="M16 16 L10 16 M16 16 L16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/><path d="M-16 16 L-10 16 M-16 16 L-16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/><path d="M16-16 L10-16 M16-16 L16-10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/></g>
+          <g transform="translate(24.4,22.3) scale(.85)"><path d="M-3.2-15 L3.2-14 L6.4 4.6 L.8 4.6 L-.8 18.4 L-7.2-2.3 L-1.6-2.3Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/></g>
+        </svg>
+        <span class="f-foot-note"><b>Ignite Nexus</b> · Espacio de la familia de Álvaro López · Curso 2024–25</span>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /.fam-root -->
+</div><!-- /#page-family -->
+
+<!-- ══ ALL-PROJECTS OVERLAY (family) ══ -->
+<div class="f-allproj" id="famAllProjects" aria-hidden="true">
+  <div class="f-allproj-bar">
+    <button class="f-ap-back" onclick="famCloseAll()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver</button>
+    <span class="f-ap-title">Toda la colección</span>
+  </div>
+  <div class="f-allproj-body">
+    <h2 class="f-allproj-head">Todo lo que ha creado.</h2>
+    <p class="f-allproj-sub">La colección completa de proyectos de Álvaro. Abre cualquiera para ver qué aprendió.</p>
+    <div class="f-ap-grid" id="famAllProjGrid"></div>
+  </div>
+</div>
+<!-- FLOATING SWITCHER -->
+<div class="profile-switcher">
+  <div class="switcher-options">
+    <button class="switcher-btn active" id="sw-student" onclick="setView('student')">
+      <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Alumno
+    </button>
+    <button class="switcher-btn" id="sw-family" onclick="setView('family')">
+      <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="11" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="21" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 28c0-4 3-7 7-7h10c4 0 7 3 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      Familia
+    </button>
+  </div>
+</div>
+
+
+
 
 </div><!-- /app -->
 
@@ -1533,6 +2014,7 @@ body {
   </div>
 </div>
 
+
 <!-- GALAXIA FULLSCREEN OVERLAY -->
 <div class="gx-fs-overlay" id="gx-fs-overlay">
   <div class="gx-fs-body" id="gx-fs-body">
@@ -1568,21 +2050,9 @@ body {
   <div style="position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;font-weight:800;color:var(--muted);z-index:8;pointer-events:none;">Desliza al lado para explorar <span style="display:inline-block;animation:ar 1.4s ease-in-out infinite;">→</span></div>
 </div>
 
-<!-- FLOATING SWITCHER -->
-<div class="profile-switcher">
-  <div class="switcher-options">
-    <button class="switcher-btn active" id="sw-student" onclick="setView('student')">
-      <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-      Alumno
-    </button>
-    <button class="switcher-btn" id="sw-family" onclick="setView('family')">
-      <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="11" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="21" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 28c0-4 3-7 7-7h10c4 0 7 3 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-      Familia
-    </button>
-  </div>
-</div>
 
 <script>
+
 const BOLT_PATH_DEFAULT='M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z';
 const BOLT_VB_DEFAULT='7 2 16 31';
 // ── XP COUNTER ANIMATION ───────────────────────────────────────
@@ -2165,10 +2635,18 @@ function closePalette() { document.getElementById('palette-modal').classList.rem
 // ── VIEW SWITCHER ─────────────────────────────────────────────
 function setView(m) {
   const f = m==='family';
+  // Student pages — use .page/.active class system, not inline style
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  if(!f) document.getElementById('page-home').classList.add('active');
   document.getElementById('students-view').style.display = f?'none':'block';
   document.getElementById('family-view').style.display = f?'block':'none';
+  // Family page
+  const fp=document.getElementById('page-family');
+  if(fp){ fp.style.display = f?'block':'none'; }
   document.getElementById('sw-student').classList.toggle('active',!f);
   document.getElementById('sw-family').classList.toggle('active',f);
+  window.scrollTo({top:0});
+  if(f && window._famInit) window._famInit();
 }
 
 // ── PAGE NAV ──────────────────────────────────────────────────
@@ -4603,6 +5081,345 @@ return{render,showView,openPov,closePov,goToPov,navPov,launch:launchDespegues,se
   }
 })();
 
+
+
+/* ═══════════════════════════════════════════════════════════
+   FAMILIA JS — IIFE completamente aislado
+   ═══════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   PORTAL FAMILIA — IIFE aislado
+   • Todos los IDs llevan prefijo fam- / f-
+   • data-fpar en lugar de data-par (para no pisar el parallax del alumno)
+   • data-farea / data-fdisclose (no colisionan con data-area / data-disclose)
+   • bars usan data-fw en lugar de data-w
+   • Animaciones de reveal usan clases f-reveal / f-in / f-js-type
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+var root=document.getElementById('page-family'); if(!root) return;
+var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+var _inited=false;
+
+/* ── Shared canonical data (defined in student JS) ── */
+function getFamProjects(){
+  // archiveMissions is the student's completed missions array — same data
+  if(typeof archiveMissions!=='undefined'&&archiveMissions.length) return archiveMissions;
+  return [
+    {name:'Estación Meteorológica',cat:'Electrónica',dates:'15 ene – 12 feb 2025',desc:'Una estación con sensores que mide temperatura y humedad.',skills:[{n:'Sensores y Arduino'},{n:'Análisis de datos'},{n:'Trabajo en equipo'}]},
+    {name:'Videojuego en Scratch',cat:'Programación',dates:'3 nov – 28 nov 2024',desc:'Su propio videojuego de principio a fin.',skills:[{n:'Lógica de programación'},{n:'Diseño de personajes'},{n:'Creatividad narrativa'}]},
+    {name:'Puente de Espaguetis',cat:'Ingeniería',dates:'5 oct – 25 oct 2024',desc:'Diseñó y construyó un puente de espaguetis.',skills:[{n:'Resistencia de materiales'},{n:'Trabajo cooperativo'},{n:'Prototipado'}]},
+    {name:'App de Reciclaje',cat:'Programación',dates:'10 sep – 2 oct 2024',desc:'Una app para animar a reciclar.',skills:[{n:'Diseño de apps'},{n:'Sostenibilidad'},{n:'Experiencia de uso'}]},
+    {name:'Planetario Virtual',cat:'Ciencia',dates:'5 jun – 28 jun 2024',desc:'Recreó un planetario para explorar el sistema solar.',skills:[{n:'Astronomía'},{n:'Presentación oral'},{n:'Investigación'}]},
+    {name:'Casa Domótica',cat:'IoT',dates:'5 mar – 28 mar 2024',desc:'Una maqueta de casa inteligente.',skills:[{n:'Electrónica'},{n:'Automatización'},{n:'Programación'}]},
+    {name:'Cañón de Aire',cat:'Física',dates:'3 may – 24 may 2024',desc:'Construyó un cañón que lanza aros de humo.',skills:[{n:'Aerodinámica'},{n:'Matemáticas'},{n:'Experimentación'}]},
+    {name:'Llavero 3D',cat:'Diseño 3D',dates:'1 abr – 19 abr 2024',desc:'Diseñó e imprimió en 3D su propio llavero.',skills:[{n:'Modelado 3D'},{n:'Impresión 3D'},{n:'Creatividad'}]}
+  ];
+}
+function getFamNow(){
+  // Map student illus keys to family ART keys
+  var artMap={robotica:'robot',diseno3d:'city',electronica:'robot',programacion:'city',ingenieria:'robot'};
+  if(typeof activeMissions!=='undefined'&&activeMissions.length){
+    return activeMissions.map(function(m){return {cat:m.cat,art:artMap[m.illus]||'robot',name:m.name,desc:m.desc||'',skills:(m.skills||[]).map(function(s){return typeof s==='string'?s:s.n||'';})};});
+  }
+  return [
+    {cat:'Robótica',art:'robot',name:'Robot Explorador',desc:'Construye un pequeño robot capaz de moverse solo y esquivar obstáculos.',skills:['Programación','Electrónica','Diseño mecánico']},
+    {cat:'Diseño 3D',art:'city',name:'Ciudad del Futuro 3D',desc:'Diseña en 3D una ciudad sostenible.',skills:['Modelado 3D','Creatividad','Sostenibilidad']}
+  ];
+}
+function getFamAreas(){
+  if(typeof RAMAS!=='undefined'){
+    var cols={Science:'#10A6A0',Technology:'#2596BE',Engineering:'#3E6FA8',Art:'#E063A0',Maths:'#E0962A',Transversals:'#6E63E8'};
+    var kinds={Science:'STEAM',Technology:'STEAM',Engineering:'STEAM',Art:'STEAM',Maths:'STEAM',Transversals:'Transversal'};
+    var ltrs={Science:'S',Technology:'T',Engineering:'E',Art:'A',Maths:'M',Transversals:'+'};
+    var descs={Science:'Observar, preguntarse y comprobar cómo funciona todo.',Technology:'Programar, conectar y dar vida a las ideas.',Engineering:'Diseñar, construir y mejorar hasta que funciona.',Art:'Crear con color, forma e imaginación.',Maths:'Razonar, medir y resolver problemas.',Transversals:'Las que sirven para todo: trabajar, comunicar y liderar.'};
+    return Object.keys(RAMAS).map(function(r){
+      var d=RAMAS[r];
+      return {name:r,kind:kinds[r]||'STEAM',letter:ltrs[r]||r[0],ac:cols[r]||'#2596BE',desc:descs[r]||'',
+        skills:(d.skills||[]).map(function(s){var lv=s.lv||1;return {n:s.n||s.name||'',p:lv>=3?'domina':lv>=2?'progreso':'inicio',d:s.desc||'',lv:lv};})};
+    });
+  }
+  return [
+    {name:'Tecnología',kind:'STEAM',letter:'T',ac:'#2596BE',desc:'Programar y dar vida a las ideas.',skills:[{n:'Arduino y electrónica',p:'domina',d:'Conecta sensores.',lv:3},{n:'Programación (Python)',p:'domina',d:'Programa con Python.',lv:3},{n:'IA',p:'progreso',d:'Machine learning.',lv:2},{n:'Apps',p:'progreso',d:'Aplicaciones web.',lv:2}]},
+    {name:'Ingeniería',kind:'STEAM',letter:'E',ac:'#3E6FA8',desc:'Diseñar y construir.',skills:[{n:'Diseño mecánico',p:'domina',d:'Mecanismos.',lv:3},{n:'Prototipado',p:'progreso',d:'Pruebas.',lv:2},{n:'Estructuras',p:'progreso',d:'Construcciones.',lv:2}]},
+    {name:'Ciencia',kind:'STEAM',letter:'S',ac:'#10A6A0',desc:'Observar y comprobar.',skills:[{n:'Física',p:'progreso',d:'Fuerzas.',lv:2},{n:'Biología',p:'progreso',d:'Ecosistemas.',lv:2},{n:'Método científico',p:'progreso',d:'Hipótesis.',lv:2}]},
+    {name:'Arte y diseño',kind:'STEAM',letter:'A',ac:'#E063A0',desc:'Crear con forma.',skills:[{n:'Modelado 3D',p:'progreso',d:'Objetos 3D.',lv:2},{n:'Diseño visual',p:'progreso',d:'Color y forma.',lv:2},{n:'Ilustración',p:'inicio',d:'Dibujar.',lv:1}]},
+    {name:'Matemáticas',kind:'STEAM',letter:'M',ac:'#E0962A',desc:'Razonar y medir.',skills:[{n:'Geometría',p:'progreso',d:'Figuras.',lv:2},{n:'Álgebra',p:'progreso',d:'Ecuaciones.',lv:2},{n:'Lógica',p:'inicio',d:'Razonamiento.',lv:1}]},
+    {name:'Habilidades personales',kind:'Transversal',letter:'+',ac:'#6E63E8',desc:'Trabajar, comunicar, liderar.',skills:[{n:'Trabajo en equipo',p:'domina',d:'Colaboración.',lv:3},{n:'Comunicación',p:'progreso',d:'Expresa ideas.',lv:2},{n:'Liderazgo',p:'progreso',d:'Guía al grupo.',lv:2}]}
+  ];
+}
+var FAM_MOMENTS=[
+  {date:'14 may 2025',type:'good',cat:'Compañerismo',name:'Ayudó a un compañero',text:'Echó una mano a un compañero que se había atascado.'},
+  {date:'12 may 2025',type:'good',cat:'Participación',name:'Participación excepcional',text:'Participó con muchas ganas y aportó ideas al equipo.'},
+  {date:'8 may 2025',type:'note',cat:'Puntualidad',name:'Llegó un poco tarde',text:'Esta vez llegó algo tarde. Un pequeño recordatorio.'},
+  {date:'5 may 2025',type:'good',cat:'Creatividad',name:'Idea creativa destacada',text:'Sorprendió con una idea original para resolver el reto.'},
+  {date:'2 may 2025',type:'good',cat:'Liderazgo',name:'Liderazgo en el grupo',text:'Tomó la iniciativa y organizó a su grupo.'},
+  {date:'28 abr 2025',type:'note',cat:'Tareas',name:'Una tarea sin terminar',text:'No llegó a terminar la tarea. Lo retomará con tranquilidad.'},
+  {date:'25 abr 2025',type:'good',cat:'Proyecto',name:'Mejor proyecto de la semana',text:'Su proyecto fue elegido el mejor de la semana.'},
+  {date:'22 abr 2025',type:'good',cat:'Constancia',name:'Documentó su proyecto',text:'Dedicó tiempo a documentar su proyecto con detalle.'}
+];
+
+/* ── Helpers ── */
+var ART={
+  robot:'<svg class="f-proj-art" viewBox="0 0 120 120" fill="none"><g stroke="#2F3A4A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M60 30 V20"/><circle cx="60" cy="15.5" r="3.2" fill="#FBB03B" stroke="none"/><rect x="36" y="30" width="48" height="34" rx="12"/><circle cx="50" cy="47" r="3"/><circle cx="70" cy="47" r="3"/><path d="M52 56 q8 4.5 16 0"/><path d="M30 44 v9M90 44 v9"/><rect x="45" y="68" width="30" height="29" rx="10"/><path d="M45 80 H33M75 80 H87"/><path d="M53 97 v8M67 97 v8"/><circle cx="53" cy="109" r="3.6"/><circle cx="67" cy="109" r="3.6"/></g></svg>',
+  city:'<svg class="f-proj-art" viewBox="0 0 120 120" fill="none"><g stroke="#2F3A4A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 100 H98"/><path d="M34 100 V70 L46 62 V92 Z"/><path d="M46 92 V62 L58 70 V100"/><path d="M60 100 V52 L72 44 V90 Z"/><path d="M72 90 V44 L84 52 V100"/><circle cx="40" cy="78" r="1.6" fill="#FBB03B" stroke="none"/><circle cx="66" cy="62" r="1.6" fill="#FBB03B" stroke="none"/><circle cx="66" cy="74" r="1.6" fill="#FBB03B" stroke="none"/></g></svg>'
+};
+var FBOLT='<svg viewBox="0 0 24 24" fill="none"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg>';
+var FRING='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg>';
+var FFRAME='<span class="f-fc f-fc-tl"></span><span class="f-fc f-fc-tr"></span><span class="f-fc f-fc-bl"></span><span class="f-fc f-fc-br"></span>';
+var FPROF={inicio:{lv:1},progreso:{lv:2},domina:{lv:3}};
+
+function ftags(l){return l.map(function(s){var n=typeof s==='string'?s:s.n||s.name||'';return '<span class="f-tag">'+n+'</span>';}).join('');}
+function fskls(l){return l.map(function(s){return '<span class="f-skl">'+s+'</span>';}).join('');}
+function feid(s){return s.replace(/[^a-z0-9]/gi,'');}
+function fmeter(lv,col){var n=lv+1,s='';for(var k=1;k<=n;k++){s+='<i'+(k<=lv?' class="on"':'')+(k<=lv&&col?' style="background:'+col+'"':'')+'></i>';}return '<span class="f-meter">'+s+'</span>';}
+function fareaPts(a){return a.skills.reduce(function(t,s){return t+FPROF[s.p].lv;},0);}
+function fareaProg(a){return Math.round(100*(1-Math.exp(-fareaPts(a)/8)));}
+
+/* ── Render sections ── */
+function renderFamNow(){
+  var el=document.getElementById('famNowGrid'); if(!el)return;
+  var NOW=getFamNow();
+  el.innerHTML=NOW.map(function(p,i){
+    return '<article class="f-proj f-reveal-pop" style="--d:'+(i*.1)+'s"><div class="f-proj-frame">'+FFRAME+(ART[p.art]||'')+'</div>'
+      +'<div class="f-proj-body"><span class="f-proj-kicker">'+FBOLT+'En curso · '+p.cat+'</span>'
+      +'<h3 class="f-proj-title">'+p.name+'</h3><p class="f-proj-desc">'+p.desc+'</p>'
+      +'<span class="f-skl-label">Lo que practica</span><div class="f-skl-list">'+fskls(p.skills)+'</div></div></article>';
+  }).join('');
+}
+function renderFamAreas(){
+  var el=document.getElementById('famAreasGrid'); if(!el)return;
+  var AREAS=getFamAreas();
+  el.innerHTML=AREAS.slice().sort(function(a,b){return fareaPts(b)-fareaPts(a);}).map(function(a,i){
+    var sk=a.skills.map(function(s){var lv=s.lv||FPROF[s.p].lv;return '<div class="f-sk-row"><span class="f-sk-name">'+s.n+'</span>'+fmeter(lv,a.ac)+'<span class="f-sk-lv" style="color:'+a.ac+'">Nivel '+lv+'</span><span class="f-sk-desc">'+s.d+'</span></div>';}).join('');
+    var isT=a.kind==='Transversal';
+    var pct=fareaProg(a);
+    return '<div class="f-terr-row f-reveal" aria-expanded="false" style="--fac:'+a.ac+';--d:'+(i*.05)+'s">'
+      +'<button class="f-terr-head" data-farea><span class="f-terr-badge'+(isT?' tx':'')+'" style="border-color:'+a.ac+';color:'+a.ac+'">'+a.letter+'</span>'
+      +'<span class="f-terr-main"><span class="f-terr-kind">'+(isT?'Habilidad transversal':'Competencia STEAM')+'</span>'
+      +'<span class="f-terr-name">'+a.name+'</span><span class="f-terr-desc">'+a.desc+'</span>'
+      +'<span class="f-terr-meta"><span class="f-terr-word">Progreso</span><span class="f-terr-bar"><i data-fw="'+pct+'"></i></span><span class="f-terr-count">'+a.skills.length+' habilidades</span></span></span>'
+      +'<span class="f-terr-plus"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></button>'
+      +'<div class="f-terr-skills"><div class="f-terr-skills-in"><div class="f-terr-skills-pad">'+sk+'</div></div></div></div>';
+  }).join('');
+}
+function renderFamHoriz(){
+  var el=document.getElementById('famHorizTrack'); if(!el)return;
+  var PROJ=getFamProjects();
+  var cnt=PROJ.length;
+  function hcard(p,i){
+    var skills=(p.skills||[]).map(function(s){return typeof s==='string'?s:s.n||s.name||'';});
+    return '<article class="f-hcard"><span class="f-hcard-wm">0'+(i+1)+'</span>'
+      +'<span class="f-hcard-cat">'+(p.cat||'Proyecto')+'</span>'
+      +'<h3 class="f-hcard-title">'+p.name+'</h3><span class="f-hcard-date">'+(p.dates||'')+'</span>'
+      +'<p class="f-hcard-desc">'+(p.desc||p.description||'')+'</p>'
+      +'<div class="f-hcard-tags"><span class="f-skl-label" style="color:#a08f63">Lo que aprendió</span><div class="f-chips">'+ftags(skills)+'</div></div></article>';
+  }
+  var ctaPanel='<article class="f-hcard f-hcard-cta"><div><span class="f-hcard-cat">La colección al completo</span>'
+    +'<h3 class="f-hcard-title">'+cnt+' proyectos,<br>y subiendo.</h3>'
+    +'<button class="f-editorial-btn" onclick="famOpenAll()">Verlos todos <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></article>';
+  el.innerHTML=PROJ.slice(0,4).map(hcard).join('')+ctaPanel;
+  // Update count display
+  var tot=document.querySelector('#famHorizPin .f-horiz-total');
+  if(tot) tot.textContent='/ 04';
+}
+function renderFamAllProj(){
+  var el=document.getElementById('famAllProjGrid'); if(!el)return;
+  var PROJ=getFamProjects();
+  el.innerHTML=PROJ.map(function(p,i){
+    var id='fap'+feid(p.name)+i;
+    var skills=(p.skills||[]).map(function(s){return typeof s==='string'?s:s.n||s.name||'';});
+    return '<article class="f-piece"><div class="f-piece-top"><span class="f-piece-idx">N.º '+(i<9?'0':'')+(i+1)+'</span><span class="f-piece-cat">'+(p.cat||'')+'</span></div>'
+      +'<h3 class="f-piece-title">'+p.name+'</h3><div class="f-piece-date">'+(p.dates||'')+'</div><p class="f-piece-desc">'+(p.desc||'')+'</p>'
+      +'<button class="f-disclosure" data-fdisclose="'+id+'" aria-expanded="false">Ver lo que aprendió<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+      +'<div class="f-piece-skills" id="'+id+'"><div class="f-piece-skills-in"><div class="f-piece-skills-pad"><div class="f-chips">'+ftags(skills)+'</div></div></div></div></article>';
+  }).join('');
+}
+function renderFamMoments(){
+  var logEl=document.getElementById('famLogGrid');
+  var moreEl=document.getElementById('famMoreLogGrid');
+  function noteHtml(m,i){var isNote=m.type==='note';
+    return '<article class="f-note'+(isNote?' f-info':'')+' f-reveal-pop" style="--d:'+((i%2)*.08)+'s">'
+      +'<div class="f-note-top"><span class="f-note-mark">'+(isNote?FRING:FBOLT)+'</span>'
+      +'<span class="f-note-date">'+m.date+'</span><span class="f-note-cat">'+m.cat+'</span></div>'
+      +'<h3 class="f-note-title">'+m.name+'</h3><p class="f-note-text">'+m.text+'</p></article>';
+  }
+  if(logEl) logEl.innerHTML=FAM_MOMENTS.slice(0,4).map(noteHtml).join('');
+  if(moreEl) moreEl.innerHTML=FAM_MOMENTS.slice(4).map(function(m,i){return noteHtml(m,i+4);}).join('');
+}
+
+/* ── Motifs ── */
+function addMotifs(){
+  function motif(key){
+    switch(key){
+      case 'sc-yellow':return '<span class="s-motif m-ring" style="width:36vw;height:36vw;max-width:460px;max-height:460px;top:-10%;right:-6%"><svg viewBox="0 0 100 100"><g class="s-spin"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(246,200,75,.6)" stroke-width="2.4"/></g></svg></span>';
+      case 'sc-blue':return '<span class="s-motif m-arcs" style="width:40vw;height:40vw;max-width:500px;max-height:500px;bottom:-13%;left:-8%"><svg viewBox="0 0 100 100"><g class="s-spin"><path d="M50 6 A44 44 0 0 1 94 50" fill="none" stroke="rgba(124,184,245,.6)" stroke-width="3" stroke-linecap="round"/></g></svg></span>';
+      case 'sc-oat':return '<span class="s-motif m-disc" style="width:40vw;height:40vw;max-width:500px;max-height:500px;top:-12%;right:-8%"><svg viewBox="0 0 100 100"><g class="s-breathe"><circle cx="50" cy="50" r="46" fill="rgba(227,214,184,.7)"/></g></svg></span>';
+      case 'sc-yellow-2':return '<span class="s-motif m-dot" style="width:9vw;height:9vw;max-width:100px;top:-3%;left:6%"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="rgba(251,224,138,.55)"/></svg></span>';
+      case 'sc-close':return '<span class="s-motif m-ring" style="width:42vw;height:42vw;max-width:540px;top:-14%;right:-9%"><svg viewBox="0 0 100 100"><g class="s-spin"><circle cx="50" cy="50" r="45" fill="none" stroke="rgba(124,184,245,.5)" stroke-width="2.4"/></g></svg></span>';
+      default:return '';
+    }
+  }
+  ['sc-yellow','sc-blue','sc-oat','sc-yellow-2','sc-close'].forEach(function(key){
+    var sc=root.querySelector('.fam-root .'+key); if(!sc)return;
+    var bg=document.createElement('div'); bg.className='scene-bg'; bg.setAttribute('aria-hidden','true');
+    bg.innerHTML=motif(key); sc.insertBefore(bg,sc.firstChild);
+  });
+}
+
+/* ── Topbar collapse for family ── */
+function setupFamTopbar(){
+  var hero=root.querySelector('.sc-hero');
+  var tw=document.getElementById('topbar-wrapper');
+  if(!hero||!tw||!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function(e){
+    var fp=document.getElementById('page-family');
+    if(fp&&fp.style.display!=='none'){
+      tw.classList.toggle('collapsed',!e[0].isIntersecting);
+      if(e[0].isIntersecting) closeLangModal();
+    }
+  },{rootMargin:'-64px 0px 0px 0px',threshold:0}).observe(hero);
+}
+
+/* ── Horizontal pin ── */
+var FH={pin:null,track:null,sticky:null,dist:0,n:4};
+function setupFamHoriz(){
+  FH.pin=document.getElementById('famHorizPin'); if(!FH.pin)return;
+  FH.track=document.getElementById('famHorizTrack');
+  FH.sticky=FH.pin.querySelector('.f-horiz-sticky');
+  if(reduce){FH.pin.classList.add('no-pin');return;}
+  // Guard: if page-family is hidden, all dimensions are 0 — skip
+  var fp=document.getElementById('page-family');
+  if(!fp||fp.style.display==='none')return;
+  var inner=root.querySelector('#fam-collection .f-scene-inner');
+  var padL=inner?Math.max(16,inner.getBoundingClientRect().left):24;
+  FH.track.style.paddingLeft=padL+'px'; FH.track.style.paddingRight=padL+'px';
+  var dist=FH.track.scrollWidth-FH.sticky.clientWidth; if(dist<0)dist=0;
+  FH.dist=dist; FH.pin.style.height=(window.innerHeight+dist)+'px';
+  updateFamHoriz();
+}
+function updateFamHoriz(){
+  if(!FH.pin||reduce)return;
+  var scrollable=FH.pin.offsetHeight-window.innerHeight;
+  var rectTop=FH.pin.getBoundingClientRect().top;
+  var prog=scrollable>0?Math.min(Math.max(-rectTop/scrollable,0),1):0;
+  FH.track.style.transform='translateX('+(-prog*FH.dist).toFixed(1)+'px)';
+  var bar=document.getElementById('famHorizBar'); if(bar)bar.style.transform='scaleX('+prog.toFixed(3)+')';
+  var cnt=document.getElementById('famHorizCount'); if(cnt){var idx=Math.min(FH.n,Math.max(1,Math.round(prog*(FH.n-1))+1));cnt.textContent=(idx<10?'0':'')+idx;}
+}
+
+/* ── Scroll + parallax ── */
+var fTicking=false;
+function onFamScroll(){
+  if(fTicking)return; fTicking=true;
+  requestAnimationFrame(function(){
+    updateFamHoriz();
+    if(!reduce){var y=window.scrollY;root.querySelectorAll('[data-fpar]').forEach(function(el){el.style.transform='translateY('+(y*parseFloat(el.getAttribute('data-fpar'))).toFixed(1)+'px)';});}
+    fTicking=false;
+  });
+}
+
+/* ── Reveal / typeIt ── */
+var famIO;
+function fillFamBars(scope){
+  (scope||root).querySelectorAll('.f-terr-bar i').forEach(function(bar,j){
+    var w=bar.getAttribute('data-fw')+'%';
+    if(reduce){bar.style.width=w;return;}
+    setTimeout(function(){bar.style.width=w;},120+j*55);
+  });
+}
+function typeItFam(el){
+  if(el.dataset.ftdone)return; el.dataset.ftdone='1';
+  var txt=el.getAttribute('data-type')||el.textContent;
+  if(reduce){el.textContent=txt;return;}
+  el.textContent='';
+  var caret=document.createElement('span'); caret.className='f-tw-caret'; caret.textContent='.'; el.appendChild(caret);
+  var i=0;(function step(){if(i<txt.length){caret.insertAdjacentText('beforebegin',txt.charAt(i));i++;setTimeout(step,55);}else{setTimeout(function(){el.classList.add('f-tw-done');},700);}})();
+}
+function bindFamReveal(scope){
+  if(!famIO)return;
+  (scope||root).querySelectorAll('.f-reveal,.f-reveal-pop').forEach(function(el){
+    if(el.dataset.fobs)return; if(el.closest('.f-scene-head'))return;
+    el.dataset.fobs='1'; famIO.observe(el);
+  });
+}
+
+/* ── Interactions ── */
+function setupFamInteractions(){
+  root.addEventListener('click',function(e){
+    var a=e.target.closest('[data-farea]');
+    if(a){var r=a.closest('.f-terr-row'); if(r)r.setAttribute('aria-expanded',r.getAttribute('aria-expanded')==='true'?'false':'true'); return;}
+    var d=e.target.closest('[data-fdisclose]');
+    if(d){var t=document.getElementById(d.getAttribute('data-fdisclose')); var o=d.getAttribute('aria-expanded')==='true'; d.setAttribute('aria-expanded',o?'false':'true'); if(t)t.classList.toggle('open',!o);}
+  });
+  var lb=document.getElementById('famLogBtnEl'), lx=document.getElementById('famMoreLogGrid'), ll=document.getElementById('famLogBtnLabelEl');
+  if(lb&&lx&&ll){lb.addEventListener('click',function(){var o=lx.classList.toggle('show'); ll.textContent=o?'Mostrar menos':'Ver más momentos'; lb.querySelector('svg').style.transform=o?'rotate(180deg)':''; if(o)bindFamReveal(lx);});}
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var p=document.getElementById('famAllProjects');if(p&&p.classList.contains('open'))famCloseAll();}});
+}
+
+/* ── All-projects overlay ── */
+window.famOpenAll=function(){var p=document.getElementById('famAllProjects');if(!p)return;p.classList.add('open');p.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';p.scrollTop=0;};
+window.famCloseAll=function(){var p=document.getElementById('famAllProjects');if(!p)return;p.classList.remove('open');p.setAttribute('aria-hidden','true');document.body.style.overflow='';};
+
+/* ── Init ── */
+function init(){
+  if(_inited)return; _inited=true;
+  renderFamNow();
+  renderFamAreas();
+  renderFamHoriz();
+  renderFamAllProj();
+  renderFamMoments();
+  addMotifs();
+  setupFamTopbar();
+  setupFamInteractions();
+
+  if(reduce){
+    root.querySelectorAll('.f-reveal,.f-reveal-pop,.f-scene').forEach(function(e){e.classList.add('f-in');});
+    root.querySelectorAll('.f-js-type').forEach(function(e){e.textContent=e.getAttribute('data-type');});
+    fillFamBars(); setupFamHoriz();
+  } else {
+    famIO=new IntersectionObserver(function(es){es.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('f-in');
+        if(e.target.querySelectorAll)e.target.querySelectorAll('.f-js-type').forEach(typeItFam);
+        if(e.target.classList.contains('f-js-type'))typeItFam(e.target);
+        if(e.target.querySelector&&e.target.querySelector('.f-terr-bar'))fillFamBars(e.target);
+        famIO.unobserve(e.target);
+      }
+    });},{threshold:.16});
+    bindFamReveal();
+    root.querySelectorAll('.f-terr-row').forEach(function(r){famIO.observe(r);});
+    var sceneObs=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('f-in',e.isIntersecting);if(e.isIntersecting&&e.target.querySelectorAll)e.target.querySelectorAll('.f-scene-head .f-js-type').forEach(typeItFam);});},{threshold:0,rootMargin:'-12% 0px -12% 0px'});
+    root.querySelectorAll('.f-scene').forEach(function(s){sceneObs.observe(s);});
+    window.addEventListener('scroll',onFamScroll,{passive:true});
+    var rsz; window.addEventListener('resize',function(){clearTimeout(rsz);rsz=setTimeout(setupFamHoriz,180);});
+    setupFamHoriz();
+    setTimeout(setupFamHoriz,400);
+    onFamScroll();
+  }
+}
+
+/* Expose init so setView can call it */
+window._famInit=function(){
+  if(!_inited){ init(); }
+  // Always recalculate horiz after 2 rAFs — page is now visible, real dimensions available
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      setupFamHoriz();
+      bindFamReveal();
+      onFamScroll();
+    });
+  });
+};
+
+/* Auto-init after DOM ready so content is pre-rendered on first tab switch */
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  setTimeout(init, 0);
+}
+
+})(); /* end family IIFE */
 </script>
 </body>
 </html>
