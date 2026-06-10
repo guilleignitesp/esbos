@@ -19,8 +19,7 @@
   --cta:         #2596BE;
   --text:        #2F3A4A;
   --radius:      20px;
-  --radius-sm:   14px;
-  --card-shadow: 0 2px 14px rgba(62,111,168,0.09), 0 1px 3px rgba(62,111,168,0.05);
+--card-shadow: 0 2px 14px rgba(62,111,168,0.09), 0 1px 3px rgba(62,111,168,0.05);
 }
 [data-theme="cosmos"] {
   --warm:      #1a1a2e;
@@ -57,26 +56,26 @@
 [data-theme="caramelo"] {
   --warm:#FFF5E6; --card-a:#FFFFFF; --card-b:#FDE8CC; --accent:#F97316;
   --blue-main:#FDBA74; --blue-dark:#C2410C; --cta:#EA580C; --text:#431407; --muted:#9a6347;
-  --radius:20px; --radius-sm:14px;
-  --card-shadow:0 2px 14px rgba(194,65,12,0.09),0 1px 3px rgba(194,65,12,0.05);
+  --radius:20px;
+--card-shadow:0 2px 14px rgba(194,65,12,0.09),0 1px 3px rgba(194,65,12,0.05);
 }
 [data-theme="nieve"] {
   --warm:#F0F4FF; --card-a:#FFFFFF; --card-b:#E8EEFF; --accent:#6366F1;
   --blue-main:#A5B4FC; --blue-dark:#4338CA; --cta:#4F46E5; --text:#1E1B4B; --muted:#7c7fad;
-  --radius:20px; --radius-sm:14px;
-  --card-shadow:0 2px 14px rgba(67,56,202,0.09),0 1px 3px rgba(67,56,202,0.05);
+  --radius:20px;
+--card-shadow:0 2px 14px rgba(67,56,202,0.09),0 1px 3px rgba(67,56,202,0.05);
 }
 [data-theme="crepusculo"] {
   --warm:#2D1B33; --card-a:#3D2347; --card-b:#4A2A57; --accent:#F59E0B;
   --blue-main:#C084FC; --blue-dark:#E879F9; --cta:#A855F7; --text:#FAF5FF; --muted:#c084fc88;
-  --radius:20px; --radius-sm:14px;
-  --card-shadow:0 2px 14px rgba(0,0,0,0.3),0 1px 3px rgba(0,0,0,0.2);
+  --radius:20px;
+--card-shadow:0 2px 14px rgba(0,0,0,0.3),0 1px 3px rgba(0,0,0,0.2);
 }
 [data-theme="neon"] {
   --warm:#0A0A0F; --card-a:#111118; --card-b:#1A1A28; --accent:#00FFC8;
   --blue-main:#00FFC8; --blue-dark:#00FFC8; --cta:#FF3DFF; --text:#E8FFF8; --muted:#4dffd8aa;
-  --radius:20px; --radius-sm:14px;
-  --card-shadow:0 2px 14px rgba(0,255,200,0.12),0 1px 3px rgba(0,255,200,0.06);
+  --radius:20px;
+--card-shadow:0 2px 14px rgba(0,255,200,0.12),0 1px 3px rgba(0,255,200,0.06);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -388,23 +387,17 @@ body {
 
 /* ═══ CONTENT ══════════════════════════════════════ */
 .content { background: transparent; position: relative; z-index: 3; max-width: 1400px; margin: 0 auto; }
-.section { padding: 0 20px 24px; }
+
 .section-title {
   font-size: 14px; font-weight: 800; color: var(--blue-dark);
   letter-spacing: .5px; text-transform: uppercase; margin-bottom: 14px;
   display: flex; align-items: center; gap: 6px;
 }
-@media (min-width: 900px) {
-  .section { padding: 0 40px 28px; }
-}
+
 
 /* ═══ GRIDS ════════════════════════════════════════ */
-.grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; }
-.grid-actitud { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 12px; }
-@media (min-width: 900px) {
-  .grid-auto { grid-template-columns: repeat(auto-fill, minmax(360px,1fr)); gap: 18px; }
-  .grid-actitud { grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 14px; }
-}
+
+
 /* Ramas grid */
 .ramas-wrapper { background: var(--card-a); border-radius: var(--radius); box-shadow: var(--card-shadow); padding: 16px; border: 1px solid rgba(124,184,245,.18); }
 .grid-ramas { display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -420,29 +413,7 @@ body {
 .section-reveal.visible { opacity: 1; transform: none; }
 
 /* ═══ PROJECT CARD ════════════════════════════════ */
-.project-card {
-  background: var(--card-a); border-radius: var(--radius);
-  box-shadow: var(--card-shadow); border: 1px solid rgba(124,184,245,.18);
-  padding: 18px; display: flex; gap: 14px; align-items: flex-start;
-  transition: transform .2s, box-shadow .2s;
-}
 .project-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(62,111,168,.15); }
-.project-thumb {
-  width: 56px; height: 56px; border-radius: 16px; background: var(--card-b);
-  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-}
-.project-info { flex: 1; min-width: 0; }
-.project-name { font-size: 17px; font-weight: 800; color: var(--text); }
-.project-cat {
-  display: inline-block; background: var(--card-b); color: var(--blue-dark);
-  border-radius: 20px; padding: 3px 11px; font-size: 12px; font-weight: 700; margin: 5px 0 7px;
-}
-.skill-chip {
-  display: inline-block; background: var(--card-b); border-radius: 20px;
-  padding: 3px 10px; font-size: 12px; font-weight: 700; color: var(--blue-dark); margin: 2px;
-}
-.project-skills { flex-wrap: wrap; }
-
 /* ═══ MISSION HERO CARDS ══════════════════════════ */
 .mission-grid { display: grid; gap: 18px; }
 .mission-grid.single { grid-template-columns: 1fr; }
@@ -605,19 +576,9 @@ body {
 }
 .expand-btn:hover { background: var(--card-b); }
 .expand-arrow { transition: transform .2s; }
-.skills-expanded { display: none; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--card-b); position: relative; overflow: hidden; }
 .skills-expanded.open { display: block; }
-.skill-pill-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(124,184,245,.10); }
 .skill-pill-row:last-child { border-bottom: none; }
-.skill-pill-name { font-size: 13px; color: var(--text); font-weight: 600; }
-.skill-pill-xp { font-size: 13px; font-weight: 900; color: var(--cta); }
-
 /* XP Particles */
-.xp-particle {
-  position: absolute; pointer-events: none; z-index: 10;
-  font-size: 13px; font-weight: 900; color: var(--accent);
-  animation: floatUp .8s ease-out forwards;
-}
 @keyframes floatUp {
   0% { opacity: 1; transform: translateY(0) scale(1); }
   100% { opacity: 0; transform: translateY(-60px) scale(.6); }
@@ -761,7 +722,7 @@ body {
 
 /* ═══ ARCHIVO DE MISIONES — DONUT RING CARDS ════════ */
 .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; align-items: start; }
-@media (min-width: 900px) { .archive-grid { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 20px; align-items: start; } }
+
 
 .acard {
   background: var(--card-a); border-radius: 22px;
@@ -793,7 +754,7 @@ body {
   justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.22); border: 2px solid var(--card-a);
 }
 .acard-name { font-size: 16px; font-weight: 900; line-height: 1.1; letter-spacing: -.3px; color: var(--text); }
-.acard-dates { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 3px; }
+
 
 /* Donut chart zone */
 .acard-chart { padding: 12px 14px 16px; }
@@ -806,16 +767,16 @@ body {
 }
 .acard-donut::after { content: ''; position: absolute; inset: 10px; background: var(--card-a); border-radius: 50%; }
 .acard-donut-center { position: relative; z-index: 2; text-align: center; line-height: 1; }
-.acard-donut-center b { font-size: 17px; font-weight: 900; color: var(--blue-dark); display: block; }
-.acard-donut-center small { font-size: 8px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; }
+
+
 
 /* Legend beside donut */
 .acard-legend { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
 .acard-leg-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .acard-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.acard-leg-name { font-size: 12px; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-.acard-leg-count { font-size: 10px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
-.acard-leg-xp { font-size: 12px; font-weight: 900; flex-shrink: 0; margin-left: 2px; }
+
+
+
 
 /* Expand button */
 .acard-expand-btn {
@@ -837,15 +798,15 @@ body {
 .acard-rama-group { }
 .acard-rama-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
 .acard-rama-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-.acard-rama-name { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .4px; }
-.acard-rama-total { font-size: 11px; font-weight: 800; color: var(--muted); margin-left: auto; }
+
+
 
 /* Skill rows */
 .acard-skl { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
-.acard-skl-name { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 .acard-skl-bar { width: 72px; flex-shrink: 0; height: 6px; background: var(--card-b); border-radius: 30px; overflow: hidden; }
 .acard-skl-fill { height: 100%; border-radius: 30px; transition: width .8s cubic-bezier(.22,.68,0,1.2); }
-.acard-skl-xp { font-size: 11.5px; font-weight: 900; width: 40px; text-align: right; flex-shrink: 0; }
+
 
 .acard-name { font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 2px; line-height: 1.2; }
 .acard-dates { font-size: 13.5px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
@@ -853,7 +814,7 @@ body {
 .acard-leg-count { font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
 .acard-leg-xp { font-size: 13.5px; font-weight: 900; flex-shrink: 0; margin-left: 2px; }
 .acard-donut-center b { font-size: 19px; font-weight: 900; color: var(--blue-dark); display: block; }
-.acard-donut-center small { font-size: 9px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; }
+.acard-donut-center small { font-size: 7px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; }
 .acard-rama-name { font-size: 12.5px; font-weight: 900; text-transform: uppercase; letter-spacing: .4px; }
 .acard-rama-total { font-size: 12px; font-weight: 800; color: var(--muted); margin-left: auto; }
 .acard-skl-name { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -878,8 +839,8 @@ body {
 .gx-view.on{display:block;animation:viewin .3s ease;}
 /* niveles grid */
 .gx-grid{display:grid;gap:12px;grid-template-columns:1fr;}
-@media(min-width:520px){.gx-grid{grid-template-columns:1fr 1fr;}}
-@media(min-width:820px){.gx-grid{grid-template-columns:1fr 1fr 1fr;}}
+@media (min-width: 520px){.gx-grid{grid-template-columns:1fr 1fr;}}
+@media (min-width: 820px){.gx-grid{grid-template-columns:1fr 1fr 1fr;}}
 .gx-pcard{position:relative;border-radius:20px;border:1.5px solid;box-shadow:0 4px 16px rgba(62,111,168,.08);padding:14px 12px 12px;cursor:pointer;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden;}
 .gx-pcard:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(62,111,168,.15);}
 .gx-crown{position:absolute;top:9px;right:9px;display:flex;align-items:center;gap:3px;background:var(--accent);color:#5a3a00;font-size:9.5px;font-weight:900;padding:3px 8px 3px 6px;border-radius:30px;text-transform:uppercase;}
@@ -1046,9 +1007,9 @@ body {
 .gx-bolt-liq{transform-box:fill-box;transform-origin:bottom;transition:transform 1.15s cubic-bezier(.22,.68,0,1.2);}
 .gx-ray .rnode{transition:transform .2s cubic-bezier(.3,1.4,.5,1);}
 .gx-ray:hover .rnode{animation:nodepop .55s cubic-bezier(.3,1.5,.5,1);}
-@keyframes nodepop{0%{transform:scale(1)}35%{transform:scale(1.24)}68%{transform:scale(.94)}100%{transform:scale(1)}}
+
 .gx-ray:hover .remb{animation:remspin .7s ease;}
-@keyframes remspin{to{transform:rotate(360deg)}}
+
 .gx-ray .rtrail{transition:stroke-width .25s ease,filter .25s ease;}
 .gx-ray:hover .rtrail{filter:brightness(1.12) saturate(1.25);}
 .gx-ray .rburst{transform-box:view-box;}
@@ -1111,6 +1072,12 @@ body {
 .family-empty { padding: 80px 32px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 60vh; }
 .family-empty-title { font-size: 21px; font-weight: 900; color: var(--blue-dark); margin-bottom: 10px; margin-top: 20px; }
 .family-empty-sub { font-size: 14px; color: #8aa4be; font-weight: 500; max-width: 240px; line-height: 1.65; }
+
+@media (min-width: 900px) {
+.section { padding: 0 40px 28px; }
+.grid-actitud { grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 14px; }
+.archive-grid { grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 20px; align-items: start; }
+}
 </style>
 </head>
 <body data-theme="amarillo">
@@ -1380,17 +1347,16 @@ body {
             <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
               <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
               <path d="M18 32 L26 40 L42 22" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="42" cy="18" r="5" fill="#FBB03B" opacity=".8"/>
             </svg>
           </div>
           <div class="actitud-info"><div class="actitud-name">Ayudó a un compañero</div><div class="actitud-date">14 may 2025</div></div>
           <div class="actitud-xp pos">+20 XP</div>
         </div>
         <div class="actitud-card">
-          <div class="actitud-icon" style="background:#fef9c3">
+          <div class="actitud-icon" style="background:#dcfce7">
             <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#fde68a"/>
-              <path d="M30 14 L33.5 23 L44 23 L36 29 L39 38 L30 32 L21 38 L24 29 L16 23 L26.5 23Z" fill="#FBB03B"/>
+              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
+              <path d="M30 14 L33.5 23 L44 23 L36 29 L39 38 L30 32 L21 38 L24 29 L16 23 L26.5 23Z" fill="#16a34a"/>
             </svg>
           </div>
           <div class="actitud-info"><div class="actitud-name">Participación excepcional</div><div class="actitud-date">12 may 2025</div></div>
@@ -1408,12 +1374,11 @@ body {
           <div class="actitud-xp neg">-10 XP</div>
         </div>
         <div class="actitud-card">
-          <div class="actitud-icon" style="background:#ede9fe">
+          <div class="actitud-icon" style="background:#dcfce7">
             <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#ddd6fe"/>
-              <circle cx="30" cy="26" r="8" stroke="#7c3aed" stroke-width="2.5" fill="none"/>
-              <path d="M30 34V40M26 40H34" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/>
-              <path d="M27.5 22 L30 23 L31 28 L28.5 28 L28 32 L25.5 25 L27.5 25Z" fill="#FBB03B"/>
+              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
+              <circle cx="30" cy="26" r="8" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+              <path d="M30 34V40M26 40H34" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="actitud-info"><div class="actitud-name">Idea creativa destacada</div><div class="actitud-date">5 may 2025</div></div>
@@ -1422,12 +1387,12 @@ body {
       </div>
       <div class="grid-actitud" id="actitud-extra" style="display:none;margin-top:10px">
         <div class="actitud-card">
-          <div class="actitud-icon" style="background:#dbeafe">
+          <div class="actitud-icon" style="background:#dcfce7">
             <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#bfdbfe"/>
-              <circle cx="22" cy="26" r="7" stroke="#2563eb" stroke-width="2.5" fill="none"/>
-              <circle cx="38" cy="26" r="7" stroke="#2563eb" stroke-width="2.5" fill="none"/>
-              <path d="M16 44 L16 40 Q16 34 22 34 H38 Q44 34 44 40 L44 44" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
+              <circle cx="22" cy="26" r="7" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+              <circle cx="38" cy="26" r="7" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+              <path d="M16 44 L16 40 Q16 34 22 34 H38 Q44 34 44 40 L44 44" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
             </svg>
           </div>
           <div class="actitud-info"><div class="actitud-name">Liderazgo en grupo</div><div class="actitud-date">2 may 2025</div></div>
@@ -1445,12 +1410,11 @@ body {
           <div class="actitud-xp neg">-15 XP</div>
         </div>
         <div class="actitud-card">
-          <div class="actitud-icon" style="background:#fef9c3">
+          <div class="actitud-icon" style="background:#dcfce7">
             <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#fde68a"/>
-              <path d="M22 14 L22 30 Q22 38 30 38 Q38 38 38 30 L38 14Z" stroke="#b45309" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
-              <path d="M24 42 L36 42 M30 38 L30 42" stroke="#b45309" stroke-width="2.5" stroke-linecap="round"/>
-              <path d="M28 20 L30.4 21 L31.5 26.5 L29.2 26.5 L28.6 31 L26 23 L28.5 23Z" fill="#FBB03B"/>
+              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
+              <path d="M22 14 L22 30 Q22 38 30 38 Q38 38 38 30 L38 14Z" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+              <path d="M24 42 L36 42 M30 38 L30 42" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="actitud-info"><div class="actitud-name">Mejor proyecto de la semana</div><div class="actitud-date">25 abr 2025</div></div>
@@ -1502,16 +1466,6 @@ body {
 
 </div><!-- /app -->
 
-<!-- RAMA MODAL -->
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title" id="modal-title"></div>
-    <div class="modal-subtitle" id="modal-subtitle"></div>
-    <div id="modal-skills"></div>
-  </div>
-</div>
-
 <!-- MASCOT MODAL -->
 <div class="mascot-modal" id="mascot-modal">
   <div class="mascot-modal-box">
@@ -1519,7 +1473,7 @@ body {
     <div class="mascot-modal-title">Personaliza tu personaje</div>
     <!-- Tabs: Personaje (big) / Tipo (small) / Accesorios (small) -->
     <div class="mascot-tabs">
-      <button class="mascot-tab mascot-tab-main active" id="tab-shape" onclick="switchMascotTab('shape')">
+      <button class="mascot-tab mascot-tab-main active" id="tab-personaje" onclick="switchMascotTab('shape')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="5" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         Personaje
       </button>
@@ -1533,7 +1487,7 @@ body {
       </button>
     </div>
     <!-- Personaje panel -->
-    <div id="panel-shape">
+    <div id="panel-personaje">
       <div class="mascot-modal-sub">Elige tu personaje. Cada uno tiene su propio tipo de base.</div>
       <div class="mascot-grid" id="mascot-grid"></div>
     </div>
@@ -1629,6 +1583,8 @@ body {
 </div>
 
 <script>
+const BOLT_PATH_DEFAULT='M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z';
+const BOLT_VB_DEFAULT='7 2 16 31';
 // ── XP COUNTER ANIMATION ───────────────────────────────────────
 const XP_TARGET = 2840;
 const XP_PERCENT = 88.75;
@@ -2102,7 +2058,7 @@ const activeMissions = [
   },
 ];
 
-const boltBigSVG = `<svg width="34" height="34" viewBox="0 0 32 32" fill="none"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>`;
+const boltBigSVG = `<svg width="34" height="34" viewBox="${BOLT_VB_DEFAULT}" fill="none"><path d="${BOLT_PATH_DEFAULT}" fill="#FBB03B"/></svg>`;
 
 function missionCardHTML(m) {
   return `<div class="mcard">
@@ -2176,7 +2132,6 @@ function handleLangBtn(code) {
 function closeLangModal() { document.getElementById('lang-modal').classList.remove('open'); }
 
 // ── PALETTE ───────────────────────────────────────────────────
-const PALETTES = ['amarillo','bosque','oceano','cosmos'];
 const PALETTE_LOCKED = { crepusculo: 8, neon: 9, cosmos: 10 };
 let currentLevel = 7;
 let currentPalette = 'amarillo';
@@ -2224,13 +2179,6 @@ function showPage(n) {
 }
 
 // ── SKILL EXPAND + XP PARTICLES ───────────────────────────────
-function toggleSkills(btn) {
-  const box = btn.nextElementSibling;
-  const arrow = btn.querySelector('.expand-arrow');
-  const open = box.classList.toggle('open');
-  arrow.style.transform = open ? 'rotate(180deg)' : '';
-  if (open) spawnParticles(btn);
-}
 function spawnParticles(anchor) {
   const rect = anchor.getBoundingClientRect();
   const count = 6;
@@ -2280,7 +2228,6 @@ const allProjects=[
 ];
 const PAGE_SIZE=12; let cp=0;
 const tp=Math.ceil(allProjects.length/PAGE_SIZE);
-const xpSvg='<svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="#FBB03B"/></svg>';
 function renderProjects(){
   const g = document.getElementById('projects-grid');
   if (!g) return;
@@ -2316,7 +2263,6 @@ function handleMascotTouch(e) {
 
 // Override touchend: if timer still pending it was a short tap → open modal
 // If timer already fired → it was long press → stop anim
-const _origStopMascot = stopMascotAnim;
 document.addEventListener('DOMContentLoaded', () => {
   const unit = document.getElementById('mascot-unit');
   if (unit) {
@@ -3080,7 +3026,7 @@ let selectedBolt = 'sparkle';
 function boltSVGContent(b) {
   const defs = b.defs ? `<defs>${b.defs}</defs>` : '';
   const strokeAttr = b.stroke && b.stroke !== 'none' ? ` stroke="${b.stroke}" stroke-width="0.8"` : '';
-  return `${defs}<path d="M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z" fill="${b.fill}"${strokeAttr}/>`;
+  return `${defs}<path d="${BOLT_PATH_DEFAULT}" fill="${b.fill}"${strokeAttr}/>`;
 }
 
 function openBoltModal() {
@@ -3114,7 +3060,7 @@ function selectBolt(id) {
   // Sync Galaxia module
   if (window.IgniteProgress && b) {
     window.IgniteProgress.setBolt({
-      path: 'M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z',
+      path: BOLT_PATH_DEFAULT,
       viewBox: '7 2 16 31',
       color: b.color,
       fill: b.fill,
@@ -3437,8 +3383,8 @@ let selectedFrase = frases[0];
 
 function switchMascotTab(tab) {
   ['shape','color','acc'].forEach(t => {
-    const btnId = t === 'shape' ? 'tab-shape' : t === 'color' ? 'tab-color' : 'tab-acc';
-    const panelId = t === 'shape' ? 'panel-shape' : t === 'color' ? 'panel-color' : 'panel-acc';
+    const btnId = t === 'shape' ? 'tab-personaje' : t === 'color' ? 'tab-color' : 'tab-acc';
+    const panelId = t === 'shape' ? 'panel-personaje' : t === 'color' ? 'panel-color' : 'panel-acc';
     document.getElementById(btnId)?.classList.toggle('active', t===tab);
     const panel = document.getElementById(panelId);
     if (panel) panel.style.display = t===tab ? '' : 'none';
@@ -3795,7 +3741,7 @@ const PROG={Science:72,Technology:89,Engineering:61,Art:55,Maths:38,Transversals
 const LV={Science:4,Technology:6,Engineering:5,Art:4,Maths:3,Transversals:5};
 
 let COLS=[],colorOf={};
-let _boltPath='M13.3 3.2 L18.7 4.1 L21.4 19.9 L16.7 19.9 L15.3 31.6 L9.9 14 L14.6 14Z';
+let _boltPath=BOLT_PATH_DEFAULT;
 let _boltVB='7 2 16 31';
 
 function recalcColors(){COLS=ramaColors();ORDER.forEach((r,i)=>colorOf[r]=COLS[i]);}
@@ -4657,25 +4603,6 @@ return{render,showView,openPov,closePov,goToPov,navPov,launch:launchDespegues,se
   }
 })();
 
-// ── RAMA MODAL (kept for compatibility) ───────────────────────
-const ramaData={
-  Science:{desc:'Exploración del mundo natural y método científico.',color:'#3E6FA8',xp:540,level:'Explorer · Nivel 4',skills:[{n:'Metodología científica',xp:130,lv:'Niv. 3',d:'Diseña experimentos con hipótesis y variables.'},{n:'Biología aplicada',xp:110,lv:'Niv. 3',d:'Comprende seres vivos y ecosistemas.'},{n:'Física básica',xp:150,lv:'Niv. 4',d:'Entiende fuerzas, movimiento y energía.'},{n:'Química experimental',xp:80,lv:'Niv. 2',d:'Realiza reacciones y observa cambios.'},{n:'Astronomía',xp:70,lv:'Niv. 2',d:'Conoce el sistema solar.'}]},
-  Technology:{desc:'Uso creativo de herramientas digitales y tecnológicas.',color:'#2596BE',xp:820,level:'Builder · Nivel 6',skills:[{n:'Programación en bloques',xp:180,lv:'Niv. 5',d:'Scratch, MakeCode y entornos visuales.'},{n:'Python básico',xp:200,lv:'Niv. 6',d:'Variables, bucles, funciones y listas.'},{n:'Arduino & Hardware',xp:220,lv:'Niv. 6',d:'Microcontroladores y sensores.'},{n:'Inteligencia Artificial',xp:130,lv:'Niv. 4',d:'Modelos de ML básicos.'},{n:'Seguridad digital',xp:90,lv:'Niv. 3',d:'Privacidad y ciberseguridad.'}]},
-  Engineering:{desc:'Diseño, construcción y resolución de problemas.',color:'#e07a2b',xp:430,level:'Maker · Nivel 5',skills:[{n:'Diseño mecánico',xp:120,lv:'Niv. 4',d:'Engranajes, palancas y estructuras.'},{n:'Prototipado rápido',xp:100,lv:'Niv. 3',d:'Crea modelos de prueba rápidamente.'},{n:'Electrónica',xp:130,lv:'Niv. 4',d:'Circuitos y componentes.'},{n:'Resolución de problemas',xp:80,lv:'Niv. 3',d:'Analiza y soluciona retos técnicos.'}]},
-  Art:{desc:'Expresión creativa y diseño visual aplicado a proyectos.',color:'#9b5bcc',xp:380,level:'Creator · Nivel 4',skills:[{n:'Modelado 3D',xp:150,lv:'Niv. 5',d:'Tinkercad, Blender y herramientas 3D.'},{n:'Diseño gráfico',xp:100,lv:'Niv. 3',d:'Composición, color y tipografía.'},{n:'Narrativa visual',xp:80,lv:'Niv. 3',d:'Storyboards y presentaciones.'},{n:'Creatividad',xp:50,lv:'Niv. 2',d:'Originalidad e innovación.'}]},
-  Maths:{desc:'Pensamiento lógico y razonamiento numérico.',color:'#1aab6d',xp:270,level:'Solver · Nivel 3',skills:[{n:'Geometría',xp:90,lv:'Niv. 3',d:'Formas, medidas y relaciones espaciales.'},{n:'Álgebra básica',xp:80,lv:'Niv. 3',d:'Variables, ecuaciones y patrones.'},{n:'Estadística',xp:60,lv:'Niv. 2',d:'Análisis e interpretación de datos.'},{n:'Matemáticas aplicadas',xp:40,lv:'Niv. 2',d:'Mates para resolver proyectos.'}]},
-  Transversals:{desc:'Habilidades de equipo, comunicación y liderazgo.',color:'#e05252',xp:400,level:'Leader · Nivel 5',skills:[{n:'Trabajo en equipo',xp:130,lv:'Niv. 5',d:'Colabora y coordina.'},{n:'Comunicación oral',xp:100,lv:'Niv. 4',d:'Presenta y explica proyectos.'},{n:'Liderazgo',xp:80,lv:'Niv. 4',d:'Toma iniciativa y motiva.'},{n:'Pensamiento crítico',xp:50,lv:'Niv. 3',d:'Evalúa ideas con criterio.'},{n:'Gestión del tiempo',xp:40,lv:'Niv. 2',d:'Organiza y cumple plazos.'}]},
-};
-function openModal(r){
-  const d=ramaData[r];
-  document.getElementById('modal-title').textContent=r+' — '+d.level;
-  document.getElementById('modal-subtitle').textContent=d.desc+' · Total: '+d.xp+' XP';
-  document.getElementById('modal-skills').innerHTML=d.skills.map(s=>`<div class="skill-row"><div class="skill-dot" style="background:${d.color}"></div><div style="flex:1"><div class="skill-row-name">${s.n} <span style="font-size:11px;color:#8aa4be">${s.lv}</span></div><div class="skill-row-desc">${s.d}</div></div><div class="skill-row-xp" style="color:${d.color}">${s.xp} XP</div></div>`).join('');
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(e){
-  if(!e||e.target===document.getElementById('modal')) document.getElementById('modal').classList.remove('open');
-}
 </script>
 </body>
 </html>
