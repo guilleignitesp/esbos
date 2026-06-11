@@ -606,6 +606,22 @@ body {
 .actitud-xp.pos { color: #16a34a; }
 .actitud-xp.neg { color: #dc2626; }
 
+/* ═══ ACTITUD MODAL ═════════════════════════════════ */
+.actitud-modal { position:fixed; inset:0; z-index:300; background:var(--warm); overflow-y:auto; display:none; }
+.actitud-modal.open { display:block; animation:viewin .25s ease; }
+.actitud-modal-bar { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:16px; padding:16px 24px; background:rgba(255,255,255,.75); backdrop-filter:blur(14px); border-bottom:1.5px solid rgba(124,184,245,.2); }
+.actitud-modal-back { display:inline-flex; align-items:center; gap:9px; background:var(--blue-dark); color:#fff; border:none; border-radius:999px; padding:10px 18px; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:.3px; cursor:pointer; transition:transform .2s,gap .2s,background .2s; }
+.actitud-modal-back:hover { transform:translateX(-2px); gap:12px; background:var(--cta); }
+.actitud-modal-title { font-size:18px; font-weight:900; color:var(--text); }
+.actitud-modal-body { max-width:900px; margin:0 auto; padding:clamp(24px,5vw,48px) 24px 80px; }
+.actitud-modal-head { font-size:clamp(26px,5vw,40px); font-weight:900; color:var(--text); letter-spacing:-.5px; margin-bottom:6px; }
+.actitud-modal-sub { font-size:14px; color:#8aa4be; margin-bottom:24px; }
+.actitud-modal-pag { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:28px; }
+.actitud-pag-btn { display:inline-flex; align-items:center; gap:8px; background:var(--blue-dark); color:#fff; border:none; border-radius:999px; padding:10px 20px; font-family:inherit; font-size:13px; font-weight:800; cursor:pointer; transition:background .2s,transform .2s,gap .2s; }
+.actitud-pag-btn:hover { background:var(--cta); transform:translateY(-1px); gap:11px; }
+.actitud-pag-btn:disabled { opacity:.35; cursor:default; transform:none; }
+.actitud-pag-info { font-size:14px; font-weight:700; color:#8aa4be; }
+
 /* ═══ BUTTONS ══════════════════════════════════════ */
 .more-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -1046,16 +1062,36 @@ body {
   border-radius: 40px; border: 1px solid rgba(255,255,255,.70);
   box-shadow: 0 4px 24px rgba(62,111,168,.14);
   padding: 5px; display: inline-flex; align-items: center; gap: 3px;
+  transition: padding .3s ease, box-shadow .3s ease, bottom .3s ease;
 }
 .switcher-options { display: flex; gap: 3px; }
 .switcher-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   padding: 7px 16px; border-radius: 32px; border: none; cursor: pointer;
   font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 12px;
-  color: #8aa4be; background: transparent; transition: background .2s, color .2s, box-shadow .2s;
+  color: #8aa4be; background: transparent;
+  transition: background .2s, color .2s, box-shadow .2s, padding .3s, gap .3s;
+  white-space: nowrap; overflow: hidden;
 }
 .switcher-btn.active { background: var(--blue-dark); color: #fff; box-shadow: 0 2px 10px rgba(62,111,168,.3); }
 .switcher-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.switcher-label { transition: max-width .3s ease, opacity .3s ease; max-width: 80px; opacity: 1; }
+
+/* ── Collapsed state: synced with topbar .collapsed via JS ── */
+.profile-switcher.sw-collapsed {
+  padding: 4px;
+  bottom: 16px;
+  box-shadow: 0 2px 14px rgba(62,111,168,.18);
+}
+.profile-switcher.sw-collapsed .switcher-btn {
+  padding: 7px 10px;
+  gap: 0;
+}
+.profile-switcher.sw-collapsed .switcher-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+}
 .app { }
 /* Switcher pill space — only needed for student pages, not family (family has its own closing section) */
 #page-home, #page-projects { padding-bottom: 96px; }
@@ -1351,6 +1387,42 @@ body {
 .fam-root .f-foot { margin-top:46px; padding-top:26px; border-top:1.5px solid rgba(62,111,168,.18); display:flex; flex-direction:column; align-items:center; gap:13px; }
 .fam-root .f-foot-note { font-size:12px; color:#5d7da6; }
 .fam-root .f-foot-note b { color:var(--f-blue-deep); }
+
+/* ─── Moments modal (family) — same style as projects overlay ── */
+.f-moments-modal { position:fixed; inset:0; z-index:400; background:linear-gradient(180deg,#FBF0CC,#F6E9B8); overflow-y:auto; display:none; }
+.f-moments-modal.open { display:block; animation:fApIn .4s cubic-bezier(.2,.7,.2,1); }
+.f-moments-modal .f-moments-bar { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:16px; padding:18px 24px; background:rgba(251,240,204,.88); backdrop-filter:blur(14px); border-bottom:1px solid rgba(120,95,40,.18); }
+.f-moments-modal .f-ap-back { display:inline-flex; align-items:center; gap:9px; background:#2F3A4A; color:#fff; border:none; border-radius:999px; padding:11px 20px; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:.3px; cursor:pointer; transition:transform .2s,gap .2s,background .2s; }
+.f-moments-modal .f-ap-back:hover { transform:translateX(-2px); gap:12px; background:#2596BE; }
+.f-moments-modal .f-ap-title { font-family:'Fraunces',serif; font-weight:600; font-size:19px; letter-spacing:-.4px; }
+.f-moments-modal .f-moments-body { max-width:900px; margin:0 auto; padding:clamp(28px,5vw,52px) 24px 70px; }
+.f-moments-modal .f-allproj-head { font-family:'Fraunces',serif; font-weight:500; font-size:clamp(28px,6vw,46px); letter-spacing:-1px; line-height:1.05; margin-bottom:8px; }
+.f-moments-modal .f-allproj-sub { font-size:15px; color:#6a5d44; margin-bottom:30px; }
+/* Note cards inside modal keep .f-note styles — already defined under .fam-root */
+/* But .f-moments-modal is outside .fam-root, so duplicate needed rules */
+.f-moments-modal .f-note { position:relative; overflow:hidden; background:#FCF6E6; border:1px solid rgba(120,95,40,.18); border-radius:18px; padding:24px 26px 24px 30px; }
+.f-moments-modal .f-note::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:#FBB03B; }
+.f-moments-modal .f-note.f-info { background:#EDF3FB; border-color:rgba(62,111,168,.18); }
+.f-moments-modal .f-note.f-info::before { background:#7CB8F5; }
+.f-moments-modal .f-note-top { display:flex; align-items:center; gap:12px; padding-bottom:15px; margin-bottom:16px; border-bottom:1px solid rgba(120,95,40,.14); }
+.f-moments-modal .f-note.f-info .f-note-top { border-bottom-color:rgba(62,111,168,.16); }
+.f-moments-modal .f-note-mark { width:26px; height:26px; display:flex; align-items:center; justify-content:flex-start; flex-shrink:0; color:#FBB03B; }
+.f-moments-modal .f-note.f-info .f-note-mark { color:#3E6FA8; }
+.f-moments-modal .f-note-mark svg { width:20px; height:20px; }
+.f-moments-modal .f-note-date { font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:#a08a5e; }
+.f-moments-modal .f-note.f-info .f-note-date { color:#5d7da6; }
+.f-moments-modal .f-note-cat { margin-left:auto; font-size:10.5px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:#c3b285; }
+.f-moments-modal .f-note.f-info .f-note-cat { color:#9fb1c8; }
+.f-moments-modal .f-note-title { font-family:'Fraunces',serif; font-weight:600; font-size:19px; letter-spacing:-.3px; line-height:1.2; color:#2F3A4A; }
+.f-moments-modal .f-note-text { font-size:14px; color:#5a6470; line-height:1.62; margin-top:9px; }
+.f-moments-modal .f-notes { display:grid; gap:16px; margin-bottom:32px; }
+@media(min-width:760px){ .f-moments-modal .f-notes { grid-template-columns:1fr 1fr; gap:18px; } }
+/* Pagination */
+.f-moments-pag { display:flex; align-items:center; justify-content:center; gap:12px; }
+.f-mom-page-btn { display:inline-flex; align-items:center; gap:8px; background:#2F3A4A; color:#fff; border:none; border-radius:999px; padding:10px 20px; font-family:inherit; font-size:13px; font-weight:800; cursor:pointer; transition:background .2s,transform .2s,gap .2s; }
+.f-mom-page-btn:hover { background:#2596BE; transform:translateY(-1px); gap:11px; }
+.f-mom-page-btn:disabled { opacity:.35; cursor:default; transform:none; }
+.f-mom-page-info { font-family:'Fraunces',serif; font-size:18px; font-weight:400; color:#a08a5e; }
 
 /* ─── All-projects overlay (family) ──────────────── */
 .f-allproj { position:fixed; inset:0; z-index:400; background:linear-gradient(180deg,#EEE6D2,#E4D9C0); overflow-y:auto; display:none; }
@@ -1712,54 +1784,7 @@ body {
           <div class="actitud-xp pos">+25 XP</div>
         </div>
       </div>
-      <div class="grid-actitud" id="actitud-extra" style="display:none;margin-top:10px">
-        <div class="actitud-card">
-          <div class="actitud-icon" style="background:#dcfce7">
-            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
-              <circle cx="22" cy="26" r="7" stroke="#16a34a" stroke-width="2.5" fill="none"/>
-              <circle cx="38" cy="26" r="7" stroke="#16a34a" stroke-width="2.5" fill="none"/>
-              <path d="M16 44 L16 40 Q16 34 22 34 H38 Q44 34 44 40 L44 44" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-          <div class="actitud-info"><div class="actitud-name">Liderazgo en grupo</div><div class="actitud-date">2 may 2025</div></div>
-          <div class="actitud-xp pos">+20 XP</div>
-        </div>
-        <div class="actitud-card">
-          <div class="actitud-icon" style="background:#fee2e2">
-            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#fecaca"/>
-              <circle cx="30" cy="24" r="9" stroke="#dc2626" stroke-width="2.5" fill="none"/>
-              <path d="M30 18 L30 24 L36 24" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="actitud-info"><div class="actitud-name">No entregó tarea a tiempo</div><div class="actitud-date">28 abr 2025</div></div>
-          <div class="actitud-xp neg">-15 XP</div>
-        </div>
-        <div class="actitud-card">
-          <div class="actitud-icon" style="background:#dcfce7">
-            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
-              <path d="M22 14 L22 30 Q22 38 30 38 Q38 38 38 30 L38 14Z" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
-              <path d="M24 42 L36 42 M30 38 L30 42" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="actitud-info"><div class="actitud-name">Mejor proyecto de la semana</div><div class="actitud-date">25 abr 2025</div></div>
-          <div class="actitud-xp pos">+50 XP</div>
-        </div>
-        <div class="actitud-card">
-          <div class="actitud-icon" style="background:#dcfce7">
-            <svg width="44" height="44" viewBox="0 0 60 60" fill="none">
-              <circle cx="30" cy="30" r="26" fill="#bbf7d0"/>
-              <rect x="18" y="14" width="24" height="30" rx="4" stroke="#16a34a" stroke-width="2.5" fill="none"/>
-              <path d="M22 22 L38 22 M22 28 L38 28 M22 34 L32 34" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="actitud-info"><div class="actitud-name">Documentó su proyecto</div><div class="actitud-date">22 abr 2025</div></div>
-          <div class="actitud-xp pos">+15 XP</div>
-        </div>
-      </div>
-      <button class="load-more-btn" id="actitud-btn" onclick="loadMoreActitud()" style="margin-top:12px">Cargar más acciones ↓</button>
+      <button class="load-more-btn" id="actitud-btn" onclick="openActitudModal()" style="margin-top:12px">Ver todas las acciones →</button>
     </div>
     <div style="height:24px"></div>
 
@@ -1825,7 +1850,7 @@ body {
         </div>
       </div>
       <h1 class="f-display f-serif f-reveal" style="--d:.08s">Mira todo lo<br>que ha <span class="f-hot f-js-type" data-type="creado.">creado.</span></h1>
-      <p class="f-lede f-reveal" style="--d:.16s;margin-top:22px">Un recorrido por los proyectos, las ideas y los pequeños grandes momentos de Álvaro en Ignite Nexus.</p>
+      <p class="f-lede f-reveal" style="--d:.16s;margin-top:22px">Un recorrido por los proyectos, las ideas y los pequeños grandes momentos de Álvaro en <strong>Ignite</strong>.</p>
       <div class="f-scroll-cue f-reveal" style="--d:.24s">Desliza <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     </div>
   </section>
@@ -1895,9 +1920,8 @@ body {
         <p class="f-lede f-reveal" style="--d:.16s">Pequeñas notas que el profesorado recoge clase a clase: logros, gestos y algún recordatorio amable.</p>
       </div>
       <div class="f-notes" id="famLogGrid"></div>
-      <div class="f-more-log" id="famMoreLogGrid"></div>
       <button class="f-editorial-btn" id="famLogBtnEl">
-        <span id="famLogBtnLabelEl">Ver más momentos</span>
+        <span id="famLogBtnLabelEl">Ver todos los momentos</span>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
@@ -1909,14 +1933,14 @@ body {
     <div class="f-scene-inner f-close-in">
       <span class="f-close-mark f-reveal"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="currentColor"/></svg></span>
       <p class="f-close-quote f-reveal" style="--d:.05s">Gracias por acompañar a Álvaro. Cada proyecto suma a la <em>persona</em> que está construyendo.</p>
-      <p class="f-close-sign f-reveal" style="--d:.12s">El equipo de Ignite Nexus</p>
+      <p class="f-close-sign f-reveal" style="--d:.12s">El equipo de Ignite</p>
       <p class="f-close-sub f-reveal" style="--d:.18s">¿Quieres comentar su progreso? Habla con el profesorado en la próxima sesión.</p>
       <div class="f-foot f-reveal" style="--d:.24s">
         <svg viewBox="0 0 48 48" height="26" xmlns="http://www.w3.org/2000/svg">
           <g transform="translate(24,24)"><path d="M-16-16 L-10-16 M-16-16 L-16-10" stroke="#2596BE" stroke-width="1.5" fill="none"/><path d="M16 16 L10 16 M16 16 L16 10" stroke="#2596BE" stroke-width="1.5" fill="none"/><path d="M-16 16 L-10 16 M-16 16 L-16 10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/><path d="M16-16 L10-16 M16-16 L16-10" stroke="#7CB8F5" stroke-width="1.5" fill="none"/></g>
           <g transform="translate(24.4,22.3) scale(.85)"><path d="M-3.2-15 L3.2-14 L6.4 4.6 L.8 4.6 L-.8 18.4 L-7.2-2.3 L-1.6-2.3Z" fill="#FBB03B" stroke="#FBB03B" stroke-width="1.5" stroke-linejoin="round"/></g>
         </svg>
-        <span class="f-foot-note"><b>Ignite Nexus</b> · Espacio de la familia de Álvaro López · Curso 2024–25</span>
+        <span class="f-foot-note"><b>Ignite</b> · Espacio de la familia de Álvaro López · Curso 2024–25</span>
       </div>
     </div>
   </section>
@@ -1941,11 +1965,11 @@ body {
   <div class="switcher-options">
     <button class="switcher-btn active" id="sw-student" onclick="setView('student')">
       <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="11" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-      Alumno
+      <span class="switcher-label">Alumno</span>
     </button>
     <button class="switcher-btn" id="sw-family" onclick="setView('family')">
       <span class="switcher-icon"><svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="11" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="21" cy="11" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 28c0-4 3-7 7-7h10c4 0 7 3 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-      Familia
+      <span class="switcher-label">Familia</span>
     </button>
   </div>
 </div>
@@ -1955,7 +1979,37 @@ body {
 
 </div><!-- /app -->
 
-<!-- MASCOT MODAL -->
+<!-- ══ MOMENTS MODAL (family) ══ -->
+<div class="f-moments-modal" id="famMomentsModal" aria-hidden="true">
+  <div class="f-moments-bar">
+    <button class="f-ap-back" onclick="famCloseMoments()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+    </button>
+    <span class="f-ap-title">Momentos en el aula</span>
+  </div>
+  <div class="f-moments-body">
+    <h2 class="f-allproj-head">Momentos que merecen un marco.</h2>
+    <p class="f-allproj-sub">Todo lo que el profesorado ha recogido clase a clase.</p>
+    <div class="f-notes" id="famMomentsGrid"></div>
+    <div class="f-moments-pag" id="famMomentsPag"></div>
+  </div>
+</div>
+<!-- ACTITUD MODAL -->
+<div class="actitud-modal" id="actitud-modal" aria-hidden="true">
+  <div class="actitud-modal-bar">
+    <button class="actitud-modal-back" onclick="closeActitudModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver
+    </button>
+    <span class="actitud-modal-title">Registro de actitud</span>
+  </div>
+  <div class="actitud-modal-body">
+    <h2 class="actitud-modal-head">Todas las acciones.</h2>
+    <p class="actitud-modal-sub">El registro completo de actitud — positiva y negativa.</p>
+    <div class="grid-actitud" id="actitud-modal-grid"></div>
+    <div class="actitud-modal-pag" id="actitud-modal-pag"></div>
+  </div>
+</div>
+
 <div class="mascot-modal" id="mascot-modal">
   <div class="mascot-modal-box">
     <button class="modal-close" onclick="document.getElementById('mascot-modal').classList.remove('open')">✕</button>
@@ -2381,7 +2435,7 @@ const archiveMissions = [
 function renderArchive() {
   const grid = document.getElementById('archive-grid');
   if (!grid) return;
-  grid.innerHTML = archiveMissions.map((m,i) => buildArchiveCard(m, m.name+i)).join('');
+  grid.innerHTML = archiveMissions.slice(0, 8).map((m,i) => buildArchiveCard(m, m.name+i)).join('');
 }
 renderArchive();
 
@@ -2625,8 +2679,12 @@ const topbar = document.getElementById('topbar');
 const topbarWrapper = document.getElementById('topbar-wrapper');
 const sentinel = document.getElementById('scroll-sentinel');
 if (sentinel && topbarWrapper) {
+  const switcher = document.querySelector('.profile-switcher');
   const obs = new IntersectionObserver(
-    ([e]) => topbarWrapper.classList.toggle('collapsed', !e.isIntersecting),
+    ([e]) => {
+      topbarWrapper.classList.toggle('collapsed', !e.isIntersecting);
+      if (switcher) switcher.classList.toggle('sw-collapsed', !e.isIntersecting);
+    },
     { threshold: 0, rootMargin: '0px 0px 0px 0px' }
   );
   obs.observe(sentinel);
@@ -2694,6 +2752,10 @@ function setView(m) {
   document.getElementById('sw-student').classList.toggle('active',!f);
   document.getElementById('sw-family').classList.toggle('active',f);
   window.scrollTo({top:0});
+  // Always expand switcher and topbar when switching — we're at the top
+  const sw=document.querySelector('.profile-switcher');
+  if(sw) sw.classList.remove('sw-collapsed');
+  document.getElementById('topbar-wrapper').classList.remove('collapsed');
   if(f && window._famInit) window._famInit();
 }
 
@@ -2722,17 +2784,80 @@ function spawnParticles(anchor) {
 }
 
 // ── ACTITUD ───────────────────────────────────────────────────
-let aL = false;
-function loadMoreActitud() {
-  if (!aL) {
-    document.getElementById('actitud-extra').style.display='grid';
-    document.getElementById('actitud-btn').textContent='Mostrar menos ↑';
-    aL = true;
-  } else {
-    document.getElementById('actitud-extra').style.display='none';
-    document.getElementById('actitud-btn').textContent='Cargar más acciones ↓';
-    aL = false;
-  }
+// ── ALL ACTITUDES DATA ─────────────────────────────────────────
+const allActitudes = [
+  { pos:true,  name:'Ayudó a un compañero',        date:'14 may 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><path d="M18 32 L26 40 L42 22" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`, xp:'+20 XP' },
+  { pos:true,  name:'Participación excepcional',    date:'12 may 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><path d="M30 14 L33.5 23 L44 23 L36 29 L39 38 L30 32 L21 38 L24 29 L16 23 L26.5 23Z" fill="#16a34a"/></svg></div>`, xp:'+30 XP' },
+  { pos:false, name:'Llegó tarde a clase',          date:'8 may 2025',
+    icon:`<div class="actitud-icon" style="background:#fee2e2"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#fecaca"/><path d="M30 16 L44 40 L16 40Z" stroke="#dc2626" stroke-width="3" stroke-linejoin="round" fill="none"/><path d="M30 25 L30 33 M30 36 L30 37" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/></svg></div>`, xp:'-10 XP' },
+  { pos:true,  name:'Idea creativa destacada',      date:'5 may 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><circle cx="30" cy="26" r="8" stroke="#16a34a" stroke-width="2.5" fill="none"/><path d="M30 34V40M26 40H34" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/></svg></div>`, xp:'+25 XP' },
+  { pos:true,  name:'Liderazgo en grupo',           date:'2 may 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><circle cx="22" cy="26" r="7" stroke="#16a34a" stroke-width="2.5" fill="none"/><circle cx="38" cy="26" r="7" stroke="#16a34a" stroke-width="2.5" fill="none"/><path d="M16 44 L16 40 Q16 34 22 34 H38 Q44 34 44 40 L44 44" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg></div>`, xp:'+20 XP' },
+  { pos:false, name:'No entregó tarea a tiempo',    date:'28 abr 2025',
+    icon:`<div class="actitud-icon" style="background:#fee2e2"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#fecaca"/><circle cx="30" cy="24" r="9" stroke="#dc2626" stroke-width="2.5" fill="none"/><path d="M30 18 L30 24 L36 24" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`, xp:'-15 XP' },
+  { pos:true,  name:'Mejor proyecto de la semana',  date:'25 abr 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><path d="M22 14 L22 30 Q22 38 30 38 Q38 38 38 30 L38 14Z" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round" fill="none"/><path d="M24 42 L36 42 M30 38 L30 42" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/></svg></div>`, xp:'+50 XP' },
+  { pos:true,  name:'Documentó su proyecto',        date:'22 abr 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><rect x="18" y="14" width="24" height="30" rx="4" stroke="#16a34a" stroke-width="2.5" fill="none"/><path d="M22 22 L38 22 M22 28 L38 28 M22 34 L32 34" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/></svg></div>`, xp:'+15 XP' },
+  { pos:true,  name:'Presentó su trabajo al grupo', date:'18 abr 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><rect x="14" y="18" width="32" height="20" rx="4" stroke="#16a34a" stroke-width="2.5" fill="none"/><path d="M30 38 L30 44 M24 44 L36 44" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/></svg></div>`, xp:'+20 XP' },
+  { pos:false, name:'Interrumpió la clase',         date:'14 abr 2025',
+    icon:`<div class="actitud-icon" style="background:#fee2e2"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#fecaca"/><path d="M20 20 L40 40 M40 20 L20 40" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/></svg></div>`, xp:'-10 XP' },
+  { pos:true,  name:'Resolvió un reto en equipo',   date:'10 abr 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><path d="M18 32 L26 40 L42 22" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`, xp:'+25 XP' },
+  { pos:true,  name:'Ayudó a organizar el espacio', date:'5 abr 2025',
+    icon:`<div class="actitud-icon" style="background:#dcfce7"><svg width="44" height="44" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="26" fill="#bbf7d0"/><rect x="16" y="22" width="12" height="16" rx="2" stroke="#16a34a" stroke-width="2.5" fill="none"/><rect x="32" y="16" width="12" height="22" rx="2" stroke="#16a34a" stroke-width="2.5" fill="none"/></svg></div>`, xp:'+15 XP' },
+];
+
+function actitudCardHTML(a) {
+  return `<div class="actitud-card">
+    ${a.icon}
+    <div class="actitud-info">
+      <div class="actitud-name">${a.name}</div>
+      <div class="actitud-date">${a.date}</div>
+    </div>
+    <div class="actitud-xp ${a.pos?'pos':'neg'}">${a.xp}</div>
+  </div>`;
+}
+
+// ── ACTITUD MODAL ──────────────────────────────────────────────
+let actitudPage = 0;
+const ACTITUD_PER_PAGE = 8;
+function renderActitudModal() {
+  const grid = document.getElementById('actitud-modal-grid');
+  const pag  = document.getElementById('actitud-modal-pag');
+  if (!grid || !pag) return;
+  const total = allActitudes.length;
+  const totalPages = Math.ceil(total / ACTITUD_PER_PAGE);
+  const start = actitudPage * ACTITUD_PER_PAGE;
+  grid.innerHTML = allActitudes.slice(start, start + ACTITUD_PER_PAGE).map(actitudCardHTML).join('');
+  const pd = actitudPage === 0 ? ' disabled' : '';
+  const nd = actitudPage >= totalPages - 1 ? ' disabled' : '';
+  pag.innerHTML =
+    `<button class="actitud-pag-btn"${pd} onclick="actitudPageNav(-1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Anterior</button>`
+    + `<span class="actitud-pag-info">${actitudPage+1} / ${totalPages}</span>`
+    + `<button class="actitud-pag-btn"${nd} onclick="actitudPageNav(1)">Siguiente<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
+}
+function actitudPageNav(d) {
+  const totalPages = Math.ceil(allActitudes.length / ACTITUD_PER_PAGE);
+  actitudPage = Math.max(0, Math.min(totalPages - 1, actitudPage + d));
+  renderActitudModal();
+  document.getElementById('actitud-modal').scrollTop = 0;
+}
+function openActitudModal() {
+  actitudPage = 0;
+  renderActitudModal();
+  const m = document.getElementById('actitud-modal');
+  m.classList.add('open'); m.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden'; m.scrollTop = 0;
+}
+function closeActitudModal() {
+  const m = document.getElementById('actitud-modal');
+  m.classList.remove('open'); m.setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
 }
 
 // ── PROJECTS PAGE ─────────────────────────────────────────────
@@ -4195,7 +4320,7 @@ function gxCloseFullscreen(){
   _unlockOrientation();
   _gxFsMode=null;
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&_gxFsMode)gxCloseFullscreen();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&_gxFsMode)gxCloseFullscreen();if(e.key==='Escape'){const am=document.getElementById('actitud-modal');if(am&&am.classList.contains('open'))closeActitudModal();}});
 // Faithful port of portal-progreso.html — three sub-modules wrapped in IgniteProgress API
 window.IgniteProgress = (function(){
 'use strict';
@@ -5283,18 +5408,59 @@ function renderFamAllProj(){
       +'<div class="f-piece-skills" id="'+id+'"><div class="f-piece-skills-in"><div class="f-piece-skills-pad"><div class="f-chips">'+ftags(skills)+'</div></div></div></div></article>';
   }).join('');
 }
+function noteHtml(m,i){
+  var isNote=m.type==='note';
+  return '<article class="f-note'+(isNote?' f-info':'')+' f-reveal-pop" style="--d:'+((i%2)*.08)+'s">'
+    +'<div class="f-note-top"><span class="f-note-mark">'+(isNote?FRING:FBOLT)+'</span>'
+    +'<span class="f-note-date">'+m.date+'</span><span class="f-note-cat">'+m.cat+'</span></div>'
+    +'<h3 class="f-note-title">'+m.name+'</h3><p class="f-note-text">'+m.text+'</p></article>';
+}
 function renderFamMoments(){
   var logEl=document.getElementById('famLogGrid');
-  var moreEl=document.getElementById('famMoreLogGrid');
-  function noteHtml(m,i){var isNote=m.type==='note';
-    return '<article class="f-note'+(isNote?' f-info':'')+' f-reveal-pop" style="--d:'+((i%2)*.08)+'s">'
-      +'<div class="f-note-top"><span class="f-note-mark">'+(isNote?FRING:FBOLT)+'</span>'
-      +'<span class="f-note-date">'+m.date+'</span><span class="f-note-cat">'+m.cat+'</span></div>'
-      +'<h3 class="f-note-title">'+m.name+'</h3><p class="f-note-text">'+m.text+'</p></article>';
-  }
-  if(logEl) logEl.innerHTML=FAM_MOMENTS.slice(0,4).map(noteHtml).join('');
-  if(moreEl) moreEl.innerHTML=FAM_MOMENTS.slice(4).map(function(m,i){return noteHtml(m,i+4);}).join('');
+  // Show only first 4 in the section as a preview
+  if(logEl) logEl.innerHTML=FAM_MOMENTS.slice(0,4).map(function(m,i){return noteHtml(m,i);}).join('');
 }
+
+/* ── Moments modal with pagination ── */
+var FAM_MOM_PAGE=0;
+var FAM_MOM_PER_PAGE=8;
+function renderFamMomentsModal(){
+  var grid=document.getElementById('famMomentsGrid');
+  var pag=document.getElementById('famMomentsPag');
+  if(!grid||!pag)return;
+  var total=FAM_MOMENTS.length;
+  var totalPages=Math.ceil(total/FAM_MOM_PER_PAGE);
+  var start=FAM_MOM_PAGE*FAM_MOM_PER_PAGE;
+  var slice=FAM_MOMENTS.slice(start,start+FAM_MOM_PER_PAGE);
+  grid.innerHTML=slice.map(function(m,i){return noteHtml(m,start+i);}).join('');
+  // Pagination
+  var prevDis=FAM_MOM_PAGE===0?' disabled':'';
+  var nextDis=FAM_MOM_PAGE>=totalPages-1?' disabled':'';
+  pag.innerHTML=
+    '<button class="f-mom-page-btn"'+prevDis+' onclick="famMomPage(-1)">'
+    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Anterior</button>'
+    +'<span class="f-mom-page-info">'+(FAM_MOM_PAGE+1)+' / '+totalPages+'</span>'
+    +'<button class="f-mom-page-btn"'+nextDis+' onclick="famMomPage(1)">Siguiente'
+    +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+}
+window.famMomPage=function(d){
+  var totalPages=Math.ceil(FAM_MOMENTS.length/FAM_MOM_PER_PAGE);
+  FAM_MOM_PAGE=Math.max(0,Math.min(totalPages-1,FAM_MOM_PAGE+d));
+  renderFamMomentsModal();
+  document.getElementById('famMomentsModal').scrollTop=0;
+};
+window.famOpenMoments=function(){
+  FAM_MOM_PAGE=0;
+  renderFamMomentsModal();
+  var m=document.getElementById('famMomentsModal');
+  if(!m)return; m.classList.add('open'); m.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden'; m.scrollTop=0;
+};
+window.famCloseMoments=function(){
+  var m=document.getElementById('famMomentsModal');
+  if(!m)return; m.classList.remove('open'); m.setAttribute('aria-hidden','true');
+  document.body.style.overflow='';
+};
 
 /* ── Motifs ── */
 function addMotifs(){
@@ -5323,7 +5489,10 @@ function setupFamTopbar(){
   new IntersectionObserver(function(e){
     var fp=document.getElementById('page-family');
     if(fp&&fp.style.display!=='none'){
-      tw.classList.toggle('collapsed',!e[0].isIntersecting);
+      var collapsed=!e[0].isIntersecting;
+      tw.classList.toggle('collapsed',collapsed);
+      var sw=document.querySelector('.profile-switcher');
+      if(sw) sw.classList.toggle('sw-collapsed',collapsed);
       if(e[0].isIntersecting) closeLangModal();
     }
   },{rootMargin:'-64px 0px 0px 0px',threshold:0}).observe(hero);
@@ -5400,9 +5569,16 @@ function setupFamInteractions(){
     var d=e.target.closest('[data-fdisclose]');
     if(d){var t=document.getElementById(d.getAttribute('data-fdisclose')); var o=d.getAttribute('aria-expanded')==='true'; d.setAttribute('aria-expanded',o?'false':'true'); if(t)t.classList.toggle('open',!o);}
   });
-  var lb=document.getElementById('famLogBtnEl'), lx=document.getElementById('famMoreLogGrid'), ll=document.getElementById('famLogBtnLabelEl');
-  if(lb&&lx&&ll){lb.addEventListener('click',function(){var o=lx.classList.toggle('show'); ll.textContent=o?'Mostrar menos':'Ver más momentos'; lb.querySelector('svg').style.transform=o?'rotate(180deg)':''; if(o)bindFamReveal(lx);});}
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var p=document.getElementById('famAllProjects');if(p&&p.classList.contains('open'))famCloseAll();}});
+  var lb=document.getElementById('famLogBtnEl');
+  if(lb){ lb.addEventListener('click', window.famOpenMoments); }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      var p=document.getElementById('famAllProjects');
+      if(p&&p.classList.contains('open')){famCloseAll();return;}
+      var mm=document.getElementById('famMomentsModal');
+      if(mm&&mm.classList.contains('open')){famCloseMoments();}
+    }
+  });
 }
 
 /* ── All-projects overlay ── */
