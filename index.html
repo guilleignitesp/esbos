@@ -1151,9 +1151,9 @@ body {
 
 /* ─── Background motifs ──────────────────────────── */
 .fam-root .f-scene-bg { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
-.fam-root .s-motif { position:absolute; opacity:0; transition:opacity 1s ease,transform 1.15s cubic-bezier(.2,.7,.2,1); transition-delay:var(--d,0s); will-change:transform,opacity; }
+.fam-root .s-motif { position:absolute; opacity:0; transition:opacity 1s ease,transform 1.15s cubic-bezier(.2,.7,.2,1); transition-delay:var(--d,0s); will-change:transform,opacity; pointer-events:none; }
 .fam-root .f-scene.f-in .s-motif { opacity:1; }
-.fam-root .s-motif svg { display:block; width:100%; height:100%; overflow:visible; }
+.fam-root .s-motif svg { display:block; width:100%; height:100%; overflow:visible; pointer-events:none; }
 .fam-root .m-ring  { transform:scale(.45) rotate(-35deg); }
 .fam-root .f-scene.f-in .m-ring  { transform:scale(1) rotate(0); }
 .fam-root .m-arcs  { transform:scale(.5) rotate(-72deg); }
@@ -1363,9 +1363,9 @@ body {
 .f-allproj .f-allproj-body { max-width:1080px; margin:0 auto; padding:clamp(28px,5vw,52px) 24px 70px; }
 .f-allproj .f-allproj-head { font-family:'Fraunces',serif; font-weight:500; font-size:clamp(28px,6vw,46px); letter-spacing:-1px; line-height:1.05; margin-bottom:8px; }
 .f-allproj .f-allproj-sub { font-size:15px; color:#6a5d44; margin-bottom:30px; }
-.f-allproj .f-ap-grid { display:grid; gap:18px; grid-template-columns:1fr; }
-@media(min-width:640px){ .f-allproj .f-ap-grid { grid-template-columns:1fr 1fr; } }
-@media(min-width:980px){ .f-allproj .f-ap-grid { grid-template-columns:1fr 1fr 1fr; } }
+.f-allproj .f-ap-grid { display:grid; gap:18px; grid-template-columns:1fr; align-items:start; }
+@media(min-width:640px){ .f-allproj .f-ap-grid { grid-template-columns:1fr 1fr; align-items:start; } }
+@media(min-width:980px){ .f-allproj .f-ap-grid { grid-template-columns:1fr 1fr 1fr; align-items:start; } }
 .f-allproj .f-piece { background:#FBF6EB; border:1px solid rgba(120,95,40,.16); border-radius:20px; padding:24px 26px; transition:transform .35s,box-shadow .35s,background .3s; }
 .f-allproj .f-piece:hover { transform:translateY(-5px); background:#fff; box-shadow:0 26px 50px -30px rgba(120,90,20,.4); }
 .f-allproj .f-piece-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
@@ -1377,10 +1377,18 @@ body {
 .f-allproj .f-disclosure { display:inline-flex; align-items:center; gap:8px; background:none; border:0; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:800; letter-spacing:.3px; color:#2596BE; padding:6px 0; margin-top:8px; text-transform:uppercase; }
 .f-allproj .f-disclosure svg { transition:transform .3s; }
 .f-allproj .f-disclosure[aria-expanded="true"] svg { transform:rotate(180deg); }
+/* piece-skills expand — works both inside .f-allproj overlay AND in inline family cards */
+.f-piece-skills { display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s cubic-bezier(.2,.7,.2,1); }
+.f-piece-skills.open { grid-template-rows:1fr; }
+.f-piece-skills-in { overflow:hidden; }
+.f-piece-skills-pad { padding-top:12px; }
 .f-allproj .f-piece-skills { display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s cubic-bezier(.2,.7,.2,1); }
 .f-allproj .f-piece-skills.open { grid-template-rows:1fr; }
 .f-allproj .f-piece-skills-in { overflow:hidden; }
 .f-allproj .f-piece-skills-pad { padding-top:12px; }
+/* Tag pills inside the overlay — same style as .fam-root .f-tag */
+.f-allproj .f-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.f-allproj .f-tag { display:inline-flex; align-items:center; font-size:12px; font-weight:600; color:#3a4350; border:1px solid rgba(47,58,74,.14); border-radius:999px; padding:5px 12px; background:rgba(255,255,255,.6); }
 
 /* ─── Reduced motion ─────────────────────────────── */
 @media(prefers-reduced-motion:reduce){
@@ -1811,7 +1819,7 @@ body {
             <circle cx="60" cy="60" r="57" fill="none" stroke="rgba(47,58,74,.16)" stroke-width="1"/>
             <circle cx="60" cy="60" r="41" fill="none" stroke="rgba(47,58,74,.12)" stroke-width="1"/>
             <defs><path id="fSealPath" d="M60,11 a49,49 0 1,1 -0.01,0"/></defs>
-            <g class="f-seal-rot"><text font-family="Figtree" font-size="8" font-weight="800" letter-spacing="2.4" fill="rgba(47,58,74,.5)"><textPath href="#fSealPath" startOffset="0">IGNITE NEXUS · EL CURSO DE ÁLVARO · 2024–25 · </textPath></text></g>
+            <g class="f-seal-rot"><text font-family="Figtree" font-size="8" font-weight="800" letter-spacing="2.4" fill="rgba(47,58,74,.5)"><textPath href="#fSealPath" startOffset="0">BIENVENIDO AL UNIVERSO DE ÁLVARO · IGNITE NEXUS · </textPath></text></g>
             <g transform="translate(48,48)"><path d="M13.5 2 L5 13.5 H10.5 L9 22 L19 9.5 H13 L15.5 2 Z" fill="#FBB03B"/></g>
           </svg>
         </div>
@@ -2298,6 +2306,7 @@ function toggleAcardDetail(btn) {
 const archiveMissions = [
   {
     name: 'Estación Meteorológica', cat: 'Electrónica', dates: '15 ene – 12 feb 2025', xp: 320,
+    desc: 'Construyó una estación con sensores reales que mide temperatura y humedad. Aprendió a conectar componentes, recoger datos y trabajar en equipo para presentar los resultados.',
     skills: [
       {n:'Sensores & Arduino', xp:120, rama:'Technology'},
       {n:'Análisis de datos',  xp:100, rama:'Science'},
@@ -2306,6 +2315,7 @@ const archiveMissions = [
   },
   {
     name: 'Videojuego en Scratch', cat: 'Programación', dates: '3 nov – 28 nov 2024', xp: 280,
+    desc: 'Diseñó y programó su propio videojuego de principio a fin: inventó los personajes, escribió las reglas y publicó el juego para que sus compañeros pudieran jugarlo.',
     skills: [
       {n:'Lógica de programación', xp:130, rama:'Technology'},
       {n:'Diseño de personajes',   xp:80,  rama:'Art'},
@@ -2314,6 +2324,7 @@ const archiveMissions = [
   },
   {
     name: 'Puente de Espaguetis', cat: 'Ingeniería', dates: '5 oct – 25 oct 2024', xp: 200,
+    desc: 'En equipo diseñó y construyó un puente usando solo espaguetis y cinta adhesiva. Lo pusieron a prueba cargando peso hasta el límite y analizaron por qué aguantó o falló.',
     skills: [
       {n:'Resistencia materiales', xp:90, rama:'Engineering'},
       {n:'Trabajo cooperativo',    xp:70, rama:'Transversals'},
@@ -2322,10 +2333,47 @@ const archiveMissions = [
   },
   {
     name: 'App de Reciclaje', cat: 'Programación', dates: '10 sep – 2 oct 2024', xp: 250,
+    desc: 'Ideó y prototipó una app para motivar a reciclar en casa. Diseñó la experiencia de usuario, pensó en los mensajes y demostró que la tecnología puede ayudar al medioambiente.',
     skills: [
       {n:'Diseño de apps', xp:110, rama:'Technology'},
       {n:'Sostenibilidad', xp:80,  rama:'Science'},
       {n:'UX Design',      xp:60,  rama:'Art'},
+    ]
+  },
+  {
+    name: 'Planetario Virtual', cat: 'Ciencia', dates: '5 jun – 28 jun 2024', xp: 210,
+    desc: 'Recreó el sistema solar en un planetario interactivo y lo presentó a toda la clase. Investigó datos reales de la NASA y aprendió a comunicar ciencia de forma visual y amena.',
+    skills: [
+      {n:'Astronomía',       xp:90, rama:'Science'},
+      {n:'Presentación oral',xp:70, rama:'Transversals'},
+      {n:'Investigación',    xp:50, rama:'Science'},
+    ]
+  },
+  {
+    name: 'Casa Domótica', cat: 'IoT', dates: '5 mar – 28 mar 2024', xp: 230,
+    desc: 'Construyó una maqueta de casa inteligente con luces automáticas y sensores de movimiento. Programó los comportamientos y explicó cómo la domótica hace la vida más cómoda.',
+    skills: [
+      {n:'Electrónica',    xp:100, rama:'Technology'},
+      {n:'Automatización', xp:80,  rama:'Engineering'},
+      {n:'Programación',   xp:50,  rama:'Technology'},
+    ]
+  },
+  {
+    name: 'Cañón de Aire', cat: 'Física', dates: '3 may – 24 may 2024', xp: 180,
+    desc: 'Construyó un cañón casero que lanza aros de aire y usó el experimento para entender cómo se comportan los fluidos. Midió distancias, comparó resultados y sacó sus propias conclusiones.',
+    skills: [
+      {n:'Aerodinámica',    xp:80, rama:'Science'},
+      {n:'Matemáticas',     xp:60, rama:'Maths'},
+      {n:'Experimentación', xp:40, rama:'Science'},
+    ]
+  },
+  {
+    name: 'Llavero 3D', cat: 'Diseño 3D', dates: '1 abr – 19 abr 2024', xp: 160,
+    desc: 'Diseñó su propio llavero personalizado desde cero en software 3D y lo imprimió. Pasó de una idea en papel a un objeto físico que se puede tocar, aprendiendo todo el proceso de fabricación digital.',
+    skills: [
+      {n:'Modelado 3D',  xp:90, rama:'Art'},
+      {n:'Impresión 3D', xp:40, rama:'Engineering'},
+      {n:'Creatividad',  xp:30, rama:'Art'},
     ]
   },
 ];
@@ -5360,6 +5408,21 @@ function setupFamInteractions(){
 /* ── All-projects overlay ── */
 window.famOpenAll=function(){var p=document.getElementById('famAllProjects');if(!p)return;p.classList.add('open');p.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';p.scrollTop=0;};
 window.famCloseAll=function(){var p=document.getElementById('famAllProjects');if(!p)return;p.classList.remove('open');p.setAttribute('aria-hidden','true');document.body.style.overflow='';};
+
+// The overlay is outside #page-family so root.addEventListener doesn't reach it.
+// Attach disclosure handler directly on the overlay element.
+(function(){
+  var ov=document.getElementById('famAllProjects');
+  if(!ov)return;
+  ov.addEventListener('click',function(e){
+    var d=e.target.closest('[data-fdisclose]');
+    if(!d)return;
+    var t=document.getElementById(d.getAttribute('data-fdisclose'));
+    var o=d.getAttribute('aria-expanded')==='true';
+    d.setAttribute('aria-expanded',o?'false':'true');
+    if(t)t.classList.toggle('open',!o);
+  });
+})();
 
 /* ── Init ── */
 function init(){
